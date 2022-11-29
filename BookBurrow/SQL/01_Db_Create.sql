@@ -49,6 +49,14 @@ CREATE TABLE [UserPronoun] (
 )
 GO
 
+CREATE TABLE [Role] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [roleName] varchar(254),
+  [createdAt] datetime,
+  [updatedAt] datetime
+)
+GO
+
 CREATE TABLE [UserRole] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [userId] int,
@@ -56,16 +64,8 @@ CREATE TABLE [UserRole] (
   [createdAt] datetime,
   [updatedAt] datetime
 
-  CONSTRAINT FK_UserRole_User FOREIGN KEY (userId) REFERENCES [User](id)
+  CONSTRAINT FK_UserRole_User FOREIGN KEY (userId) REFERENCES [User](id),
   CONSTRAINT FK_UserRole_Role FOREIGN KEY (roleId) REFERENCES [Role](id)
-)
-GO
-
-CREATE TABLE [Role] (
-  [id] int PRIMARY KEY IDENTITY(1, 1),
-  [roleName] varchar(254),
-  [createdAt] datetime,
-  [updatedAt] datetime
 )
 GO
 
@@ -80,14 +80,26 @@ CREATE TABLE [Permission] (
 )
 GO
 
+CREATE TABLE [Author] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [userId] int NULL,
+  [firstName] varchar(40) NULL,
+  [middleName] varchar(40) NULL,
+  [lastName] varchar(40),
+  [profileImageUrl] varchar(254) NULL
+
+  CONSTRAINT FK_Author_User FOREIGN KEY (userId) REFERENCES [User](id)
+)
+GO
+
 CREATE TABLE [UserFollower] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [userId] int,
   [followerId] int,
   [createdAt] datetime
 
-  CONSTRAINT FK_UserFollower_User FOREIGN KEY (userId) REFERENCES [User](id)
-  CONSTRAINT FK_UserFollower_User FOREIGN KEY (followerId) REFERENCES [User](id)
+  CONSTRAINT FK_UserFollower_User FOREIGN KEY (userId) REFERENCES [User](id),
+  FOREIGN KEY (followerId) REFERENCES [User](id)
 )
 GO
 
@@ -108,8 +120,15 @@ CREATE TABLE [BookAuthor] (
   [bookId] int,
   [authorId] int
 
-  CONSTRAINT FK_BookAuthor_Book FOREIGN KEY (bookId) REFERENCES Book(id)
+  CONSTRAINT FK_BookAuthor_Book FOREIGN KEY (bookId) REFERENCES Book(id),
   CONSTRAINT FK_BookAuthor_Author FOREIGN KEY (authorId) REFERENCES Author(id)
+)
+GO
+
+
+CREATE TABLE [Series] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [name] nvarchar(255)
 )
 GO
 
@@ -119,14 +138,8 @@ CREATE TABLE [SeriesBook] (
   [seriesId] int,
   [position] int
 
-  CONSTRAINT FK_SeriesBook_Book FOREIGN KEY (bookId) REFERENCES Book(id)
+  CONSTRAINT FK_SeriesBook_Book FOREIGN KEY (bookId) REFERENCES Book(id),
   CONSTRAINT FK_SeriesBook_Series FOREIGN KEY (seriesId) REFERENCES Series(id)
-)
-GO
-
-CREATE TABLE [Series] (
-  [id] int PRIMARY KEY IDENTITY(1, 1),
-  [name] nvarchar(255)
 )
 GO
 
@@ -136,15 +149,9 @@ CREATE TABLE [Rating] (
 )
 GO
 
-CREATE TABLE [Author] (
+CREATE TABLE [BookStatus] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
-  [userId] int NULL,
-  [firstName] varchar(40) NULL,
-  [middleName] varchar(40) NULL,
-  [lastName] varchar(40),
-  [profileImageUrl] varchar(254) NULL
-
-  CONSTRAINT FK_Author_User FOREIGN KEY (userId) REFERENCES [User](id)
+  [bookStatus] nvarchar(255)
 )
 GO
 
@@ -160,16 +167,10 @@ CREATE TABLE [UserBook] (
   [reviewCreatedAt] datetime,
   [reviewEditedAt] datetime
 
-  CONSTRAINT FK_UserBook_Book FOREIGN KEY (bookId) REFERENCES Book(id)
-  CONSTRAINT FK_UserBook_User FOREIGN KEY (userId) REFERENCES [User](id)
-  CONSTRAINT FK_UserBook_Rating FOREIGN KEY (ratingId) REFERENCES Rating(id)
+  CONSTRAINT FK_UserBook_Book FOREIGN KEY (bookId) REFERENCES Book(id),
+  CONSTRAINT FK_UserBook_User FOREIGN KEY (userId) REFERENCES [User](id),
+  CONSTRAINT FK_UserBook_Rating FOREIGN KEY (ratingId) REFERENCES Rating(id),
   CONSTRAINT FK_UserBook_Status FOREIGN KEY (statusId) REFERENCES BookStatus(id)
-)
-GO
-
-CREATE TABLE [BookStatus] (
-  [id] int PRIMARY KEY IDENTITY(1, 1),
-  [bookStatus] nvarchar(255)
 )
 GO
 
@@ -187,8 +188,14 @@ CREATE TABLE [BookShelf] (
   [userShelfId] int,
   [bookId] int
 
-  CONSTRAINT FK_BookShelf_UserShelf FOREIGN KEY (userShelfId) REFERENCES UserShelf(id)
+  CONSTRAINT FK_BookShelf_UserShelf FOREIGN KEY (userShelfId) REFERENCES UserShelf(id),
   CONSTRAINT FK_BookShelf_Book FOREIGN KEY (bookId) REFERENCES Book(id)
+)
+GO
+
+CREATE TABLE [PostType] (
+  [id] int PRIMARY KEY IDENTITY(1, 1),
+  [postTypeName] nvarchar(255)
 )
 GO
 
@@ -206,15 +213,9 @@ CREATE TABLE [UserPost] (
   [createdAt] datetime,
   [updatedAt] datetime
 
-  CONSTRAINT FK_UserPost_User FOREIGN KEY (userId) REFERENCES [User](id)
-  CONSTRAINT FK_UserPost_PostType FOREIGN KEY (postTypeId) REFERENCES PostType(id)
+  CONSTRAINT FK_UserPost_User FOREIGN KEY (userId) REFERENCES [User](id),
+  CONSTRAINT FK_UserPost_PostType FOREIGN KEY (postTypeId) REFERENCES PostType(id),
   CONSTRAINT FK_UserPost_Book FOREIGN KEY (bookId) REFERENCES Book(id)
-)
-GO
-
-CREATE TABLE [PostType] (
-  [id] int PRIMARY KEY IDENTITY(1, 1),
-  [postTypeName] nvarchar(255)
 )
 GO
 
@@ -226,7 +227,7 @@ CREATE TABLE [PostComment] (
   [createdAt] datetime,
   [updatedAt] datetime
 
-  CONSTRAINT FK_PostComment_User FOREIGN KEY (userId) REFERENCES [User](id)
+  CONSTRAINT FK_PostComment_User FOREIGN KEY (userId) REFERENCES [User](id),
   CONSTRAINT FK_PostComment_UserPost FOREIGN KEY (postId) REFERENCES UserPost(id)
 )
 GO
@@ -238,7 +239,7 @@ CREATE TABLE [PostLike] (
   [createdAt] datetime,
   [updatedAt] datetime
 
-  CONSTRAINT FK_PostLike_User FOREIGN KEY (userId) REFERENCES [User](id)
+  CONSTRAINT FK_PostLike_User FOREIGN KEY (userId) REFERENCES [User](id),
   CONSTRAINT FK_PostLike_UsesrPost FOREIGN KEY (postId) REFERENCES UserPost(id)
 )
 GO
@@ -250,7 +251,7 @@ CREATE TABLE [PostFavorite] (
   [createdAt] datetime,
   [updatedAt] datetime
 
-  CONSTRAINT FK_PostFavorite_User FOREIGN KEY (userId) REFERENCES [User](id)
+  CONSTRAINT FK_PostFavorite_User FOREIGN KEY (userId) REFERENCES [User](id),
   CONSTRAINT FK_PostFavorite_UserPost FOREIGN KEY (postId) REFERENCES UserPost(id)
 )
 GO
@@ -263,8 +264,8 @@ CREATE TABLE [PostShare] (
   [createdAt] datetime,
   [updatedAt] datetime
 
-  CONSTRAINT FK_PostShare_User FOREIGN KEY (senderUserId) REFERENCES [User](id)
-  CONSTRAINT FK_PostShare_User FOREIGN KEY (receiverUserId) REFERENCES [User](id)
+  CONSTRAINT FK_PostShare_User FOREIGN KEY (senderUserId) REFERENCES [User](id),
+  FOREIGN KEY (receiverUserId) REFERENCES [User](id),
   CONSTRAINT FK_PostShare_UserPost FOREIGN KEY (postId) REFERENCES UserPost(id)
 )
 GO
@@ -277,9 +278,9 @@ CREATE TABLE [PostReblog] (
   [createdAt] datetime,
   [updatedAt] datetime
 
-  CONSTRAINT FK_PostReblog_User FOREIGN KEY (userId) REFERENCES [User](id)
-  CONSTRAINT FK_PostReblog_UserPost FOREIGN KEY (originalPostId) REFERENCES UserPost(id)
-  CONSTRAINT FK_PostReblog_UserPost FOREIGN KEY (reblogPostId) REFERENCES UserPost(id)
+  CONSTRAINT FK_PostReblog_User FOREIGN KEY (userId) REFERENCES [User](id),
+  CONSTRAINT FK_PostReblog_UserPost FOREIGN KEY (originalPostId) REFERENCES UserPost(id),
+  FOREIGN KEY (reblogPostId) REFERENCES UserPost(id)
 )
 GO
 
@@ -291,8 +292,8 @@ CREATE TABLE [Message] (
   [createdAt] datetime,
   [updatedAt] datetime
 
-  CONSTRAINT FK_Message_User FOREIGN KEY (userId) REFERENCES [User](id)
-  CONSTRAINT FK_Message_User FOREIGN KEY (friendId) REFERENCES [User](id)
+  CONSTRAINT FK_Message_User FOREIGN KEY (userId) REFERENCES [User](id),
+  FOREIGN KEY (friendId) REFERENCES [User](id)
 )
 GO
 
@@ -307,7 +308,7 @@ CREATE TABLE [PostTag] (
   [postId] int,
   [tagId] int
 
-  CONSTRAINT FK_PostTag_UserPost FOREIGN KEY (postId) REFERENCES UserPost(id)
+  CONSTRAINT FK_PostTag_UserPost FOREIGN KEY (postId) REFERENCES UserPost(id),
   CONSTRAINT FK_PostTag_Tag FOREIGN KEY (tagId) REFERENCES Tag(id)
 )
 GO
@@ -323,7 +324,7 @@ CREATE TABLE [UserNotification] (
   [userId] int,
   [notificationId] int
 
-  CONSTRAINT FK_UserNotification_User FOREIGN KEY (userId) REFERENCES [User](id)
+  CONSTRAINT FK_UserNotification_User FOREIGN KEY (userId) REFERENCES [User](id),
   CONSTRAINT FK_UserNotification_Notification FOREIGN KEY (notificationId) REFERENCES [Notification](id)
 )
 GO
@@ -397,8 +398,8 @@ SET IDENTITY_INSERT [Book] ON
 INSERT INTO [Book]
 	([id], [title], [isbn], [description], [coverImageUrl], [datePublished], [createdAt], [updatedAt])
 VALUES
-	(1, 'Legends & Lattes', '1250886082', 'The much-beloved BookTok sensation, Travis Baldree''s novel of high fantasy and low stakes. Come take a load off at Viv''s cafe, the first & only coffee shop in Thune. Grand opening! Worn out after decades of packing steel and raising hell, Viv, the orc barbarian, cashes out of the warrior’s life with one final score. A forgotten legend, a fabled artifact, and an unreasonable amount of hope lead her to the streets of Thune, where she plans to open the first coffee shop the city has ever seen. However, her dreams of a fresh start filling mugs instead of swinging swords are hardly a sure bet. Old frenemies and Thune’s shady underbelly may just upset her plans. To finally build something that will last, Viv will need some new partners, and a different kind of resolve. A hot cup of fantasy, slice-of-life with a dollop of romantic froth.', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669473101/bookBurrow/legends_lattes_l8hidl.jpg', '2022-11-08 00:00:00', '2022-11-26 08:24:00', '2022-11-26 08:24:00'),
-	(2, 'The House in the Cerulean Sea', '1250217318', 'A magical island. A dangerous task. A burning secret. Linus Baker leads a quiet, solitary life. At forty, he lives in a tiny house with a devious cat and his old records. As a Case Worker at the Department in Charge Of Magical Youth, he spends his days overseeing the well-being of children in government-sanctioned orphanages. When Linus is unexpectedly summoned by Extremely Upper Management he''s given a curious and highly classified assignment: travel to Marsyas Island Orphanage, where six dangerous children reside: a gnome, a sprite, a wyvern, an unidentifiable green blob, a were-Pomeranian, and the Antichrist. Linus must set aside his fears and determine whether or not they’re likely to bring about the end of days. But the children aren’t the only secret the island keeps. Their caretaker is the charming and enigmatic Arthur Parnassus, who will do anything to keep his wards safe. As Arthur and Linus grow closer, long-held secrets are exposed, and Linus must make a choice: destroy a home or watch the world burn. An enchanting story, masterfully told, The House in the Cerulean Sea is about the profound experience of discovering an unlikely family in an unexpected place—and realizing that family is yours.', 'https://covers.openlibrary.org/b/isbn/1250217318-L.jpg', '2020-03-17 00:00:00', '2022-11-26 08:40:00'),
+	(1, 'Legends & Lattes', '1250886082', 'The much-beloved BookTok sensation, Travis Baldree''s novel of high fantasy and low stakes. Come take a load off at Viv''s cafe, the first & only coffee shop in Thune. Grand opening! Worn out after decades of packing steel and raising hell, Viv, the orc barbarian, cashes out of the warrior’s life with one final score. A forgotten legend, a fabled artifact, and an unreasonable amount of hope lead her to the streets of Thune, where she plans to open the first coffee shop the city has ever seen. However, her dreams of a fresh start filling mugs instead of swinging swords are hardly a sure bet. Old frenemies and Thune''s shady underbelly may just upset her plans. To finally build something that will last, Viv will need some new partners, and a different kind of resolve. A hot cup of fantasy, slice-of-life with a dollop of romantic froth.', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669473101/bookBurrow/legends_lattes_l8hidl.jpg', '2022-11-08 00:00:00', '2022-11-26 08:24:00', '2022-11-26 08:24:00'),
+	(2, 'The House in the Cerulean Sea', '1250217318', 'A magical island. A dangerous task. A burning secret. Linus Baker leads a quiet, solitary life. At forty, he lives in a tiny house with a devious cat and his old records. As a Case Worker at the Department in Charge Of Magical Youth, he spends his days overseeing the well-being of children in government-sanctioned orphanages. When Linus is unexpectedly summoned by Extremely Upper Management he''s given a curious and highly classified assignment: travel to Marsyas Island Orphanage, where six dangerous children reside: a gnome, a sprite, a wyvern, an unidentifiable green blob, a were-Pomeranian, and the Antichrist. Linus must set aside his fears and determine whether or not they’re likely to bring about the end of days. But the children aren’t the only secret the island keeps. Their caretaker is the charming and enigmatic Arthur Parnassus, who will do anything to keep his wards safe. As Arthur and Linus grow closer, long-held secrets are exposed, and Linus must make a choice: destroy a home or watch the world burn. An enchanting story, masterfully told, The House in the Cerulean Sea is about the profound experience of discovering an unlikely family in an unexpected place—and realizing that family is yours.', 'https://covers.openlibrary.org/b/isbn/1250217318-L.jpg', '2020-03-17 00:00:00', '2022-11-26 08:40:00', '2022-11-26 08:40:00'),
 	(3, 'The Very Secret Society of Irregular Witches', '059343935X', 'A warm and uplifting novel about an isolated witch whose opportunity to embrace a quirky new family--and a new love--changes the course of her life. As one of the few witches in Britain, Mika Moon knows she has to hide her magic, keep her head down, and stay away from other witches so their powers don''t mingle and draw attention. And as an orphan who lost her parents at a young age and was raised by strangers, she''s used to being alone and she follows the rules...with one exception: an online account, where she posts videos pretending to be a witch. She thinks no one will take it seriously. But someone does. An unexpected message arrives, begging her to travel to the remote and mysterious Nowhere House to teach three young witches how to control their magic. It breaks all of the rules, but Mika goes anyway, and is immediately tangled up in the lives and secrets of not only her three charges, but also an absent archaeologist, a retired actor, two long-suffering caretakers, and...Jamie. The handsome and prickly librarian of Nowhere House would do anything to protect the children, and as far as he''s concerned, a stranger like Mika is a threat. An irritatingly appealing threat. As Mika begins to find her place at Nowhere House, the thought of belonging somewhere begins to feel like a real possibility. But magic isn''t the only danger in the world, and when a threat comes knocking at their door, Mika will need to decide whether to risk everything to protect a found family she didn''t know she was looking for....', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669474031/bookBurrow/very_secret_society_irregular_witches_i8ey3c.jpg', '2022-08-23 00:00:00', '2022-11-26 08:45:00', '2022-11-26 08:45:00'),
 	(4, 'A Psalm for the Wild-Built', '1250236215', 'Centuries before, robots of Panga gained self-awareness, laid down their tools, wandered, en masse into the wilderness, never to be seen again. They faded into myth and urban legend. Now the life of the tea monk who tells this story is upended by the arrival of a robot, there to honor the old promise of checking in. The robot cannot go back until the question of "what do people need?" is answered. But the answer to that question depends on who you ask, and how. They will need to ask it a lot. Chambers'' series asks: in a world where people have what they want, does having more matter?', 'https://covers.openlibrary.org/b/isbn/1250236215-L.jpg', '2021-07-13 00:00:00', '2022-11-26 08:50:00', '2022-11-26 08:50:00'),
 	(5, 'The Girl Who Drank the Moon', '1616205679', 'Every year, the people of the Protectorate leave a baby as an offering to the witch who lives in the forest. They hope this sacrifice will keep her from terrorizing their town. But the witch in the forest, Xan, is kind and gentle. She shares her home with a wise Swamp Monster named Glerk and a Perfectly Tiny Dragon, Fyrian. Xan rescues the abandoned children and deliver them to welcoming families on the other side of the forest, nourishing the babies with starlight on the journey. One year, Xan accidentally feeds a baby moonlight instead of starlight, filling the ordinary child with extraordinary magic. Xan decides she must raise this enmagicked girl, whom she calls Luna, as her own. To keep young Luna safe from her own unwieldy power, Xan locks her magic deep inside her. When Luna approaches her thirteenth birthday, her magic begins to emerge on schedule--but Xan is far away. Meanwhile, a young man from the Protectorate is determined to free his people by killing the witch. Soon, it is up to Luna to protect those who have protected her--even if it means the end of the loving, safe world she’s always known.', 'https://covers.openlibrary.org/b/isbn/1616205679-L.jpg', '2016-08-09 00:00:00', '2022-11-26 08:54:00', '2022-11-26 08:54:00'),
@@ -415,5 +416,122 @@ VALUES
 	(16, 'Breath Mints / Battle Scars', NULL, 'For a moment, she''s almost giddy. Because Draco Malfoy''s been ruined by this war and he''s as out of place as she is and — yes, he has scars too. He''s got an even bigger one. She wonders whether one day they''ll compare sizes. Fanfiction for Harry Potter by J.K. Rowling.', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669484973/bookBurrow/breath_mints_battle_scars_jkzcnz.jpg', '2018-07-21 00:00:00', '2022-11-26 11:48:00', '2022-11-26 11:48:00'),
 	(17, 'Love and Other Historical Accidents', NULL, 'Hermione Granger and Draco Malfoy never intended to blow up their life''s work, but that''s rather what they''ve gone and done. Now they''re trapped 200 years in the past, with a broken Time Turner, a missing snuff box, a handful of overly-eligible daughters, and a House-elf in a cable knit cardigan. It will require the combined power of their keen intellects to get them home, if they''d stop arguing long enough to use them. As it turns out, history is just one damned accident after another. For fans of Harry Potter, Jane Austen, and Connie Willis, a historical romantic comedy all about time, and getting the hell out of it.', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669485194/bookBurrow/love_other_historical_accidents_y2wndb.jpg', '2019-11-20 00:00:00', '2022-11-26 11:51:00', '2022-11-26 11:51:00'),
 	(18, 'Snowy-Peaked Promises', NULL, 'Hermione''s quiet Christmas plans with Harry are upended when, halfway across the world, they come across a trio of former Slytherins staying in the next cabin over. But Hermione isn''t entirely certain whether quiet is what she wants anymore. Dramione.', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669484273/bookBurrow/bookBurrow_default_book_cover_picture_edqycj.png', '2021-12-21 00:00:00', '2022-11-26 11:55:00', '2022-11-26 11:55:00'),
-	(19, '')
+	(19, 'Draco Malfoy and the Mortifying Ordeal of Being in Love', NULL, 'Hermione straddles the magical and non-magical worlds as a medical researcher and Healer about to make a Big Discovery. Draco is an Auror assigned to protect her from forces unknown -- to both of their displeasure. Features hypercompetent, fiery Hermione and lazy, yet dangerous, Draco. Slow burn.', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669485498/bookBurrow/draco_malfoy_mortifying_ordeal_being_in_love_cfq3w2.jpg', '2021-10-14 00:00:00', '2022-11-26 11:57:00', '2022-11-26 11:57:00'),
+	(20, 'Wait and Hope', NULL, '“Harry,” Hermione began, voice very controlled, but she could feel the blade of panic slicing at her vocal cords. “Why was Draco Malfoy just screaming bloody murder about his,” and the word almost strangled her as she said it, “wife?” Harry''s green eyes blew wide. Healer Lucas pinched the bridge of her nose, painfully displeased with the recent series of events. “He was referring to you, my dear,” she said. “That was the other question you got wrong. Your name is Hermione Jean Granger-Malfoy.” Hermione had to be sedated again. Post-Hogwarts. EWE. Memory fic. Dramione. Wordcount: 95,107', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669484273/bookBurrow/bookBurrow_default_book_cover_picture_edqycj.png', '2020-02-20 00:00:00', '2022-11-26 12:00:00', '2022-11-26 12:00:00'),
+	(21, 'The Auction', NULL, 'Hermione felt the pounding in her ears again. She would see him for the first time since the Great Hall, gaunt and stricken at the Slytherin table with his mother clutching his arm. She hadn''t meant to look for him. Not in the corridors, not beneath the white sheets of the fallen, not on the way to the Chamber of Secrets with Ron, but she was a stupid girl. Fandom: Harry Potter. Pairing: Hermione Granger/Draco Malfoy. Words: 181,287', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669688472/bookBurrow/auction_g3cm4q.jpg', '2019-06-05 00:00:00','2022-11-26 12:04:00', '2022-11-26 12:04:00'),
+	(22, 'All the Wrong Things', NULL, 'Sequel to "The Right Thing to Do" - Draco''s POV. Part 2 of the "Rights and Wrongs" series. Friday, August 27, 1999. They’re murmuring again. Trying to keep their voices low so the prisoner can’t hear. But the prisoner is fifteen feet away, and they are failing. I wish they would take me out of the room if they need to discuss. Bring me back to the small room I was in this morning. But, of course, they let me stand in this cage in the middle of them. On display. I pick a spot four feet in front of me and maintain my gaze. I don’t want to look at them and I don’t want to fall asleep. I feel a yawn. “Mr. Malfoy. Your next witness is here. Are you ready to proceed?” I almost smile. Do I have a choice?', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669688713/bookBurrow/all_the_wrong_things_wlrxjk.jpg', '2018-04-27 00:00:00', '2022-11-28 20:24:00', '2022-11-28 20:24:00'),
+	(23, 'The Right Thing to Do', NULL, 'Hermione felt the pounding in her ears again. She would see him for the first time since the Great Hall, gaunt and stricken at the Slytherin table with his mother clutching his arm. She hadn''t meant to look for him. Not in the corridors, not beneath the white sheets of the fallen, not on the way to the Chamber of Secrets with Ron, but she was a stupid girl. Fandom: Harry Potter. Pairing: Hermione Granger/Draco Malfoy. Words: 181,287', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669688823/bookBurrow/right_thing_to_do_f2xl27.jpg', '2017-07-11 00:00:00', '2022-11-28 20:26:00', '2022-11-28 20:26:00'),
+	(24, 'Remain Nameless', NULL, 'How did it feel? It felt like he was barely holding it together. She, of all people, should shun him. Or yell at him. Curse him. Spit at him. Take out her wand and blast him off the face of the earth. It was crushing guilt and relief and confusion all at once when he looked at Hermione Granger. The monotony of Draco’s daily routine had become both a lifeline and a noose. But this new habit of grabbing coffee with Hermione Granger is quickly becoming a reason to get out of bed and is unfortunately forcing him to re-evaluate his inconsequential existence. Hermione is living her life in fragments, separate pieces scattered about, and she can’t find a way to step back and let the full picture form. Why are morning meetings with Draco Malfoy the only thing that make sense anymore?', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669688938/bookBurrow/remain_nameless_psndc2.jpg', '2020-04-27 00:00:00', '2022-11-28 20:28:00', '2022-11-28 20:28:00'),
+	(25, 'The Odds', NULL, 'What can you get out of a writer’s block and a past acquaintance you have severe prejudices against coming together? In a desperate attempt to deal with her creative struggle, Hermione Granger rents a cabin in the Alps to isolate herself from the rest of the world. But unfortunately—or fatefully—Draco Malfoy knocks at her door, sure to have booked the cabin for himself. Stuck together in a limited space for an indefinite amount of time, Hermione slowly finds out the man Malfoy grew up to be is very different from the teenager she used to know. Maybe, just maybe, written words will manage to make amends for her inability to express her feelings.', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669484273/bookBurrow/bookBurrow_default_book_cover_picture_edqycj.png', '2021-10-19 00:00:00', '2022-11-28 20:29:00', '2022-11-28 20:29:00'),
+	(26, 'Bring Him to His Knees', NULL, 'Draco is on the case of a murderer, but to investigate, he needs a fake relationship - and a kink club play partner. When Hermione volunteers to take the role, both do their best to maintain the lie without letting each other know the truth: neither of them is acting.', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669689134/bookBurrow/bring_him_to_his_knees_cqfl8f.jpg', '2020-06-01 00:00:00', '2022-11-28 20:31:00', '2022-11-28 20:31:00'),
+	(27, 'All You Want', NULL, 'Draco/Hermione. Eighth Year at Hogwarts was supposed to be Hermione’s. And it is, just not in the way she expects. Omegaverse fic.', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669689230/bookBurrow/all_you_want_vuk3bw.jpg', '2018-07-03 00:00:00', '2022-11-28 20:32:00', '2022-11-28 20:32:00'),
+	(28, 'Manacled', NULL, 'Harry Potter is dead. In the aftermath of the war, in order to strengthen the might of the magical world, Voldemort enacts a repopulation effort. Hermione Granger has an Order secret, lost but hidden in her mind, so she is sent as an enslaved surrogate to the High Reeve, to be bred and monitored until her mind can be cracked. Fanfiction for Harry Potter by J. K. Rowling. Words: 370,256', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669689334/bookBurrow/manacled_sjldyj.jpg', '2018-04-27 00:00:00', '2022-11-28 20:34:00', '2022-11-28 20:34:00'),
+	(29, 'The Library of Alexandria', NULL, 'The Library of Alexandria is not for just any witch or wizard. Many bookworms may try but few are permitted to pass through its doors. The books residing there are ancient and powerful and, if one happens to make a mistake, the consequences can be rather—novel.', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669689428/bookBurrow/library_alexandria_ympobd.jpg', '2018-05-04 00:00:00', '2022-11-28 20:36:00', '2022-11-28 20:36:00'),
+	(30, 'Hogfather', '9781473200135', 'It''s the night before Hogswatch. And it''s too quiet. Where is the big jolly fat man? Why is Death creeping down chimneys and trying to say Ho Ho Ho? The darkest night of the year is getting a lot darker… Susan the gothic governess has got to sort it out by morning, otherwise there won''t be a morning. Ever again... The 20th Discworld novel is a festive feast of darkness and Death (but with jolly robins and tinsel too). As they say: "You''d better watch out..."', 'https://covers.openlibrary.org/b/isbn/9781473200135-L.jpg', '1996-01-01 00:00:00', '2022-11-28 20:40:00', '2022-11-28 20:40:00')
 SET IDENTITY_INSERT [Book] OFF
+
+--table data for Author
+SET IDENTITY_INSERT [Author] ON
+INSERT INTO [Author]
+	([id], [userId], [firstName], [middleName], [lastName], [profileImageUrl])
+VALUES
+	(1, NULL, 'Travis', NULL, 'Baldree', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669473406/bookBurrow/travis_baldree_y1mukw.jpg'),
+	(2, NULL, 'T.J.', NULL, 'Klune', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669473798/bookBurrow/tj_klune_h9hz7z.jpg'),
+	(3, NULL, 'Sangu', NULL, 'Mandanna', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669474153/bookBurrow/sangu_mandanna_ohw8jf.jpg'),
+	(4, NULL, 'Becky', NULL, 'Chambers', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669474359/bookBurrow/becky_chambers_oujtqs.jpg'),
+	(5, NULL, 'Kelly', NULL, 'Barnhill', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669474563/bookBurrow/kelly_barnhill_icnyd8.jpg'),
+	(6, NULL, 'Suzanne', NULL, 'Walker', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(7, NULL, 'Wendy', NULL, 'Xu', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(8, NULL, 'Joamette', NULL, 'Gil', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(9, NULL, 'Patricia', 'C.', 'Wrede', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669482151/bookBurrow/patricia_c_wrede_iqlrlu.jpg'),
+	(10, NULL, 'Olivie', NULL, 'Blake', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669482879/bookBurrow/olivie_blake_khkibe.jpg'),
+	(11, NULL, NULL, NULL, 'olivieblake', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(12, NULL, NULL, NULL, 'Daevastanner', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(13, NULL, NULL, NULL, 'inadaze22', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(14, NULL, NULL, NULL, 'Onyx_and_Elm', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(15, NULL, NULL, NULL, 'PacificRimbaud', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(16, NULL, NULL, NULL, 'In_Dreams', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(17, NULL, NULL, NULL, 'isthisselfcare', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(18, NULL, NULL, NULL, 'mightbewriting', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(19, NULL, NULL, NULL, 'SenLinYu', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(20, NULL, NULL, NULL, 'Musyc', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(21, NULL, NULL, NULL, 'sarab3lla', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(22, NULL, NULL, NULL, 'va13lentina', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(23, NULL, NULL, NULL, 'HeyJude19', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(24, NULL, NULL, NULL, 'LovesBitca8', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669475589/bookBurrow/bookBurrow_default_profile_picture_rsxmg9.png'),
+	(25, NULL, 'Terry', NULL, 'Pratchett', 'https://res.cloudinary.com/dxblkicjh/image/upload/v1669737432/bookBurrow/terry_pratchett_ayjnit.jpg')
+SET IDENTITY_INSERT [Author] OFF
+
+--table data for BookAuthor
+SET IDENTITY_INSERT [BookAuthor] ON
+INSERT INTO [BookAuthor]
+	([id], [bookId], [authorId])
+VALUES
+	(1, 1, 1),
+	(2, 2, 2),
+	(3, 3, 3),
+	(4, 4, 4),
+	(5, 5, 5),
+	(6, 6, 6),
+	(7, 6, 7),
+	(8, 6, 8),
+	(9, 7, 9),
+	(10, 8, 4),
+	(11, 9, 10),
+	(12, 10, 10),
+	(13, 11, 10),
+	(14, 12, 10),
+	(15, 13, 11),
+	(16, 14, 12),
+	(17, 15, 13),
+	(18, 16, 14),
+	(19, 17, 15),
+	(20, 18, 16),
+	(21, 19, 17),
+	(22, 20, 18),
+	(23, 21, 24),
+	(24, 22, 24),
+	(25, 23, 24),
+	(26, 24, 23),
+	(27, 25, 21),
+	(28, 25, 22),
+	(29, 26, 20),
+	(30, 27, 19),
+	(31, 28, 19),
+	(32, 29, 19),
+	(33, 30, 25)
+SET IDENTITY_INSERT [BookAuthor] OFF
+
+
+--table data for Series
+SET IDENTITY_INSERT [Series] ON
+INSERT INTO [Series]
+	([id], [name])
+VALUES
+	(1, 'Monk & Robot'),
+	(2, 'Enchanted Forest Chronicles'),
+	(3, 'Wayfarers'),
+	(4, 'The Atlas'),
+	(5, 'This World or Any Other'),
+	(6, 'Rights and Wrongs'),
+	(7, 'Death'),
+	(8, 'Discworld')
+SET IDENTITY_INSERT [Series] OFF
+
+--table data for SeriesBook
+SET IDENTITY_INSERT [SeriesBook] ON
+INSERT INTO [SeriesBook]
+	([id], [bookId], [seriesId], [position])
+VALUES
+	(1, 4, 1, 1),
+	(2, 7, 2, 1),
+	(3, 8, 3, 1),
+	(4, 9, 4, 1),
+	(5, 11, 4, 2),
+	(6, 13, 5, 1),
+	(7, 21, 6, 3),
+	(8, 22, 6, 2),
+	(9, 23, 6, 1),
+	(10, 30, 7, 4),
+	(11, 30, 8, 20)
+SET IDENTITY_INSERT [SeriesBook] OFF
