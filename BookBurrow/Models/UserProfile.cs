@@ -26,6 +26,7 @@ namespace BookBurrow.Models
         [MaxLength(40)]
         public string Handle { get; set; }
         public int? PronoundId { get; set; }
+        public UserPronoun UserPronoun { get; set; }
         public string? Biography { get; set; }
 
         [MaxLength(254)]
