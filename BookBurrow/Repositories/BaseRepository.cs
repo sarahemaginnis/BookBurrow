@@ -12,12 +12,6 @@ namespace BookBurrow.Repositories
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        protected SqlConnection Connection
-        {
-            get
-            {
-                return new SqlConnection(_connectionString);
-            }
-        }
+        public SqlConnection Connection => new SqlConnection(_connectionString);
     }
 }
