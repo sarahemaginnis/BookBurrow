@@ -13,8 +13,11 @@ namespace BookBurrow.Models
         [Required]
         public int BookId { get; set; }
 
+        public Book Book { get; set; }
+
         [Required]
         public int SeriesId { get; set; }
+        public Series Series { get; set; }
 
         [Required]
         public int Position { get; set; }
