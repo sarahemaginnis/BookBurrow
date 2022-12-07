@@ -144,7 +144,7 @@ GO
 
 CREATE TABLE [Rating] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
-  [displayValue] decimal
+  [displayValue] decimal (2, 1)
 )
 GO
 
@@ -158,8 +158,8 @@ CREATE TABLE [UserBook] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [bookId] int,
   [userId] int,
-  [startDate] datetime,
-  [endDate] datetime,
+  [startDate] datetime NULL,
+  [endDate] datetime NULL,
   [ratingId] int NULL,
   [statusId] int,
   [review] nvarchar(255) NULL,
@@ -205,7 +205,7 @@ CREATE TABLE [UserPost] (
   [bookId] int NULL,
   [title] nvarchar(255) NULL,
   [cloudinaryUrl] nvarchar(255) NULL,
-  [caption] nvarchar(255) NULL,
+  [caption] nvarchar(max) NULL,
   [source] nvarchar(255) NULL,
   [songUrl] nvarchar(255) NULL,
   [songUrlSummary] nvarchar(255) NULL,
@@ -235,8 +235,7 @@ CREATE TABLE [PostLike] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [userId] int,
   [postId] int,
-  [createdAt] datetime,
-  [updatedAt] datetime
+  [createdAt] datetime
 
   CONSTRAINT FK_PostLike_User FOREIGN KEY (userId) REFERENCES [User](id),
   CONSTRAINT FK_PostLike_UsesrPost FOREIGN KEY (postId) REFERENCES UserPost(id)
@@ -247,8 +246,7 @@ CREATE TABLE [PostFavorite] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [userId] int,
   [postId] int,
-  [createdAt] datetime,
-  [updatedAt] datetime
+  [createdAt] datetime
 
   CONSTRAINT FK_PostFavorite_User FOREIGN KEY (userId) REFERENCES [User](id),
   CONSTRAINT FK_PostFavorite_UserPost FOREIGN KEY (postId) REFERENCES UserPost(id)
@@ -356,15 +354,15 @@ INSERT INTO [Rating]
 	([id], [displayValue])
 VALUES
 	(1, 0.5),
-	(2, 1),
+	(2, 1.0),
 	(3, 1.5),
-	(4, 2),
+	(4, 2.0),
 	(5, 2.5),
-	(6, 3),
+	(6, 3.0),
 	(7, 3.5),
-	(8, 4),
+	(8, 4.0),
 	(9, 4.5),
-	(10, 5)
+	(10, 5.0)
 SET IDENTITY_INSERT [Rating] OFF
 
 --table data for BookStatus
