@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,7 +9,7 @@ namespace BookBurrow.Models
 {
     public class BookStatus
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
         //[Required]
         //[MaxLength(255)]
@@ -30,7 +31,7 @@ namespace BookBurrow.Models
 
         private static List<BookStatus> ListBookStatuses()
         {
-            return typeof(BookStatus).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+            return typeof(BookStatus).GetProperties(BindingFlags.Public | BindingFlags.Static)
                 .Where(p => p.PropertyType == typeof(BookStatus))
                 .Select(pi => (BookStatus)pi.GetValue(null, null))
                 .OrderBy(p => p.Name)

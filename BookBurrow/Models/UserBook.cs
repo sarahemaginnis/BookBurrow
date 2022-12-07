@@ -20,7 +20,7 @@ namespace BookBurrow.Models
         public int? RatingId { get; set; }
 
         [Required]
-        public int StatusId { get; set; }
+        BookStatus Status { get; set; }
         public string? Review { get; set; }
 
         [Required]
