@@ -12,15 +12,19 @@ namespace BookBurrow.Models
 
         [Required]
         public int BookId { get; set; }
+        public Book Book { get; set; }
 
         [Required]
         public int UserId { get; set; }
+        public UserProfile UserProfile { get; set; }
+        public UserPronoun UserPronoun { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int? RatingId { get; set; }
+        public Rating Rating { get; set; }
 
         [Required]
-        BookStatus Status { get; set; }
+        public BookStatus BookStatus { get; set; }
         public string? Review { get; set; }
 
         [Required]

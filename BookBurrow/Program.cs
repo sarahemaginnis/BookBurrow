@@ -15,6 +15,7 @@ builder.Services.AddTransient<IBookAuthorRepository, BookAuthorRepository>();
 builder.Services.AddTransient<IRatingRepository, RatingRepository>();
 builder.Services.AddTransient<ISeriesRepository, SeriesRepository>();
 builder.Services.AddTransient<ISeriesBookRepository, SeriesBookRepository>();
+builder.Services.AddTransient<IUserBookRepository, UserBookRepository>();
 builder.Services.AddTransient<IUserFollowerRepository, UserFollowerRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IUserProfileRepository, UserProfileRepository>();
