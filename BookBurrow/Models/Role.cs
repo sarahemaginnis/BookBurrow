@@ -3,21 +3,42 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace BookBurrow.Models
 {
     public class Role
     {
-        public int Id { get; set; }
+        public static Role User { get; } = new Role(0, "User");
+        public static Role Author { get; } = new Role(1, "Author");
+        public static Role Librarian { get; } = new Role(2, "Librarian");
 
-        [Required]
-        [MaxLength(254)]
-        public string RoleName { get; set; }
+        public string Name { get; private set; }
+        public int Value { get; private set; }
 
-        [Required]
-        public DateTime CreatedAt { get; set; }
+        private Role(int val, string name)
+        {
+            Value = val;
+            Name = name;
+        }
 
-        [Required]
-        public DateTime UpdatedAt { get; set; }
+        private static List<Role> ListRoles()
+        {
+            return typeof(Role).GetProperties(BindingFlags.Public | BindingFlags.Static)
+                .Where(p => p.PropertyType == typeof(Role))
+                .Select(pi => (Role)pi.GetValue(null, null))
+                .OrderBy(p => p.Name)
+                .ToList();
+        }
+
+        public static Role FromString(string statusString)
+        {
+            return ListRoles().Single(r => String.Equals(r.Name, statusString, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static Role FromValue(int value)
+        {
+            return ListRoles().Single(r => r.Value == value);
+        }
     }
 }

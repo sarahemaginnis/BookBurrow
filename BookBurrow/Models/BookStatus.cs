@@ -9,12 +9,6 @@ namespace BookBurrow.Models
 {
     public class BookStatus
     {
-        //public int Id { get; set; }
-
-        //[Required]
-        //[MaxLength(255)]
-        //public string Status { get; set; }
-
         public static BookStatus TBR { get; } = new BookStatus(0, "To be read");
         public static BookStatus CurrentlyReading { get; } = new BookStatus(1, "Currently reading");
         public static BookStatus Read { get; } = new BookStatus(2, "Read");
