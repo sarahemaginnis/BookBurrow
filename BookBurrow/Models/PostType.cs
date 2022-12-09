@@ -4,6 +4,7 @@ using System.ComponentModel;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using Newtonsoft.Json;
 
 namespace BookBurrow.Models
 {
@@ -23,6 +24,13 @@ namespace BookBurrow.Models
         private PostType(int val, string name)
         {
             Value = val;
+            Name = name;
+        }
+
+        [JsonConstructor]
+        public PostType(string name, int value)
+        {
+            Value = value;
             Name = name;
         }
 
