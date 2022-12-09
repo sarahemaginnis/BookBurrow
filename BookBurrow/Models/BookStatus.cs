@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Reflection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace BookBurrow.Models
 {
@@ -20,6 +21,13 @@ namespace BookBurrow.Models
         private BookStatus(int val, string name)
         {
             Value = val;
+            Name = name;
+        }
+
+        [JsonConstructor]
+        public BookStatus(string name, int value)
+        {
+            Value = value;
             Name = name;
         }
 

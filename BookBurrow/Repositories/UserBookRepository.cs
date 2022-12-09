@@ -67,6 +67,11 @@ namespace BookBurrow.Repositories
                                     LastName = DbUtils.GetString(reader, "lastName"),
                                     Handle = DbUtils.GetString(reader, "handle"),
                                     PronoundId = DbUtils.GetNullableInt(reader, "pronounId"),
+                                    UserPronoun = new UserPronoun()
+                                    {
+                                        Id = DbUtils.GetInt(reader, "pronounId"),
+                                        Pronouns = DbUtils.GetString(reader, "pronouns"),
+                                    },
                                     Biography = DbUtils.GetString(reader, "biography"),
                                     BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
                                     Birthday = DbUtils.GetDateTime(reader, "birthday"),
@@ -106,7 +111,7 @@ namespace BookBurrow.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    SELECT ub.bookId,
+                    SELECT ub.id, ub.bookId,
                             b.title, b.isbn, b.description, b.coverImageUrl, b.datePublished, b.createdAt AS bookRecordCreatedAt, 
                             b.updatedAt AS bookRecordUpdatedAt,
                             ub.startDate, ub.endDate,
@@ -121,7 +126,7 @@ namespace BookBurrow.Repositories
                                 JOIN dbo.UserProfile up ON ub.userId = up.userId
                                 JOIN dbo.Rating r ON ub.ratingId = r.id
                                 JOIN dbo.UserPronoun p ON up.pronounId = p.id
-                    WHERE Id = @id
+                    WHERE ub.Id = @id
                     ";
 
                     DbUtils.AddParameter(cmd, "@id", id);
@@ -156,6 +161,11 @@ namespace BookBurrow.Repositories
                                     LastName = DbUtils.GetString(reader, "lastName"),
                                     Handle = DbUtils.GetString(reader, "handle"),
                                     PronoundId = DbUtils.GetNullableInt(reader, "pronounId"),
+                                    UserPronoun = new UserPronoun()
+                                    {
+                                        Id = DbUtils.GetInt(reader, "pronounId"),
+                                        Pronouns = DbUtils.GetString(reader, "pronouns"),
+                                    },
                                     Biography = DbUtils.GetString(reader, "biography"),
                                     BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
                                     Birthday = DbUtils.GetDateTime(reader, "birthday"),
@@ -206,7 +216,7 @@ namespace BookBurrow.Repositories
                     DbUtils.AddParameter(cmd, "@endDate", userBook.EndDate);
                     DbUtils.AddParameter(cmd, "@ratingId", userBook.RatingId);
                     DbUtils.AddParameter(cmd, "@statusId", userBook.BookStatus.Value);
-                    DbUtils.AddParameter(cmd, "@review", userBook.Rating);
+                    DbUtils.AddParameter(cmd, "@review", userBook.Review);
                     DbUtils.AddParameter(cmd, "@reviewCreatedAt", userBook.ReviewCreatedAt);
                     DbUtils.AddParameter(cmd, "@reviewEditedAt", userBook.ReviewEditedAt);
 
@@ -242,7 +252,7 @@ namespace BookBurrow.Repositories
                     DbUtils.AddParameter(cmd, "@endDate", userBook.EndDate);
                     DbUtils.AddParameter(cmd, "@ratingId", userBook.RatingId);
                     DbUtils.AddParameter(cmd, "@statusId", userBook.BookStatus.Value);
-                    DbUtils.AddParameter(cmd, "@review", userBook.Rating);
+                    DbUtils.AddParameter(cmd, "@review", userBook.Review);
                     DbUtils.AddParameter(cmd, "@reviewCreatedAt", userBook.ReviewCreatedAt);
                     DbUtils.AddParameter(cmd, "@reviewEditedAt", userBook.ReviewEditedAt);
                     DbUtils.AddParameter(cmd, "@id", userBook.Id);
