@@ -49,14 +49,6 @@ CREATE TABLE [UserPronoun] (
 )
 GO
 
-CREATE TABLE [Role] (
-  [id] int PRIMARY KEY IDENTITY(1, 1),
-  [roleName] varchar(254),
-  [createdAt] datetime,
-  [updatedAt] datetime
-)
-GO
-
 CREATE TABLE [UserRole] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [userId] int,
@@ -65,7 +57,6 @@ CREATE TABLE [UserRole] (
   [updatedAt] datetime
 
   CONSTRAINT FK_UserRole_User FOREIGN KEY (userId) REFERENCES [User](id),
-  CONSTRAINT FK_UserRole_Role FOREIGN KEY (roleId) REFERENCES [Role](id)
 )
 GO
 
@@ -75,8 +66,6 @@ CREATE TABLE [Permission] (
   [roleId] int,
   [createdAt] datetime,
   [updatedAt] datetime
-
-  CONSTRAINT FK_Permission_Role FOREIGN KEY (roleId) REFERENCES [Role](id)
 )
 GO
 
@@ -148,12 +137,6 @@ CREATE TABLE [Rating] (
 )
 GO
 
-CREATE TABLE [BookStatus] (
-  [id] int PRIMARY KEY IDENTITY(1, 1),
-  [bookStatus] nvarchar(255)
-)
-GO
-
 CREATE TABLE [UserBook] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [bookId] int,
@@ -169,7 +152,6 @@ CREATE TABLE [UserBook] (
   CONSTRAINT FK_UserBook_Book FOREIGN KEY (bookId) REFERENCES Book(id),
   CONSTRAINT FK_UserBook_User FOREIGN KEY (userId) REFERENCES [User](id),
   CONSTRAINT FK_UserBook_Rating FOREIGN KEY (ratingId) REFERENCES Rating(id),
-  CONSTRAINT FK_UserBook_Status FOREIGN KEY (statusId) REFERENCES BookStatus(id)
 )
 GO
 
@@ -192,12 +174,6 @@ CREATE TABLE [BookShelf] (
 )
 GO
 
-CREATE TABLE [PostType] (
-  [id] int PRIMARY KEY IDENTITY(1, 1),
-  [postTypeName] nvarchar(255)
-)
-GO
-
 CREATE TABLE [UserPost] (
   [id] int PRIMARY KEY IDENTITY(1, 1),
   [userId] int,
@@ -213,7 +189,6 @@ CREATE TABLE [UserPost] (
   [updatedAt] datetime
 
   CONSTRAINT FK_UserPost_User FOREIGN KEY (userId) REFERENCES [User](id),
-  CONSTRAINT FK_UserPost_PostType FOREIGN KEY (postTypeId) REFERENCES PostType(id),
   CONSTRAINT FK_UserPost_Book FOREIGN KEY (bookId) REFERENCES Book(id)
 )
 GO
@@ -338,16 +313,6 @@ VALUES
 	(3, 'they/them')
 SET IDENTITY_INSERT [UserPronoun] OFF
 
---table data for Role
-SET IDENTITY_INSERT [Role] ON
-INSERT INTO [Role]
-	([id], [roleName], [createdAt], [updatedAt])
-VALUES
-	(1, 'user', '2022-11-25 11:45:00', '2022-11-25 11:45:00'),
-	(2, 'author', '2022-11-25 11:45:00', '2022-11-25 11:45:00'),
-	(3, 'librarian', '2022-11-25 11:45:00', '2022-11-25 11:45:00')
-SET IDENTITY_INSERT [Role] OFF
-
 --table data for Rating
 SET IDENTITY_INSERT [Rating] ON
 INSERT INTO [Rating]
@@ -364,31 +329,6 @@ VALUES
 	(9, 4.5),
 	(10, 5.0)
 SET IDENTITY_INSERT [Rating] OFF
-
---table data for BookStatus
-SET IDENTITY_INSERT [BookStatus] ON
-INSERT INTO [BookStatus]
-	([id], [bookStatus])
-VALUES
-	(1, 'To be read'),
-	(2, 'Currently reading'),
-	(3, 'Read'),
-	(4, 'Did not finish')
-SET IDENTITY_INSERT [BookStatus] OFF
-
---table data for PostType
-SET IDENTITY_INSERT [PostType] ON
-INSERT INTO [PostType]
-	([id], [postTypeName])
-VALUES
-	(1, 'Text'),
-	(2, 'Photo'),
-	(3, 'Quote'),
-	(4, 'Link'),
-	(5, 'Chat'),
-	(6, 'Audio'),
-	(7, 'Video')
-SET IDENTITY_INSERT [PostType] OFF
 
 --table data for Book
 SET IDENTITY_INSERT [Book] ON
