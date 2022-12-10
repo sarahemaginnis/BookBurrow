@@ -13,8 +13,12 @@ namespace BookBurrow.Models
         [Required]
         public int UserId { get; set; }
 
+        public UserProfile UserProfile { get; set; }
+
         [Required]
         public int PostId { get; set; }
+
+        public UserPost UserPost { get; set; }
 
         [Required]
         [MaxLength(255)]
