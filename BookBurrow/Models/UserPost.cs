@@ -13,9 +13,13 @@ namespace BookBurrow.Models
         [Required]
         public int UserId { get; set; }
 
+        public UserProfile UserProfile { get; set; }
+
         [Required]
-        public int PostTypeId { get; set; }
+        public PostType PostType { get; set; }
+
         public int? BookId { get; set; }
+        public Book Book { get; set; }
 
         [MaxLength(255)]
         public string? Title { get; set; }
