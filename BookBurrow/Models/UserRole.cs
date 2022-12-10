@@ -13,8 +13,10 @@ namespace BookBurrow.Models
         [Required]
         public int UserId { get; set; }
 
+        public UserProfile UserProfile { get; set; }
+
         [Required]
-        public int RoleId { get; set; }
+        public Role Role { get; set; }
 
         [Required]
         public DateTime CreatedAt { get; set; }
