@@ -17,9 +17,10 @@ builder.Services.AddTransient<ISeriesRepository, SeriesRepository>();
 builder.Services.AddTransient<ISeriesBookRepository, SeriesBookRepository>();
 builder.Services.AddTransient<IUserBookRepository, UserBookRepository>();
 builder.Services.AddTransient<IUserFollowerRepository, UserFollowerRepository>();
-builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddTransient<IUserPronounRepository, UserPronounRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IUserRoleRepository, UserRoleRepository>();
 
 var app = builder.Build();
 
