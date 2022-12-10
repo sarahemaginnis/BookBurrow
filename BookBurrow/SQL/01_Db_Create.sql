@@ -33,7 +33,7 @@ CREATE TABLE [UserProfile] (
   [lastName] varchar(40) NULL,
   [handle] varchar(40),
   [pronounId] int NULL,
-  [biography] nvarchar(255) NULL,
+  [biography] nvarchar(max) NULL,
   [biographyUrl] varchar(254) NULL,
   [birthday] datetime,
   [createdAt] datetime,
