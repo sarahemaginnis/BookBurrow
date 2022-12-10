@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IAuthorRepository, AuthorRepository>();
 builder.Services.AddTransient<IBookRepository, BookRepository>();
 builder.Services.AddTransient<IBookAuthorRepository, BookAuthorRepository>();
+builder.Services.AddTransient<ILoginViewModelRepository, LoginViewModelRepository>();
 builder.Services.AddTransient<IPostCommentRepository, PostCommentRepository>();
 builder.Services.AddTransient<IPostFavoriteRepository, PostFavoriteRepository>();
 builder.Services.AddTransient<IPostLikeRepository, PostLikeRepository>();
