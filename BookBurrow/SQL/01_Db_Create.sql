@@ -213,7 +213,7 @@ CREATE TABLE [PostLike] (
   [createdAt] datetime
 
   CONSTRAINT FK_PostLike_User FOREIGN KEY (userId) REFERENCES [User](id),
-  CONSTRAINT FK_PostLike_UsesrPost FOREIGN KEY (postId) REFERENCES UserPost(id)
+  CONSTRAINT FK_PostLike_UserPost FOREIGN KEY (postId) REFERENCES UserPost(id)
 )
 GO
 
