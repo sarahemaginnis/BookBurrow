@@ -11,5 +11,7 @@ namespace BookBurrow.ViewModels
     {
         public User User { get; set; }
         public UserProfile UserProfile { get; set; }
+        public List<UserProfile> UserProfilesList { get; set; }
+        public UserRole UserRole { get; set; }
     }
 }
