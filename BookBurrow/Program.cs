@@ -17,6 +17,7 @@ builder.Services.AddTransient<IPostCommentRepository, PostCommentRepository>();
 builder.Services.AddTransient<IPostFavoriteRepository, PostFavoriteRepository>();
 builder.Services.AddTransient<IPostLikeRepository, PostLikeRepository>();
 builder.Services.AddTransient<IRatingRepository, RatingRepository>();
+builder.Services.AddTransient<IRegisterViewModelRepository, RegisterViewModelRepository>();
 builder.Services.AddTransient<ISeriesRepository, SeriesRepository>();
 builder.Services.AddTransient<ISeriesBookRepository, SeriesBookRepository>();
 builder.Services.AddTransient<IUserBookRepository, UserBookRepository>();
