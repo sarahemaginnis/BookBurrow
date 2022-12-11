@@ -24,6 +24,7 @@ builder.Services.AddTransient<IUserBookRepository, UserBookRepository>();
 builder.Services.AddTransient<IUserFollowerRepository, UserFollowerRepository>();
 builder.Services.AddTransient<IUserPostRepository, UserPostRepository>();
 builder.Services.AddTransient<IUserProfileRepository, UserProfileRepository>();
+builder.Services.AddTransient<IUserProfileViewModelRepository, UserProfileViewModelRepository>();
 builder.Services.AddTransient<IUserPronounRepository, UserPronounRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IUserRoleRepository, UserRoleRepository>();
