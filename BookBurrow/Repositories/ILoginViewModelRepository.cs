@@ -1,10 +1,12 @@
 ﻿using BookBurrow.Models;
+using BookBurrow.ViewModels;
 
 namespace BookBurrow.Repositories
 {
     public interface ILoginViewModelRepository
     {
-        public void Add(User user);
-        public void Add(UserProfile userProfile);
+        public List<LoginViewModel> GetAll();
+        public void AddUser(LoginViewModel loginViewModel);
+        public void AddUserProfile(LoginViewModel loginViewModel);
     }
 }

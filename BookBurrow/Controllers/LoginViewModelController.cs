@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using BookBurrow.Repositories;
 using BookBurrow.Models;
+using BookBurrow.ViewModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BookBurrow.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class LoginViewModelController : ControllerBase
     {
@@ -17,46 +18,30 @@ namespace BookBurrow.Controllers
             _loginViewModelRepository = loginViewModelRepository;
         }
 
-        // GET: api/<LoginViewModelController>
+        // GET: api/<PostCommentController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        [ActionName("GetUsersAndUserProfiles")]
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<LoginViewModelController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
+            return Ok(_loginViewModelRepository.GetAll());
         }
 
         // POST api/<LoginViewModelController>
-        [HttpPost("AddUser")]
-        public IActionResult Post(User user)
+        [HttpPost]
+        [ActionName("AddUser")]
+        public IActionResult PostNewUser(LoginViewModel loginViewModel)
         {
-            _loginViewModelRepository.Add(user);
-            return CreatedAtAction("Get", new {id = user.Id}, user);
+            _loginViewModelRepository.AddUser(loginViewModel);
+            return CreatedAtAction("GetUsersAndUserProfiles", new {id = loginViewModel.User.Id}, loginViewModel.User);
         }
 
         // POST api/<LoginViewModelController>
-        [HttpPost("AddUserProfile")]
-        public IActionResult Post(UserProfile userProfile)
+        [HttpPost]
+        [ActionName("AddUserProfile")]
+        public IActionResult PostNewUserProfile(LoginViewModel loginViewModel)
         {
-            _loginViewModelRepository.Add(userProfile);
-            return CreatedAtAction("Get", new { id = userProfile.Id }, userProfile);
-        }
-
-        // PUT api/<LoginViewModelController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<LoginViewModelController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            _loginViewModelRepository.AddUserProfile(loginViewModel);
+            return CreatedAtAction("GetUsersAndUserProfiles", new { id = loginViewModel.UserProfile.Id }, loginViewModel.UserProfile);
         }
     }
 }
