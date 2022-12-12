@@ -1,13 +1,16 @@
 ﻿using BookBurrow.Models;
 using BookBurrow.Utils;
+using BookBurrow.ViewModels;
+using CloudinaryDotNet.Actions;
 using Microsoft.Data.SqlClient;
+using Role = BookBurrow.Models.Role;
 
 namespace BookBurrow.Repositories
 {
     public class RegisterViewModelRepository : BaseRepository, IRegisterViewModelRepository
     {
         public RegisterViewModelRepository(IConfiguration configuration) : base(configuration) { }
-        public User GetUserById(int id)
+        public RegisterViewModel GetUserById(int id)
         {
             using (var conn = Connection)
             {
@@ -22,25 +25,28 @@ namespace BookBurrow.Repositories
                     DbUtils.AddParameter(cmd, "@id", id);
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        User user = null;
+                        RegisterViewModel registerViewModel = null;
                         if (reader.Read())
                         {
-                            user = new User()
+                            registerViewModel = new RegisterViewModel()
                             {
-                                Id = id,
-                                FirebaseUID = DbUtils.GetString(reader, "firebaseUID"),
-                                Email = DbUtils.GetString(reader, "email"),
-                                CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
-                                UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
+                                User = new User()
+                                {
+                                    Id = id,
+                                    FirebaseUID = DbUtils.GetString(reader, "firebaseUID"),
+                                    Email = DbUtils.GetString(reader, "email"),
+                                    CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
+                                    UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
+                                }
                             };
                         }
-                        return user;
+                        return registerViewModel;
                     }
                 }
             }
         }
 
-        public List<UserProfile> GetAllUserProfiles()
+        public List<RegisterViewModel> GetAllUserProfiles()
         {
             using (var conn = Connection)
             {
@@ -57,28 +63,31 @@ namespace BookBurrow.Repositories
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        var userProfiles = new List<UserProfile>();
+                        var userProfiles = new List<RegisterViewModel>();
                         while (reader.Read())
                         {
-                            userProfiles.Add(new UserProfile()
+                            userProfiles.Add(new RegisterViewModel()
                             {
-                                Id = DbUtils.GetInt(reader, "id"),
-                                UserId = DbUtils.GetInt(reader, "userId"),
-                                ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
-                                FirstName = DbUtils.GetString(reader, "firstName"),
-                                LastName = DbUtils.GetString(reader, "lastName"),
-                                Handle = DbUtils.GetString(reader, "handle"),
-                                PronoundId = DbUtils.GetNullableInt(reader, "pronounId"),
-                                UserPronoun = new UserPronoun()
+                                UserProfile = new UserProfile()
                                 {
-                                    Id = DbUtils.GetInt(reader, "pronounId"),
-                                    Pronouns = DbUtils.GetString(reader, "pronouns"),
-                                },
-                                Biography = DbUtils.GetString(reader, "biography"),
-                                BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
-                                Birthday = DbUtils.GetDateTime(reader, "birthday"),
-                                CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
-                                UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
+                                    Id = DbUtils.GetInt(reader, "id"),
+                                    UserId = DbUtils.GetInt(reader, "userId"),
+                                    ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
+                                    FirstName = DbUtils.GetString(reader, "firstName"),
+                                    LastName = DbUtils.GetString(reader, "lastName"),
+                                    Handle = DbUtils.GetString(reader, "handle"),
+                                    PronoundId = DbUtils.GetNullableInt(reader, "pronounId"),
+                                    UserPronoun = new UserPronoun()
+                                    {
+                                        Id = DbUtils.GetInt(reader, "pronounId"),
+                                        Pronouns = DbUtils.GetString(reader, "pronouns"),
+                                    },
+                                    Biography = DbUtils.GetString(reader, "biography"),
+                                    BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
+                                    Birthday = DbUtils.GetDateTime(reader, "birthday"),
+                                    CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
+                                    UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
+                                }
                             });
                         }
 
@@ -88,7 +97,7 @@ namespace BookBurrow.Repositories
             }
         }
 
-        public UserProfile GetUserProfileById(int id)
+        public RegisterViewModel GetUserProfileById(int id)
         {
             using (var conn = Connection)
             {
@@ -106,65 +115,14 @@ namespace BookBurrow.Repositories
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        UserProfile userProfile = null;
+                        RegisterViewModel registerViewModel = null;
                         if (reader.Read())
                         {
-                            userProfile = new UserProfile()
+                            registerViewModel = new RegisterViewModel()
                             {
-                                Id = id,
-                                UserId = DbUtils.GetInt(reader, "userId"),
-                                ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
-                                FirstName = DbUtils.GetString(reader, "firstName"),
-                                LastName = DbUtils.GetString(reader, "lastName"),
-                                Handle = DbUtils.GetString(reader, "handle"),
-                                PronoundId = DbUtils.GetNullableInt(reader, "pronounId"),
-                                UserPronoun = new UserPronoun()
-                                {
-                                    Id = DbUtils.GetInt(reader, "pronounId"),
-                                    Pronouns = DbUtils.GetString(reader, "pronouns"),
-                                },
-                                Biography = DbUtils.GetString(reader, "biography"),
-                                BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
-                                Birthday = DbUtils.GetDateTime(reader, "birthday"),
-                                CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
-                                UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
-                            };
-                        }
-                        return userProfile;
-                    }
-                }
-            }
-        }
-        public UserRole GetUserRoleById(int id)
-        {
-            using (var conn = Connection)
-            {
-                conn.Open();
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"
-                        SELECT ur.id, ur.userId, ur.roleId, ur.createdAt, ur.updatedAt,
-                            up.id AS userProfileId, up.profileImageUrl, up.firstName, up.lastName, up.handle, up.pronounId, p.pronouns, 
-                            up.biography, up.biographyUrl, up.birthday, up.createdAt AS userProfileCreatedAt, up.updatedAt AS userProfileUpdatedAt
-                            FROM dbo.UserRole ur
-                                JOIN dbo.UserProfile up ON ur.userId = up.userId
-                                JOIN dbo.UserPronoun p ON up.pronounId = p.id
-                            WHERE ur.Id = @id
-                    ";
-                    DbUtils.AddParameter(cmd, "@id", id);
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        UserRole userRole = null;
-                        if (reader.Read())
-                        {
-                            userRole = new UserRole()
-                            {
-                                Id = DbUtils.GetInt(reader, "id"),
-                                UserId = DbUtils.GetInt(reader, "userId"),
                                 UserProfile = new UserProfile()
                                 {
-                                    Id = DbUtils.GetInt(reader, "userProfileId"),
+                                    Id = id,
                                     UserId = DbUtils.GetInt(reader, "userId"),
                                     ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
                                     FirstName = DbUtils.GetString(reader, "firstName"),
@@ -179,20 +137,77 @@ namespace BookBurrow.Repositories
                                     Biography = DbUtils.GetString(reader, "biography"),
                                     BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
                                     Birthday = DbUtils.GetDateTime(reader, "birthday"),
-                                    CreatedAt = DbUtils.GetDateTime(reader, "userProfileCreatedAt"),
-                                    UpdatedAt = DbUtils.GetDateTime(reader, "userProfileUpdatedAt"),
-                                },
-                                Role = Role.FromValue(DbUtils.GetInt(reader, "roleId")),
-                                CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
-                                UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
+                                    CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
+                                    UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
+                                }
                             };
                         }
-                        return userRole;
+                        return registerViewModel;
                     }
                 }
             }
         }
-        public void UpdateUserProfile(UserProfile userProfile)
+        public RegisterViewModel GetUserRoleById(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT ur.id, ur.userId, ur.roleId, ur.createdAt, ur.updatedAt,
+                            up.id AS userProfileId, up.profileImageUrl, up.firstName, up.lastName, up.handle, up.pronounId, p.pronouns, 
+                            up.biography, up.biographyUrl, up.birthday, up.createdAt AS userProfileCreatedAt, up.updatedAt AS userProfileUpdatedAt
+                            FROM dbo.UserRole ur
+                                JOIN dbo.UserProfile up ON ur.userId = up.userId
+                                JOIN dbo.UserPronoun p ON up.pronounId = p.id
+                            WHERE ur.userId = @id
+                    ";
+                    DbUtils.AddParameter(cmd, "@id", id);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        RegisterViewModel registerViewModel = null;
+                        if (reader.Read())
+                        {
+                            registerViewModel = new RegisterViewModel()
+                            {
+                                UserRole = new UserRole()
+                                {
+                                    Id = DbUtils.GetInt(reader, "id"),
+                                    UserId = DbUtils.GetInt(reader, "userId"),
+                                    UserProfile = new UserProfile()
+                                    {
+                                        Id = DbUtils.GetInt(reader, "userProfileId"),
+                                        UserId = DbUtils.GetInt(reader, "userId"),
+                                        ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
+                                        FirstName = DbUtils.GetString(reader, "firstName"),
+                                        LastName = DbUtils.GetString(reader, "lastName"),
+                                        Handle = DbUtils.GetString(reader, "handle"),
+                                        PronoundId = DbUtils.GetNullableInt(reader, "pronounId"),
+                                        UserPronoun = new UserPronoun()
+                                        {
+                                            Id = DbUtils.GetInt(reader, "pronounId"),
+                                            Pronouns = DbUtils.GetString(reader, "pronouns"),
+                                        },
+                                        Biography = DbUtils.GetString(reader, "biography"),
+                                        BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
+                                        Birthday = DbUtils.GetDateTime(reader, "birthday"),
+                                        CreatedAt = DbUtils.GetDateTime(reader, "userProfileCreatedAt"),
+                                        UpdatedAt = DbUtils.GetDateTime(reader, "userProfileUpdatedAt"),
+                                    },
+                                    Role = Role.FromValue(DbUtils.GetInt(reader, "roleId")),
+                                    CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
+                                    UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
+                                }
+                            };
+                        }
+                        return registerViewModel;
+                    }
+                }
+            }
+        }
+        public void UpdateUserProfile(RegisterViewModel registerViewModel)
         {
             using (var conn = Connection)
             {
@@ -214,24 +229,24 @@ namespace BookBurrow.Repositories
                                 updatedAt = @updatedAt
                         WHERE Id = @id
                     ";
-                    DbUtils.AddParameter(cmd, "@userId", userProfile.UserId);
-                    DbUtils.AddParameter(cmd, "@profileImageUrl", userProfile.ProfileImageUrl);
-                    DbUtils.AddParameter(cmd, "@firstName", userProfile.FirstName);
-                    DbUtils.AddParameter(cmd, "@lastName", userProfile.LastName);
-                    DbUtils.AddParameter(cmd, "@handle", userProfile.Handle);
-                    DbUtils.AddParameter(cmd, "@pronounId", userProfile.PronoundId);
-                    DbUtils.AddParameter(cmd, "@biography", userProfile.Biography);
-                    DbUtils.AddParameter(cmd, "@biographyUrl", userProfile.BiographyUrl);
-                    DbUtils.AddParameter(cmd, "@birthday", userProfile.Birthday);
-                    DbUtils.AddParameter(cmd, "@createdAt", userProfile.CreatedAt);
-                    DbUtils.AddParameter(cmd, "@updatedAt", userProfile.UpdatedAt);
-                    DbUtils.AddParameter(cmd, "@id", userProfile.Id);
+                    DbUtils.AddParameter(cmd, "@userId", registerViewModel.UserProfile.UserId);
+                    DbUtils.AddParameter(cmd, "@profileImageUrl", registerViewModel.UserProfile.ProfileImageUrl);
+                    DbUtils.AddParameter(cmd, "@firstName", registerViewModel.UserProfile.FirstName);
+                    DbUtils.AddParameter(cmd, "@lastName", registerViewModel.UserProfile.LastName);
+                    DbUtils.AddParameter(cmd, "@handle", registerViewModel.UserProfile.Handle);
+                    DbUtils.AddParameter(cmd, "@pronounId", registerViewModel.UserProfile.PronoundId);
+                    DbUtils.AddParameter(cmd, "@biography", registerViewModel.UserProfile.Biography);
+                    DbUtils.AddParameter(cmd, "@biographyUrl", registerViewModel.UserProfile.BiographyUrl);
+                    DbUtils.AddParameter(cmd, "@birthday", registerViewModel.UserProfile.Birthday);
+                    DbUtils.AddParameter(cmd, "@createdAt", registerViewModel.UserProfile.CreatedAt);
+                    DbUtils.AddParameter(cmd, "@updatedAt", registerViewModel.UserProfile.UpdatedAt);
+                    DbUtils.AddParameter(cmd, "@id", registerViewModel.UserProfile.Id);
 
                     cmd.ExecuteNonQuery();
                 }
             }
         }
-        public void AddUserRole(UserRole userRole)
+        public void AddUserRole(RegisterViewModel registerViewModel)
         {
             using (var conn = Connection)
             {
@@ -244,12 +259,12 @@ namespace BookBurrow.Repositories
                         VALUES (@userId, @roleId, @createdAt, @updatedAt)
                     ";
 
-                    DbUtils.AddParameter(cmd, "@userId", userRole.UserId);
-                    DbUtils.AddParameter(cmd, "@roleId", userRole.Role.Value);
-                    DbUtils.AddParameter(cmd, "@createdAt", userRole.CreatedAt);
-                    DbUtils.AddParameter(cmd, "@updatedAt", userRole.UpdatedAt);
+                    DbUtils.AddParameter(cmd, "@userId", registerViewModel.UserRole.UserId);
+                    DbUtils.AddParameter(cmd, "@roleId", registerViewModel.UserRole.Role.Value);
+                    DbUtils.AddParameter(cmd, "@createdAt", registerViewModel.UserRole.CreatedAt);
+                    DbUtils.AddParameter(cmd, "@updatedAt", registerViewModel.UserRole.UpdatedAt);
 
-                    userRole.Id = (int)cmd.ExecuteScalar();
+                    registerViewModel.UserRole.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }

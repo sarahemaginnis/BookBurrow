@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using BookBurrow.Repositories;
 using BookBurrow.Models;
+using BookBurrow.ViewModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -66,29 +67,23 @@ namespace BookBurrow.Controllers
         // POST api/<RegisterViewModelController>
         [HttpPost]
         [ActionName("AddUserRole")]
-        public IActionResult Post(UserRole userRole)
+        public IActionResult Post(RegisterViewModel registerViewModel)
         {
-            _registerViewModelRepository.AddUserRole(userRole);
-            return CreatedAtAction("UserRoleById", new { id = userRole.Id }, userRole);
+            _registerViewModelRepository.AddUserRole(registerViewModel);
+            return CreatedAtAction("UserRoleById", new { id = registerViewModel.UserRole.Id }, registerViewModel.UserRole);
         }
 
         // PUT api/<RegisterViewModelController>/5
         [HttpPut("{id}")]
         [ActionName("UpdateUserProfile")]
-        public IActionResult Put(int id, UserProfile userProfile)
+        public IActionResult Put(int id, RegisterViewModel registerViewModel)
         {
-            if (id != userProfile.Id)
+            if (id != registerViewModel.UserProfile.Id)
             {
                 return BadRequest();
             }
-            _registerViewModelRepository.UpdateUserProfile(userProfile);
+            _registerViewModelRepository.UpdateUserProfile(registerViewModel);
             return NoContent();
-        }
-
-        // DELETE api/<RegisterViewModelController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
