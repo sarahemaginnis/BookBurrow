@@ -1,9 +1,6 @@
 import React from 'react';
 import { signIntoFirebase, signOutOfFirebase } from '../utils/auth';
-            //check if they exist in my database Fetch /loginviewmodel/verifyuser
-            //inside of response, .then if response.status == 200 redirect to home
-            //if response.status == 404 is not found, redirect to registration page
-            //otherwise, redirect to homepage
+
 export default function Authenticated({ user, currentUser }) {
 
     const buttonClick = () => {

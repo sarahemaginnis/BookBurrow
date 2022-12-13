@@ -33,13 +33,13 @@ namespace BookBurrow.Controllers
 
         // GET: api/<PostCommentController>
         [HttpGet]
-        [ActionName("VerifyUser/{uid}")]
-        public IActionResult GetUser(string uid)
+        [ActionName("VerifyUser/{id}")]
+        public IActionResult GetUser([FromRoute]string id)
         {
-            var user = _userRepository.GetByFirebaseId(uid);
+            var user = _userRepository.GetByFirebaseId(id);
             if(user == null)
             {
-                return NotFound();
+                return NoContent();
             }
             return Ok(user);
         }

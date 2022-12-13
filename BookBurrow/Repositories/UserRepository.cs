@@ -119,12 +119,10 @@ namespace BookBurrow.Repositories
                     cmd.CommandText = @"
                         INSERT INTO dbo.[User] (firebaseUID, email, createdAt, updatedAt)
                         OUTPUT INSERTED.id
-                        VALUES (@firebaseUID, @email, @createdAt, @updatedAt)
+                        VALUES (@firebaseUID, @email, getDate(), getDate())
                     ";
                     DbUtils.AddParameter(cmd, "@firebaseUID", user.FirebaseUID);
                     DbUtils.AddParameter(cmd, "@email", user.Email);
-                    DbUtils.AddParameter(cmd, "@createdAt", user.CreatedAt);
-                    DbUtils.AddParameter(cmd, "@updatedAt", user.UpdatedAt);
 
                     user.Id = (int)cmd.ExecuteScalar();
                 }
