@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Loading from '../components/Loading';
 import LogIn from '../pages/LogIn/LogIn';
-import NavBar from '../components/Navbar';
+import NavBar from '../components/navbar/Navbar';
 import { useAuth } from '../utils/context/authContext';
 import AppRoutes from '../routes/AppRoutes';
 import RegisterUser from '../pages/Register/Register';
