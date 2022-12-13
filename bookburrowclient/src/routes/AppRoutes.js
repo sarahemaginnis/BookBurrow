@@ -61,7 +61,7 @@ export default function AppRoutes({ user }) {
     return fetch('https://localhost:7210/api/User', fetchOptions)
     .then(res => res.json())
     .then(() => {
-      navigate.push('/')
+      navigate('/')
     })
   }
 
