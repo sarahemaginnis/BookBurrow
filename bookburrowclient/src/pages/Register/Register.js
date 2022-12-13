@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Initialize from "../../Initialize/Initialize";
 
 export default function RegisterUser({ user, setCurrentUser }) {
     
