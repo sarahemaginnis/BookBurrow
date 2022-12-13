@@ -76,6 +76,39 @@ namespace BookBurrow.Repositories
             }
         }
 
+        public User GetByFirebaseId(string id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT id, email, createdAt, updatedAt
+                        FROM dbo.[User]
+                        WHERE firebaseUID = @firebaseUID
+                    ";
+                    DbUtils.AddParameter(cmd, "@firebaseUID", id);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        User user = null;
+                        if (reader.Read())
+                        {
+                            user = new User()
+                            {
+                                Id = DbUtils.GetInt(reader, "id"),
+                                FirebaseUID = id,
+                                Email = DbUtils.GetString(reader, "email"),
+                                CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
+                                UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
+                            };
+                        }
+                        return user;
+                    }
+                }
+            }
+        }
+
         public void Add(User user)
         {
             using (var conn = Connection)

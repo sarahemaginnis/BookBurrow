@@ -13,7 +13,7 @@ namespace BookBurrow.Repositories
     public class LoginViewModelRepository : BaseRepository, ILoginViewModelRepository
     {
         public LoginViewModelRepository(IConfiguration configuration) : base(configuration) { }
-        
+
         public List<LoginViewModel> GetAll()
         {
             using (var conn = Connection)

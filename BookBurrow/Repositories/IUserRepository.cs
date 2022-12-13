@@ -6,6 +6,7 @@ namespace BookBurrow.Repositories
     {
         List<User> GetAll();
         User GetById(int id);
+        public User GetByFirebaseId(string id);
         public void Add(User user);
         public void Update(User user);
         public void Delete(int id);
