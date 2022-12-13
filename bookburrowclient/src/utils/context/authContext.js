@@ -26,7 +26,6 @@ import React, {
       firebase.auth().onAuthStateChanged((fbUser) => {
         if (fbUser) {
           setUser(fbUser);
-          console.log(fbUser);
         } else {
           setUser(false);
         }

@@ -1,7 +1,10 @@
 import React from 'react';
 import Loading from '../components/Loading';
-import AppRoutes from '../routes/AppRoutes';
+import LogIn from '../pages/LogIn';
+import NavBar from '../components/Navbar';
+import { Routes } from 'react-router-dom';
 import { useAuth } from '../utils/context/authContext';
+import AppRoutes from '../routes/AppRoutes';
 
 function Initialize() {
   const { user, userLoading } = useAuth();
@@ -11,7 +14,7 @@ function Initialize() {
     return <Loading />;
   }
 
-  return <AppRoutes user={user} />;
+  return <>{user ? (<><NavBar user={user} /> <AppRoutes user={user} /></>): <LogIn />}</>;
 }
 
 export default Initialize;
