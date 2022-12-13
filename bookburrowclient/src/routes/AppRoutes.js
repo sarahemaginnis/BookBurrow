@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Authenticated from "../pages/Authenticated";
-import RegisterUser from "../pages/Register";
+import RegisterUser from "../pages/Register/Register";
 
 export default function AppRoutes({ user }) {
   const [currentUser, setCurrentUser] = useState({});
