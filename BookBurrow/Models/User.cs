@@ -18,10 +18,8 @@ namespace BookBurrow.Models
         [MaxLength(254)]
         public string Email { get; set; }
 
-        [Required]
-        public DateTime CreatedAt { get; set; }
 
-        [Required]
+        public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
 }
