@@ -117,7 +117,7 @@ namespace BookBurrow.Repositories
                     cmd.CommandText = @"
                         INSERT INTO dbo.UserProfile (userId, profileImageUrl, firstName, lastName, handle, pronounId, biography, biographyUrl, birthday, createdAt, updatedAt)
                         OUTPUT INSERTED.id
-                        VALUES (@userId, @profileImageUrl, @firstName, @lastName, @handle, @pronounId, @biography, @biographyUrl, @birthday, @createdAt, @updatedAt)
+                        VALUES (@userId, @profileImageUrl, @firstName, @lastName, @handle, @pronounId, @biography, @biographyUrl, @birthday, getDate(), getDate())
                     ";
                     DbUtils.AddParameter(cmd, "@userId", userProfile.UserId);
                     DbUtils.AddParameter(cmd, "@profileImageUrl", userProfile.ProfileImageUrl);
@@ -128,8 +128,6 @@ namespace BookBurrow.Repositories
                     DbUtils.AddParameter(cmd, "@biography", userProfile.Biography);
                     DbUtils.AddParameter(cmd, "@biographyUrl", userProfile.BiographyUrl);
                     DbUtils.AddParameter(cmd, "@birthday", userProfile.Birthday);
-                    DbUtils.AddParameter(cmd, "@createdAt", userProfile.CreatedAt);
-                    DbUtils.AddParameter(cmd, "@updatedAt", userProfile.UpdatedAt);
 
                     userProfile.Id = (int)cmd.ExecuteScalar();
                 }
