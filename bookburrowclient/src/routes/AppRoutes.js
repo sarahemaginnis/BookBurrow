@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Authenticated from "../pages/Authenticated";
+import BookPage from "../pages/Book/Book";
 import RegisterUser from "../pages/Register/Register";
 
 export default function AppRoutes({ user }) {
@@ -39,15 +40,9 @@ export default function AppRoutes({ user }) {
   ) : (
     <div>
       <Routes>
-        <Route
-          exact
-          path="/"
-          element={<Authenticated user={user} currentUser={currentUser} />}
-        />
-        <Route
-          path="*"
-          element={<Authenticated user={user} currentUser={currentUser} />}
-        />
+        <Route exact path="/" element={<Authenticated user={user} currentUser={currentUser} />} />
+        <Route path="/book/:bookId" element={<BookPage user={user} currentUser={currentUser} />} />
+        <Route path="*" element={<Authenticated user={user} currentUser={currentUser} />} />
       </Routes>
     </div>
   );

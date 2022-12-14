@@ -6,6 +6,7 @@ namespace BookBurrow.Repositories
     {
         public List<BookAuthor> GetAllOrderedByTitle();
         public BookAuthor GetById(int id);
+        public BookAuthor GetByBookId(int id);
         public void Add(BookAuthor bookAuthor);
         public void Update(BookAuthor bookAuthor);
         public void Delete(int id);
