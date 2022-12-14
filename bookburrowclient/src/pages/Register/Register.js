@@ -11,6 +11,7 @@ export default function RegisterUser({ user, setCurrentUser }) {
   const [userLastName, setUserLastName] = useState(user.displayName);
   const [userHandle, setUserHandle] = useState("");
   const [userPronounId, setUserPronounId] = useState(3);
+  const [userPronouns, setUserPronouns] = useState("");
   const [userBiography, setUserBiography] = useState("");
   const [userBiographyUrl, setUserBiographyUrl] = useState("");
   const [date, setDate] = useState(new Date()); //user birthday
@@ -23,16 +24,18 @@ export default function RegisterUser({ user, setCurrentUser }) {
     navigation('/dashboard')
   }
 
-  const setUserPronouns = (userPronounId) => {
-    return pronouns.find(obj => obj.id === userPronounId)
-  }
-
   //Fetch all pronouns
   useEffect(() => {
     fetch (`https://localhost:7210/api/UserPronoun`)
     .then((res) => res.json())
     .then(syncPronouns);
   }, []);
+
+  const pronounsEventListener = () => {
+    setUserPronounId();
+    const pronounName = pronouns.find(obj => obj.id === userPronounId);
+    setUserPronouns(pronounName.pronouns);
+  }
 
   const RegisterUser = () => {
     const newUser = {
@@ -64,7 +67,7 @@ export default function RegisterUser({ user, setCurrentUser }) {
       pronounId: userPronounId,
       userPronoun: {
         id: userPronounId,
-        pronouns: setUserPronouns(userPronounId),
+        pronouns: userPronouns,
       },
       biography: userBiography,
       biographyUrl: userBiographyUrl,
@@ -118,7 +121,7 @@ export default function RegisterUser({ user, setCurrentUser }) {
           </InputGroup>
           <Form.Control type="text" placeholder="handle" onChange={setUserHandle} />
         </Form.Group>
-        <PronounsDropDown label={"Preferred Pronouns"} optionList={pronouns} onChange={setUserPronounId} value={userPronounId} />
+        <PronounsDropDown label={"Preferred Pronouns"} optionList={pronouns} onChange={pronounsEventListener} value={userPronounId} />
         <Form.Group className="mb-3" controlId="formBasicBiography">
           <Form.Label>Biography</Form.Label>
           <Form.Control as="textarea" rows={3} onChange={setUserBiography} />
@@ -132,7 +135,7 @@ export default function RegisterUser({ user, setCurrentUser }) {
           <Form.Control type="date" placeholder="Date of birth" value={date} onChange={(e) => setDate(e.target.value)} />
         </Form.Group>
       </Form>
-      <Button type="submit" onClick={() => {RegisterUser(); RegisterProfile();}}>Register</Button>
+      <Button type="submit" onClick={() => {RegisterUser(); RegisterProfile()}}>Register</Button>
     </> : null
   );
 }
