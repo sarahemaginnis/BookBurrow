@@ -4,20 +4,20 @@ import logo from "../BookBurrowLogo.png";
 
 export default function RegisterModal ({ user, setCurrentUser }) {
     const [show, setShow] = useState(false);
-    const[modalState, setModalState] = useState<"modal-one" | "modal-two" | "modal-three" | "close">("close")
+    const[modalState, setModalState] = useState("1")
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const handleShowModalOne = () => {setModalState("modal-one")}
-    const handleShowModalTwo = () => {setModalState("modal-two")}
-    const handleShowModalThree = () => {setModalState("modal-three")}
+    const handleShowModalOne = () => {setModalState("1")}
+    const handleShowModalTwo = () => {setModalState("2")}
+    const handleShowModalThree = () => {setModalState("3")}
 
     console.log(show);
 
     return(
         <>
-            <Modal show={modalState === "modal-one"} fullscreen="fullscreen" onHide={handleShowModalTwo} backdrop="static" keyboard={false}>
+            <Modal show={modalState === "1"} fullscreen="fullscreen" onHide={handleShowModalTwo} backdrop="static" keyboard={false}>
                 <Modal.Header closeButton>
                     <Modal.Title>This is Modal One</Modal.Title>
                     <img src={logo} />
@@ -33,7 +33,7 @@ export default function RegisterModal ({ user, setCurrentUser }) {
                 </Modal.Footer>
             </Modal>
 
-            <Modal show={modalState === "modal-two"} fullscreen="fullscreen" onHide={handleShowModalThree} backdrop="static" keyboard={false}>
+            <Modal show={modalState === "2"} fullscreen="fullscreen" onHide={handleShowModalThree} backdrop="static" keyboard={false}>
                 <Modal.Header closeButton>
                     <Modal.Title>This is Modal Two</Modal.Title>
                     <img src={logo} />
@@ -47,7 +47,7 @@ export default function RegisterModal ({ user, setCurrentUser }) {
                 </Modal.Footer>
             </Modal>
 
-            <Modal show={modalState === "modal-three"} fullscreen="fullscreen" onHide={handleClose} backdrop="static" keyboard={false}>
+            <Modal show={modalState === "3"} fullscreen="fullscreen" onHide={handleClose} backdrop="static" keyboard={false}>
                 <Modal.Header closeButton>
                     <img src={logo} />
                     <Modal.Title>Welcome, {user.displayname}</Modal.Title>
