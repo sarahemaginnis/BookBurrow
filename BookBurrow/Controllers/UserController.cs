@@ -12,9 +12,11 @@ namespace BookBurrow.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
-        public UserController(IUserRepository userRepository)
+        private readonly IUserProfileRepository _profileRepository;
+        public UserController(IUserRepository userRepository, IUserProfileRepository profileRepository)
         {
             _userRepository = userRepository;
+            _profileRepository = profileRepository;
         }
 
         // GET: api/<UserController>
@@ -38,10 +40,12 @@ namespace BookBurrow.Controllers
 
         // POST api/<UserController>
         [HttpPost]
-        public IActionResult Post(User user)
+        public IActionResult Post(Registration registration)
         {
-            _userRepository.Add(user);
-            return CreatedAtAction("Get", new { id = user.Id }, user);
+            _userRepository.Add(registration.User);
+            registration.UserProfile.UserId = registration.User.Id;
+            _profileRepository.Add(registration.UserProfile);
+            return CreatedAtAction("Get", new { id = registration.User.Id }, registration);
         }
 
         // PUT api/<UserController>/5

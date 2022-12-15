@@ -22,7 +22,7 @@ namespace BookBurrow.Repositories
                         SELECT u.id, u.userId, u.profileImageUrl, u.firstName, u.lastName, u.handle, u.pronounId, u.biography, u.biographyUrl, u.birthday, u.createdAt, u.updatedAt,
                             up.pronouns
                         FROM dbo.UserProfile u
-                        JOIN dbo.UserPronoun up ON u.pronounId = up.id
+                        LEFT JOIN dbo.UserPronoun up ON u.pronounId = up.id
                         ORDER BY createdAt
                     ";
 
@@ -31,6 +31,7 @@ namespace BookBurrow.Repositories
                         var userProfiles = new List<UserProfile>();
                         while (reader.Read())
                         {
+                            var pronounId = DbUtils.GetNullableInt(reader, "pronounId");
                             userProfiles.Add(new UserProfile()
                             {
                                 Id = DbUtils.GetInt(reader, "id"),
@@ -39,8 +40,8 @@ namespace BookBurrow.Repositories
                                 FirstName = DbUtils.GetString(reader, "firstName"),
                                 LastName = DbUtils.GetString(reader, "lastName"),
                                 Handle = DbUtils.GetString(reader, "handle"),
-                                PronoundId = DbUtils.GetNullableInt(reader, "pronounId"),
-                                UserPronoun = new UserPronoun()
+                                PronoundId = pronounId,
+                                UserPronoun = pronounId == null ? null : new UserPronoun()
                                 {
                                     Id = DbUtils.GetInt(reader, "pronounId"),
                                     Pronouns = DbUtils.GetString(reader, "pronouns"),
