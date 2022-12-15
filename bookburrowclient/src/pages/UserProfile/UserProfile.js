@@ -6,12 +6,14 @@ import BiographyCard from "./components/Biography/BiographyCard";
 import bookshelf from "./Bookshelf.png";
 import BookshelfCard from "./components/Bookshelf/BookshelfCard";
 import CurrentlyReadingCard from "./components/CurrentlyReading/CurrentlyReadingCard";
+import BurrowPostGrid from "../../components/burrow/Burrow";
 
 export default function UserProfile ({user, currentUser}) {
-    const [userProfile, setUserProfile] = useState({}); //initial state variable for current book object
+    const [userProfile, setUserProfile] = useState({}); //initial state variable for current userProfile object
     const {userProfileId} = useParams(); //variable storing the route parameter
+    const [posts, syncPosts] = useState([]); //State variable for array of posts
 
-    //Get book detail information from API and update state when the value of bookId changes
+    //Get book detail information from API and update state when the value of userProfileId changes
     useEffect(() => {
         console.log(userProfileId);
         fetch(`https://localhost:7210/api/UserProfile/${userProfileId}`, {
@@ -27,7 +29,10 @@ export default function UserProfile ({user, currentUser}) {
         });
     }, [userProfileId]);
 
-//pass down book object and user and currentUser object into components to render properly and pass into fetch calls    
+    //TO-DO: Fetch all userPosts
+    //TO-DO: map through book posts and then pass in props to Burrow: user, post
+
+    //TO-DO: pass down userProfile object and user and currentUser object into components to render properly and pass into fetch calls    
   return ( userProfile.hasOwnProperty("id") ? 
     <>
       <Container>
@@ -47,6 +52,7 @@ export default function UserProfile ({user, currentUser}) {
         <CurrentlyReadingCard />
         <Row>
             <h1>Burrow</h1>
+            <BurrowPostGrid user={user} post={post}/>
         </Row>
       </Container>
     </> : null

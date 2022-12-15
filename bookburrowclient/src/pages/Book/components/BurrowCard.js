@@ -13,12 +13,17 @@
 //       </View>
 // </>
 // }
-import React from "react";
+import React, { useState } from "react";
 import { Button, Col, Row } from "react-bootstrap";
+import BurrowPostGrid from "../../../components/burrow/Burrow";
 import "./BurrowCard.css";
 
 
 const BurrowCard = ({book, user, currentUser}) => {
+    const [posts, syncPosts] = useState([]); //State variable for array of posts
+
+    //Fetch all bookPosts
+    //map through book posts and then pass in props to Burrow: user, post
 
     return (
         <div className="burrow-card">
@@ -35,6 +40,7 @@ const BurrowCard = ({book, user, currentUser}) => {
                         </Col>
                     </Row>
                     <p>Insert posts card</p>
+                    <BurrowPostGrid user={user} post={post} />
                 </Col>
             </Row>
         </div>
