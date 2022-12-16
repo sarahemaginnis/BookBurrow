@@ -37,12 +37,12 @@ export default function UserProfile ({user, currentUser}) {
     useEffect(() => {
         console.log(currentUser.id);
         console.log(userProfile);
-        const fetchData = async () => {
-            await fetch(`https://localhost:7210/api/UserProfileViewModel/UserPosts/${currentUser.id}`, {
+        if(userProfile.user.id){
+            fetch(`https://localhost:7210/api/UserProfileViewModel/UserPosts/${userProfile.user.id}`, {
                 method: "GET",
                 headers: {
-                  "Access-Control-Allow-Origin": "https://localhost:7210",
-                  "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "https://localhost:7210",
+                    "Content-Type": "application/json",
                 },
             })
             .then((res) => res.json())
@@ -50,8 +50,9 @@ export default function UserProfile ({user, currentUser}) {
                 syncPosts(data);
             });
         }
-        fetchData();
-    }, []);
+    }, [userProfile.user.id]);
+
+    console.log(posts); //posts is not updating
    
   return ( userProfile.hasOwnProperty("id") ? 
     <>
