@@ -71,7 +71,7 @@ namespace BookBurrow.Repositories
                         SELECT u.userId, u.profileImageUrl, u.firstName, u.lastName, u.handle, u.pronounId, u.biography, u.biographyUrl, u.birthday, u.createdAt, u.updatedAt,
                             up.pronouns
                         FROM dbo.UserProfile u
-                        JOIN dbo.UserPronoun up ON u.pronounId = up.id
+                        LEFT JOIN dbo.UserPronoun up ON u.pronounId = up.id
                         WHERE u.Id = @id
                     ";
                     DbUtils.AddParameter(cmd, "@id", id);
@@ -81,6 +81,7 @@ namespace BookBurrow.Repositories
                         UserProfile userProfile = null;
                         if (reader.Read())
                         {
+                            var pronounId = DbUtils.GetNullableInt(reader, "pronounId");
                             userProfile = new UserProfile()
                             {
                                 Id = id,
@@ -89,8 +90,8 @@ namespace BookBurrow.Repositories
                                 FirstName = DbUtils.GetString(reader, "firstName"),
                                 LastName = DbUtils.GetString(reader, "lastName"),
                                 Handle = DbUtils.GetString(reader, "handle"),
-                                PronoundId = DbUtils.GetNullableInt(reader, "pronounId"),
-                                UserPronoun = new UserPronoun()
+                                PronoundId = pronounId,
+                                UserPronoun = pronounId == null ? null : new UserPronoun()
                                 {
                                     Id = DbUtils.GetInt(reader, "pronounId"),
                                     Pronouns = DbUtils.GetString(reader, "pronouns"),
