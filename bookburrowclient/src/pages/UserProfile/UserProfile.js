@@ -10,6 +10,7 @@ import BurrowPostGrid from "../../components/burrow/Burrow";
 
 export default function UserProfile ({user, currentUser}) {
     const [userProfile, setUserProfile] = useState({}); //initial state variable for current userProfile object
+    const [profileSet, setProfile] = useState(false);
     const {userProfileId} = useParams(); //variable storing the route parameter
     const [posts, syncPosts] = useState([]); //State variable for array of posts
     
@@ -30,14 +31,15 @@ export default function UserProfile ({user, currentUser}) {
         .then((res) => res.json())
         .then((data) => {
             setUserProfile(data);
+            setProfile(true);
         });
-    }, [userProfileId]);
+    }, []);
 
     //Get all userPosts
     useEffect(() => {
         console.log(currentUser.id);
         console.log(userProfile);
-        if(userProfile.user.id){
+        if(profileSet){
             fetch(`https://localhost:7210/api/UserProfileViewModel/UserPosts/${userProfile.user.id}`, {
                 method: "GET",
                 headers: {
@@ -50,7 +52,7 @@ export default function UserProfile ({user, currentUser}) {
                 syncPosts(data);
             });
         }
-    }, [userProfile.user.id]);
+    }, [userProfile]);
 
     console.log(posts); //posts is not updating
    
