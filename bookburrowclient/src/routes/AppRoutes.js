@@ -11,6 +11,22 @@ import UserProfile from "../pages/UserProfile/UserProfile";
 export default function AppRoutes({ user }) {
   const [currentUser, setCurrentUser] = useState({});
 
+    //Verify user by firebaseUID
+  //   useEffect(() => {
+  //     console.log(currentUser);
+  //     fetch(`https://localhost:7210/api/LoginViewModel/VerifyUser/${user.uid}`, {
+  //         method: "GET",
+  //         headers: {
+  //           "Access-Control-Allow-Origin": "https://localhost:7210",
+  //           "Content-Type": "application/json",
+  //         },
+  //     })
+  //     .then((res) => (res.status === 200 ? res.json() : ""))
+  //     .then((data) => {
+  //         setCurrentUser(data);
+  //     });
+  // }, []);
+
   useEffect(() => {
     GetUser(user);
   }, []);
@@ -28,7 +44,8 @@ export default function AppRoutes({ user }) {
         setCurrentUser(r);
       });
   };
-
+  
+  console.log(user);
   console.log(currentUser);
 
   return currentUser === "" ? (

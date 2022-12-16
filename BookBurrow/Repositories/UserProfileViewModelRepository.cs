@@ -27,8 +27,8 @@ namespace BookBurrow.Repositories
                             p.pronouns,
                             up.biography, up.biographyUrl, up.birthday, up.createdAt AS userProfileCreatedAt, up.updatedAt AS userProfileUpdatedAt
                         FROM dbo.[User] u
-                            JOIN dbo.UserProfile up ON u.id = up.userId
-                            JOIN dbo.UserPronoun p ON up.pronounId = p.id
+                            LEFT JOIN dbo.UserProfile up ON u.id = up.userId
+                            LEFT JOIN dbo.UserPronoun p ON up.pronounId = p.id
                         WHERE u.Id = @id
                     ";
 
@@ -38,6 +38,7 @@ namespace BookBurrow.Repositories
                         UserProfileViewModel userProfileViewModel = null;
                         if (reader.Read())
                         {
+                            var pronounId = DbUtils.GetNullableInt(reader, "pronounId");
                             userProfileViewModel = new UserProfileViewModel()
                             {
                                 User = new User()
@@ -56,14 +57,14 @@ namespace BookBurrow.Repositories
                                     FirstName = DbUtils.GetString(reader, "firstName"),
                                     LastName = DbUtils.GetString(reader, "lastName"),
                                     Handle = DbUtils.GetString(reader, "handle"),
-                                    PronoundId = DbUtils.GetNullableInt(reader, "pronounId"),
+                                    PronoundId = pronounId,
                                     Biography = DbUtils.GetString(reader, "biography"),
                                     BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
                                     Birthday = DbUtils.GetDateTime(reader, "birthday"),
                                     CreatedAt = DbUtils.GetDateTime(reader, "userProfileCreatedAt"),
                                     UpdatedAt = DbUtils.GetDateTime(reader, "userProfileUpdatedAt"),
                                 },
-                                UserPronoun = new UserPronoun()
+                                UserPronoun = pronounId == null ? null : new UserPronoun()
                                 {
                                     Id = DbUtils.GetInt(reader, "pronounId"),
                                     Pronouns = DbUtils.GetString(reader, "pronouns"),
@@ -104,9 +105,9 @@ namespace BookBurrow.Repositories
                                     UserId = DbUtils.GetInt(reader, "userId"),
                                     PostType = PostType.FromValue(DbUtils.GetInt(reader, "postTypeId")),
                                     BookId = DbUtils.GetInt(reader, "bookId"),
-                                    Title = DbUtils.GetString(reader, "postTitle"),
+                                    Title = DbUtils.GetString(reader, "title"),
                                     CloudinaryUrl = DbUtils.GetString(reader, "cloudinaryUrl"),
-                                    Caption = DbUtils.GetString(reader, "postCaption"),
+                                    Caption = DbUtils.GetString(reader, "caption"),
                                     Source = DbUtils.GetString(reader, "source"),
                                     SongUrl = DbUtils.GetString(reader, "songUrl"),
                                     SongUrlSummary = DbUtils.GetString(reader, "songUrlSummary"),
@@ -132,7 +133,7 @@ namespace BookBurrow.Repositories
                         SELECT u.firebaseUID, u.email, u.createdAt, u.updatedAt,
                             uf.id as userFollowerId, uf.userId, uf.followerId, uf.createdAt AS followStartDate
                         FROM dbo.[User] u
-                            JOIN dbo.UserFollower uf ON u.id = uf.userId
+                            LEFT JOIN dbo.UserFollower uf ON u.id = uf.userId
                         WHERE uf.userId = @id
                     ";
 
@@ -172,7 +173,7 @@ namespace BookBurrow.Repositories
                         SELECT u.id, u.firebaseUID, u.email, u.createdAt, u.updatedAt,
                             uf.id as userFollowerId, uf.userId, uf.followerId, uf.createdAt AS followStartDate
                         FROM dbo.[User] u
-                            JOIN dbo.UserFollower uf ON u.id = uf.followerId
+                            LEFT JOIN dbo.UserFollower uf ON u.id = uf.followerId
                         WHERE uf.followerId = @id
                     ";
 
@@ -213,9 +214,9 @@ namespace BookBurrow.Repositories
                             b.title, b.isbn, b.description, b.coverImageUrl, b.datePublished, b.createdAt AS bookRecordCreated, b.updatedAt AS bookRecordUpdated,
                             a.id AS authorId, a.userId AS authorUserId, a.firstName AS authorFirstName, a.middleName AS authorMiddleName, a.lastName AS authorLastName, a.profileImageUrl
                         FROM dbo.UserBook ub
-                            JOIN dbo.Book b ON ub.bookId = b.id
-                            JOIN dbo.BookAuthor ba ON b.id = ba.bookId
-                            JOIN dbo.Author a ON ba.authorId = a.id
+                            LEFT JOIN dbo.Book b ON ub.bookId = b.id
+                            LEFT JOIN dbo.BookAuthor ba ON b.id = ba.bookId
+                            LEFT JOIN dbo.Author a ON ba.authorId = a.id
                         WHERE ub.userId = @id
                         ORDER BY startDate DESC
                     ";
@@ -315,7 +316,7 @@ namespace BookBurrow.Repositories
                             up.songUrl, up.songUrlSummary, up.createdAt, up.updatedAt,
                             pf.id AS postFavoriteId, pf.userId, pf.postId, pf.createdAt AS postFavoritedAt
                         FROM dbo.UserPost up
-                            JOIN dbo.PostFavorite pf ON up.id = pf.postId
+                            LEFT JOIN dbo.PostFavorite pf ON up.id = pf.postId
                         WHERE pf.userId = @id
                         ORDER BY postFavoritedAt DESC
                     ";
@@ -364,7 +365,7 @@ namespace BookBurrow.Repositories
                             up.songUrl, up.songUrlSummary, up.createdAt, up.updatedAt,
                             pl.id AS postLikedId, pl.userId, pl.postId, pl.createdAt AS postLikedAt
                         FROM dbo.UserPost up
-                            JOIN dbo.PostLike pl ON up.id = pl.postId
+                            LEFT JOIN dbo.PostLike pl ON up.id = pl.postId
                         WHERE pl.userId = @id
                         ORDER BY postLikedAt DESC
                     ";
