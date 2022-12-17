@@ -9,9 +9,10 @@ export default function EditUserProfile ({user, currentUser}) {
     const {userId} = useParams(); //variable storing the route parameter
     const [userProfileObject, setUserProfileObject] = useState({});
     const [pronouns, syncPronouns] = useState([]); //state variable for array of pronouns
-
-    const [date, setDate] = useState(new Date()); //updated date
     
+    console.log(userProfileObject);
+    console.log(userProfileObject.pronounId);
+
     //Fetch all pronouns
     useEffect(() => {
         fetch(`https://localhost:7210/api/UserPronoun`, {
@@ -43,11 +44,17 @@ export default function EditUserProfile ({user, currentUser}) {
         })
     }, []);
 
-    const Delete = () => {
-        fetch(`https://localhost:7210/api/UserProfile/${userId}`, {
+    //Delete userprofile first, then delete user
+    const DeleteProfileAndUser = (id) => {
+        fetch(`https://localhost:7210/api/UserProfile/${id}`, {
             method: "DELETE"
         })
-        .then({signOutOfFirebase})
+        .then(() => {
+            return fetch(`https://localhost:7210/api/User/${userProfileObject.userId}`, {
+                method: "DELETE"
+            })
+        })
+        .then(signOutOfFirebase())
     }
 
     const navigate = useNavigate();
@@ -64,17 +71,22 @@ export default function EditUserProfile ({user, currentUser}) {
         evt.preventDefault();
         //Construct a new object to replace the existing one in the API
         const updatedUserProfile = {
+            id: userProfileObject.id,
             userId: userProfileObject.userId,
             profileImageUrl: userProfileObject.profileImageUrl,
             firstName: userProfileObject.firstName,
             lastName: userProfileObject.lastName,
             handle: userProfileObject.handle,
             pronounId: userProfileObject.pronounId,
+            userPronoun: {
+                id: userProfileObject.pronounId,
+                pronouns: userProfileObject.userPronoun.pronouns,
+            },
             biography: userProfileObject.biography,
             biographyUrl: userProfileObject.biographyUrl,
             birthday: userProfileObject.birthday,
             createdAt: userProfileObject.createdAt,
-            updatedAt: date,
+            updatedAt: Date.now,
         };
         //Perform the PUT request to replace the object
         fetch(`https://localhost:7210/api/UserProfile/${userId}`, {
@@ -90,7 +102,7 @@ export default function EditUserProfile ({user, currentUser}) {
     }
 
     return (   
-    currentUser ?
+    currentUser.id === userProfileObject.userId ?
     <>
     <Container>
         <Row>
@@ -103,7 +115,7 @@ export default function EditUserProfile ({user, currentUser}) {
         </Row>
         <Row>
             <Col>
-                <h2>User First Name & Last Name</h2>
+                <h2>{userProfileObject.firstName} {userProfileObject.lastName}</h2>
             </Col>
         </Row>
         <Row>
@@ -150,18 +162,22 @@ export default function EditUserProfile ({user, currentUser}) {
                         />
                 </Form.Group>
                 <Form.Group>
-                    <Form.Select aria-label="Preferred Pronouns" value={userProfileObject.pronounId} defaultValue={userProfileObject.pronounId} onChange={
+                    <Form.Control as="select" onChange={
                         (event) => {
                             const copy = {...userProfileObject} 
-                            copy.pronounId = event.target.value 
-                            setUserProfileObject(copy)}
-                    }>
-                        {pronouns.map((e) => {return(
-                            <option key={`pronoun--${e.id}`} value={e.id}>
-                            {e.pronouns}
+                            copy.pronounId = parseInt(event.target.value) 
+                            copy.userPronoun.id = parseInt(event.target.value) 
+                            copy.userPronoun.pronouns = event.target.options[event.target.selectedIndex].innerHTML
+                            setUserProfileObject(copy)
+                            }
+                        } 
+                        value={userProfileObject.pronounId}>
+                        {pronouns.map((p) => {return(
+                            <option key={`pronoun--${p.id}`} value={p.id}>
+                            {p.pronouns}
                             </option>
                         )})}
-                    </Form.Select>
+                        </Form.Control>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicBiography">
                     <Form.Label>Biography</Form.Label>
@@ -181,10 +197,6 @@ export default function EditUserProfile ({user, currentUser}) {
                             setUserProfileObject(copy)}
                         } />
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="formUpdatedDate">
-                    <Form.Label>Today's Date</Form.Label>
-                    <Form.Control type="date" placeholder="Today's Date" value={date} onChange={(e) => setDate(e.target.value)} />
-                    </Form.Group>
                 </Form>
             </Col>
         </Row>
@@ -200,7 +212,7 @@ export default function EditUserProfile ({user, currentUser}) {
         </Row>
         <Row>
             <Col>
-                <Button onClick={Delete}>Delete Account</Button>
+                <Button onClick={() => DeleteProfileAndUser(userId)}>Delete Account</Button>
             </Col>
         </Row>
     </Container>

@@ -45,7 +45,7 @@ namespace BookBurrow.Repositories
                                     FirstName = DbUtils.GetString(reader, "firstName"),
                                     LastName = DbUtils.GetString(reader, "lastName"),
                                     Handle = DbUtils.GetString(reader, "handle"),
-                                    PronoundId = DbUtils.GetNullableInt(reader, "pronounId"),
+                                    PronounId = DbUtils.GetNullableInt(reader, "pronounId"),
                                     UserPronoun = new UserPronoun()
                                     {
                                         Id = DbUtils.GetInt(reader, "pronounId"),
@@ -103,7 +103,7 @@ namespace BookBurrow.Repositories
                                     FirstName = DbUtils.GetString(reader, "firstName"),
                                     LastName = DbUtils.GetString(reader, "lastName"),
                                     Handle = DbUtils.GetString(reader, "handle"),
-                                    PronoundId = DbUtils.GetNullableInt(reader, "pronounId"),
+                                    PronounId = DbUtils.GetNullableInt(reader, "pronounId"),
                                     UserPronoun = new UserPronoun()
                                     {
                                         Id = DbUtils.GetInt(reader, "pronounId"),
