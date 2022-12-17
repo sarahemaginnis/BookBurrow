@@ -28,7 +28,7 @@ export default function RegisterUser({ user, setCurrentUser }) {
   useEffect(() => {
     fetch (`https://localhost:7210/api/UserPronoun`)
     .then((res) => res.json())
-    .then(syncPronouns);
+    .then(syncPronouns); //I think this should be .then((data) => {syncPronouns(data))}
   }, []);
 
   const pronounsEventListener = (pronounId) => {
