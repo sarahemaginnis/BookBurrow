@@ -2,58 +2,59 @@ import React, { useState, useEffect } from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import "./Biography.css";
 
-const BiographyCard = ({userProfile, user, currentUser}) => {
-    const [userPostCount, setUserPostCount] = useState({}); //initial state variable for current userPostCount object
-    const [userFollowerCount, setUserFollowerCount] = useState({}); //initial state variable for current userFollowerCount object
-    const [userFollowingCount, setUserFollowingCount] = useState({}); //initial state variable for current userFollowingCount object
+const BiographyCard = ({userProfile, user, currentUser, userPronoun}) => {
+    const [userPostCount, setUserPostCount] = useState(0); //initial state variable for current userPostCount object
+    const [userFollowerCount, setUserFollowerCount] = useState(0); //initial state variable for current userFollowerCount object
+    const [userFollowingCount, setUserFollowingCount] = useState(0); //initial state variable for current userFollowingCount object
+    //const [profileSet, setProfile] = useState(false);
 
     //Get userPostCount information from API and update state when the value of userPostCount changes
     useEffect(() => {
         console.log(user.id);
-        fetch(`https://localhost:7210/api/UserProfileViewModel/UserPostCount/${user.id}`, {
-            method: "GET",
-            headers: {
-              "Access-Control-Allow-Origin": "https://localhost:7210",
-              "Content-Type": "application/json",
-            },
-        })
-        .then((res) => res.json())
-        .then((data) => {
-            setUserPostCount(data);
-        });
-    }, [userPostCount]);
-
-        //Get userFollowercount information from API and update state when the value of userFollowerCount changes
-        useEffect(() => {
-            console.log(user.id);
-            fetch(`https://localhost:7210/api/UserProfileViewModel/UserFollowerCount/${user.id}`, {
+            fetch(`https://localhost:7210/api/UserProfileViewModel/UserPostCount/${user.id}`, {
                 method: "GET",
                 headers: {
-                  "Access-Control-Allow-Origin": "https://localhost:7210",
-                  "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "https://localhost:7210",
+                "Content-Type": "application/json",
                 },
             })
             .then((res) => res.json())
             .then((data) => {
-                setUserFollowerCount(data);
+                setUserPostCount(data);
             });
-        }, [userFollowerCount]);
-    
-            //Get userFollowingCount information from API and update state when the value of userFollowingCount changes
-            useEffect(() => {
-                console.log(user.id);
-                fetch(`https://localhost:7210/api/UserProfileViewModel/UsersFollowingCount/${user.id}`, {
+    }, [userPostCount, userProfile]);
+
+        //Get userFollowercount information from API and update state when the value of userFollowerCount changes
+        useEffect(() => {
+            console.log(user.id);
+                fetch(`https://localhost:7210/api/UserProfileViewModel/UserFollowerCount/${user.id}`, {
                     method: "GET",
                     headers: {
-                      "Access-Control-Allow-Origin": "https://localhost:7210",
-                      "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "https://localhost:7210",
+                    "Content-Type": "application/json",
                     },
                 })
                 .then((res) => res.json())
                 .then((data) => {
-                    setUserFollowingCount(data);
+                    setUserFollowerCount(data);
                 });
-            }, [userFollowingCount]);
+        }, [userFollowerCount, userProfile]);
+    
+            //Get userFollowingCount information from API and update state when the value of userFollowingCount changes
+            useEffect(() => {
+                console.log(user.id);
+                    fetch(`https://localhost:7210/api/UserProfileViewModel/UsersFollowingCount/${user.id}`, {
+                        method: "GET",
+                        headers: {
+                        "Access-Control-Allow-Origin": "https://localhost:7210",
+                        "Content-Type": "application/json",
+                        },
+                    })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        setUserFollowingCount(data);
+                    });
+            }, [userFollowingCount, userProfile]);
 
 
     // const profileButton = () => {
@@ -70,12 +71,12 @@ const BiographyCard = ({userProfile, user, currentUser}) => {
         <div className="biography-card">
             <Row>
                 <Col sm={4}>
-                    <img src={`${userProfile.profileImageUrl}`} />
+                    <img src={`${userProfile.id ? userProfile.profileImageUrl : null}`} />
                 </Col>
                 <Col sm={8}>
                     <Row>
                         <Col>
-                            <h2 className="biography-card-handle">{userProfile.handle}</h2>
+                            <h2 className="biography-card-handle">{userProfile.id ? userProfile.handle : null}</h2>
                         </Col>
                         <Col>
                             <Button className="btn-primary">Edit profile/follow/following</Button>
@@ -94,20 +95,20 @@ const BiographyCard = ({userProfile, user, currentUser}) => {
                     </Row>
                     <Row>
                         <Col>
-                            <p className="biography-card-name">{userProfile.firstName} {userProfile.lastName}</p>
+                            <p className="biography-card-name">{userProfile.id ? userProfile.firstName : null} {userProfile.id ? userProfile.lastName : null}</p>
                         </Col>
                         <Col>
-                            <p className="biography-card-pronouns">{userProfile.userPronoun.pronouns ? userProfile.userPronoun.pronouns : ""}</p>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <p className="biography-card-biography">{userProfile.biography}</p>
+                            <p className="biography-card-pronouns">{userPronoun ? userPronoun.pronouns : ""}</p>
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            <p className="biography-card-biography-url">{userProfile.biographyUrl}</p>
+                            <p className="biography-card-biography">{userProfile.id ? userProfile.biography : null}</p>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <p className="biography-card-biography-url">{userProfile.id ? userProfile.biographyUrl : null}</p>
                         </Col>
                     </Row>
                 </Col>

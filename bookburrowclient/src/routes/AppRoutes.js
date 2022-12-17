@@ -44,9 +44,6 @@ export default function AppRoutes({ user }) {
         setCurrentUser(r);
       });
   };
-  
-  console.log(user);
-  console.log(currentUser);
 
   return currentUser === "" ? (
     <div>

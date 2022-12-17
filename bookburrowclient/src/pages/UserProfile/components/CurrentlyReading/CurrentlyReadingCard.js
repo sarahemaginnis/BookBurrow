@@ -4,6 +4,7 @@ import "./CurrentlyReading.css";
 
 const CurrentlyReadingCard = ({userProfile, user, currentUser}) => {
     const [books, syncBooks] = useState([]); //State variable for array of books
+    //const [profileSet, setProfile] = useState(false);
 
     
     //Get all books currently reading
@@ -20,7 +21,7 @@ const CurrentlyReadingCard = ({userProfile, user, currentUser}) => {
         .then((data) => {
             syncBooks(data);
         });
-    }, []);
+    }, [userProfile]);
 
     return (
         <div className="currently-reading-card">
