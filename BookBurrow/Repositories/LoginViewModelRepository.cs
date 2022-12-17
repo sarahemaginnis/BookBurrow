@@ -55,7 +55,7 @@ namespace BookBurrow.Repositories
                                     FirstName = DbUtils.GetString(reader, "firstName"),
                                     LastName = DbUtils.GetString(reader, "lastName"),
                                     Handle = DbUtils.GetString(reader, "handle"),
-                                    PronoundId = DbUtils.GetNullableInt(reader, "pronounId"),
+                                    PronounId = DbUtils.GetNullableInt(reader, "pronounId"),
                                     Biography = DbUtils.GetString(reader, "biography"),
                                     BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
                                     Birthday = DbUtils.GetDateTime(reader, "birthday"),
@@ -109,7 +109,7 @@ namespace BookBurrow.Repositories
                     DbUtils.AddParameter(cmd, "@firstName", loginViewModel.UserProfile.FirstName);
                     DbUtils.AddParameter(cmd, "@lastName", loginViewModel.UserProfile.LastName);
                     DbUtils.AddParameter(cmd, "@handle", loginViewModel.UserProfile.Handle);
-                    DbUtils.AddParameter(cmd, "@pronounId", loginViewModel.UserProfile.PronoundId);
+                    DbUtils.AddParameter(cmd, "@pronounId", loginViewModel.UserProfile.PronounId);
                     DbUtils.AddParameter(cmd, "@biography", loginViewModel.UserProfile.Biography);
                     DbUtils.AddParameter(cmd, "@biographyUrl", loginViewModel.UserProfile.BiographyUrl);
                     DbUtils.AddParameter(cmd, "@birthday", loginViewModel.UserProfile.Birthday);

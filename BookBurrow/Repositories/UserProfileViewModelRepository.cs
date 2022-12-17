@@ -57,7 +57,7 @@ namespace BookBurrow.Repositories
                                     FirstName = DbUtils.GetString(reader, "firstName"),
                                     LastName = DbUtils.GetString(reader, "lastName"),
                                     Handle = DbUtils.GetString(reader, "handle"),
-                                    PronoundId = pronounId,
+                                    PronounId = pronounId,
                                     Biography = DbUtils.GetString(reader, "biography"),
                                     BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
                                     Birthday = DbUtils.GetDateTime(reader, "birthday"),

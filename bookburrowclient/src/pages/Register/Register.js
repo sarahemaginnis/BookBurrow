@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button, InputGroup } from "react-bootstrap";
 import logo from "./BookBurrowLogo.png";
 import RegisterModal from "./components/RegisterModal";
-import PronounsDropDown from "./components/PronounsDropDown";
 
 export default function RegisterUser({ user, setCurrentUser }) {
   const [userProfileImage, setUserProfileImage] = useState(user.photoURL);
@@ -21,25 +20,23 @@ export default function RegisterUser({ user, setCurrentUser }) {
   const navigation = useNavigate();
   
   const navigateToDashboard = () => {
-    navigation('/dashboard')
+    navigation('/')
   }
 
-  //Fetch all pronouns
-  useEffect(() => {
-    fetch (`https://localhost:7210/api/UserPronoun`)
-    .then((res) => res.json())
-    .then(syncPronouns); //I think this should be .then((data) => {syncPronouns(data))}
-  }, []);
-
-  const pronounsEventListener = (pronounId) => {
-    setUserPronounId(pronounId);
-    console.log(userPronounId);
-    const pronounName = pronouns.find((pronoun) => pronounId === pronoun.id);
-    console.log(pronounName);
-    setUserPronouns(pronounName.pronouns);
-    console.log(pronounName.pronouns);
-    console.log(pronounId);
-  }
+    //Fetch all pronouns
+    useEffect(() => {
+        fetch(`https://localhost:7210/api/UserPronoun`, {
+            method: "GET",
+            headers: {
+              "Access-Control-Allow-Origin": "https://localhost:7210",
+              "Content-Type": "application/json",
+            },
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            syncPronouns(data);
+        })
+    }, []);
 
   const RegisterUser = () => {
     const newRegistrationObject = {
@@ -114,7 +111,23 @@ export default function RegisterUser({ user, setCurrentUser }) {
           </InputGroup>
           <Form.Control type="text" placeholder="handle" onChange={(event) => setUserHandle(event.target.value)} />
         </Form.Group>
-        <PronounsDropDown label={"Preferred Pronouns"} optionList={pronouns} onChange={pronounsEventListener} defaultValue={userPronounId} />
+        <Form.Group className="mb-3" controlId="formBasicPronouns">
+          <Form.Control as="select" onChange={
+            (event) => {
+              setUserPronounId(parseInt(event.target.value))
+              setUserPronouns(event.target.options[event.target.selectedIndex].innerHTML)
+              }
+          }
+            value={userPronounId}>
+            {pronouns.map((e) => (
+                <option key={`pronoun--${e.id}`}
+                value={e.id}
+                >
+                    {e.pronouns}
+                </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicBiography">
           <Form.Label>Biography</Form.Label>
           <Form.Control as="textarea" rows={3} onChange={event => setUserBiography(event.target.value)} />

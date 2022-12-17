@@ -40,7 +40,7 @@ namespace BookBurrow.Repositories
                                 FirstName = DbUtils.GetString(reader, "firstName"),
                                 LastName = DbUtils.GetString(reader, "lastName"),
                                 Handle = DbUtils.GetString(reader, "handle"),
-                                PronoundId = pronounId,
+                                PronounId = pronounId,
                                 UserPronoun = pronounId == null ? null : new UserPronoun()
                                 {
                                     Id = DbUtils.GetInt(reader, "pronounId"),
@@ -90,7 +90,7 @@ namespace BookBurrow.Repositories
                                 FirstName = DbUtils.GetString(reader, "firstName"),
                                 LastName = DbUtils.GetString(reader, "lastName"),
                                 Handle = DbUtils.GetString(reader, "handle"),
-                                PronoundId = pronounId,
+                                PronounId = pronounId,
                                 UserPronoun = pronounId == null ? null : new UserPronoun()
                                 {
                                     Id = DbUtils.GetInt(reader, "pronounId"),
@@ -126,7 +126,7 @@ namespace BookBurrow.Repositories
                     DbUtils.AddParameter(cmd, "@firstName", userProfile.FirstName);
                     DbUtils.AddParameter(cmd, "@lastName", userProfile.LastName);
                     DbUtils.AddParameter(cmd, "@handle", userProfile.Handle);
-                    DbUtils.AddParameter(cmd, "@pronounId", userProfile.PronoundId);
+                    DbUtils.AddParameter(cmd, "@pronounId", userProfile.PronounId);
                     DbUtils.AddParameter(cmd, "@biography", userProfile.Biography);
                     DbUtils.AddParameter(cmd, "@biographyUrl", userProfile.BiographyUrl);
                     DbUtils.AddParameter(cmd, "@birthday", userProfile.Birthday);
@@ -163,7 +163,7 @@ namespace BookBurrow.Repositories
                     DbUtils.AddParameter(cmd, "@firstName", userProfile.FirstName);
                     DbUtils.AddParameter(cmd, "@lastName", userProfile.LastName);
                     DbUtils.AddParameter(cmd, "@handle", userProfile.Handle);
-                    DbUtils.AddParameter(cmd, "@pronounId", userProfile.PronoundId);
+                    DbUtils.AddParameter(cmd, "@pronounId", userProfile.PronounId);
                     DbUtils.AddParameter(cmd, "@biography", userProfile.Biography);
                     DbUtils.AddParameter(cmd, "@biographyUrl", userProfile.BiographyUrl);
                     DbUtils.AddParameter(cmd, "@birthday", userProfile.Birthday);
