@@ -40,7 +40,7 @@ const BurrowCard = ({book, user, currentUser}) => {
                         </Col>
                     </Row>
                     <p>Insert posts card</p>
-                    <BurrowPostGrid user={user} post={post} />
+                    {/*<BurrowPostGrid user={user} post={post} /> */}
                 </Col>
             </Row>
         </div>

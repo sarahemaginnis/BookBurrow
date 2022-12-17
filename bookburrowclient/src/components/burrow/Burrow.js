@@ -7,17 +7,17 @@ export default function  BurrowPostGrid({user, post, key}) {
     const navigate = useNavigate();
 
     const navigateToPost = () => {
-        navigate(`/post/${post.id}`)
+        navigate(`/post/${post.userPost.id}`)
     }
   
     return (
     <Row xs={1} md={3} className="g-3">
         <Col>
           <Card className="burrow-post-card" onClick={navigateToPost} style={{cursor: "pointer"}}>
-            <Card.Img variant="top" src={post.cloudinaryUrl} />
+            <Card.Img variant="top" src={post.userPost ? post.userPost.cloudinaryUrl : null} />
             <Card.Body>
-              <Card.Title>{post.title}</Card.Title>
-              <Card.Text>{post.caption}</Card.Text>
+              <Card.Title>{post.userPost ? post.userPost.title : null}</Card.Title>
+              <Card.Text>{post.userPost ? post.userPost.caption : null}</Card.Text>
             </Card.Body>
             <Card.Footer></Card.Footer>
           </Card>

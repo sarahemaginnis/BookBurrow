@@ -25,16 +25,16 @@ export default function BookPage ({user, currentUser}) {
         .then((data) => {
             setBook(data);
         });
-    }, [bookId]);
+    }, []);
 
 //pass down book object and user and currentUser object into components to render properly and pass into fetch calls    
   return ( book.hasOwnProperty("id") ? 
     <>
       <Container>
-        <BookCard book={book} />
-        <AuthorCard book={book} />
-        <ReviewCard book={book} />
-        <BurrowCard book={book} />
+        <BookCard book={book} user={user} currentUser={currentUser} />
+        <AuthorCard book={book} user={user} currentUser={currentUser} />
+        <ReviewCard book={book} user={user} currentUser={currentUser} />
+        <BurrowCard book={book} user={user} currentUser={currentUser} />
       </Container>
     </> : null
   );
