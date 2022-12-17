@@ -155,7 +155,7 @@ namespace BookBurrow.Repositories
                                 biographyUrl = @biographyUrl,
                                 birthday = @birthday,
                                 createdAt = @createdAt,
-                                updatedAt = @updatedAt
+                                updatedAt = getDate()
                         WHERE Id = @id
                     ";
                     DbUtils.AddParameter(cmd, "@userId", userProfile.UserId);
@@ -168,7 +168,6 @@ namespace BookBurrow.Repositories
                     DbUtils.AddParameter(cmd, "@biographyUrl", userProfile.BiographyUrl);
                     DbUtils.AddParameter(cmd, "@birthday", userProfile.Birthday);
                     DbUtils.AddParameter(cmd, "@createdAt", userProfile.CreatedAt);
-                    DbUtils.AddParameter(cmd, "@updatedAt", userProfile.UpdatedAt);
                     DbUtils.AddParameter(cmd, "@id", userProfile.Id);
 
                     cmd.ExecuteNonQuery();
