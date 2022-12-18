@@ -79,11 +79,6 @@ export default function Authenticated({ user, currentUser }) {
       })
     }
 
-    //set book object to get properties for post
-    const GetUserBook = (postBookTitle) => {
-      books.find((b) => b.title === postBookTitle)
-    }
-
     useEffect(() => {
         if(currentUser.hasOwnProperty("id")){GetUserProfile() ; console.log("getting User Profile")}
     }, [currentUser]);
@@ -113,16 +108,16 @@ export default function Authenticated({ user, currentUser }) {
                 name: postTypeName,
                 value: postTypeValue,
             },
-            bookId: postBookId,
+            bookId: userBookObject.id,
             book: {
-                id: postBook.id,
-                title: postBook.title,
-                isbn: postBook.isbn,
-                description: postBook.description,
-                coverImageUrl: postBook.coverImageUrl,
-                datePublished: postBook.datePublished,
-                createdAt: postBook.createdAt,
-                updatedAt: postBook.updatedAt,
+                id: userBookObject.id,
+                title: userBookObject.title,
+                isbn: userBookObject.isbn,
+                description: userBookObject.description,
+                coverImageUrl: userBookObject.coverImageUrl,
+                datePublished: userBookObject.datePublished,
+                createdAt: userBookObject.createdAt,
+                updatedAt: userBookObject.updatedAt,
             },
             title: postTitle,
             cloudinaryUrl: postCloudinaryUrl,
@@ -141,6 +136,7 @@ export default function Authenticated({ user, currentUser }) {
     }
     return fetch('https://localhost:7210/api/UserPost', fetchOptions)
     .then(res => res.json())
+    .then(handleClose)
     .then(() => {navigateToDashboard()})
     }
 
@@ -233,10 +229,13 @@ export default function Authenticated({ user, currentUser }) {
                     <Form.Label>Tag a Book?</Form.Label>
                     <Form.Control as="select" onChange={
                         (event) => {
-                          console.log(event)
-                          setPostBookTitle(event.target.options[event.target.selectedIndex].innerHTML)
-                          GetUserBook(postBookTitle)
-                          setUserBookObject(GetUserBook)
+                          const copy = {...userBookObject}
+                          copy.title = event.target.options[event.target.selectedIndex].innerHTML
+                          console.log(copy.title)
+                          console.log(books.find(b => b.title === copy.title))
+                          const selectedUserBookObject = books.find(b => b.title === copy.title)
+                          console.log(selectedUserBookObject)
+                          setUserBookObject(selectedUserBookObject)
                           console.log(userBookObject)
                         }
                     }
