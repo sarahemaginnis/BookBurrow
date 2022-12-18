@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { Button, Container, Row, Col, Form, InputGroup } from "react-bootstrap";
+import { Button, Container, Row, Col, Form, InputGroup, Modal } from "react-bootstrap";
 import UploadWidget from "../../components/UploadWidget";
 import { signOutOfFirebase } from "../../utils/auth";
 import './EditUserProfile.css';
@@ -9,6 +9,9 @@ export default function EditUserProfile ({user, currentUser}) {
     const {userId} = useParams(); //variable storing the route parameter
     const [userProfileObject, setUserProfileObject] = useState({});
     const [pronouns, syncPronouns] = useState([]); //state variable for array of pronouns
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
     
     console.log(userProfileObject);
     console.log(userProfileObject.pronounId);
@@ -30,7 +33,7 @@ export default function EditUserProfile ({user, currentUser}) {
 
     //Get userProfile information from API
     useEffect(() => {
-        fetch(`https://localhost:7210/api/UserProfile/${userId}`, {
+        fetch(`https://localhost:7210/api/UserProfile/Get/${userId}`, {
             method: "GET",
             headers: {
               "Access-Control-Allow-Origin": "https://localhost:7210",
@@ -46,7 +49,7 @@ export default function EditUserProfile ({user, currentUser}) {
 
     //Delete userprofile first, then delete user
     const DeleteProfileAndUser = (id) => {
-        fetch(`https://localhost:7210/api/UserProfile/${id}`, {
+        fetch(`https://localhost:7210/api/UserProfile/Delete/${id}`, {
             method: "DELETE"
         })
         .then(() => {
@@ -54,6 +57,7 @@ export default function EditUserProfile ({user, currentUser}) {
                 method: "DELETE"
             })
         })
+        .then(handleClose)
         .then(signOutOfFirebase())
     }
 
@@ -89,7 +93,7 @@ export default function EditUserProfile ({user, currentUser}) {
             updatedAt: Date.now,
         };
         //Perform the PUT request to replace the object
-        fetch(`https://localhost:7210/api/UserProfile/${userId}`, {
+        fetch(`https://localhost:7210/api/UserProfile/Put/${userId}`, {
             method: "PUT",
             headers: {
                 "Access-Control-Allow-Origin": "https://localhost:7210",
@@ -212,10 +216,28 @@ export default function EditUserProfile ({user, currentUser}) {
         </Row>
         <Row>
             <Col>
-                <Button onClick={() => DeleteProfileAndUser(userId)}>Delete Account</Button>
+                <Button onClick={(e) => {
+                    e.stopPropagation();
+                    setShow(true)
+                    }}
+                    className="btn-btn__primary">Delete Account</Button>
             </Col>
         </Row>
     </Container>
+    <Modal show={show} onHide={handleClose} size="lg" centered className="modal__delete">
+        <Modal.Header className="modal__header" closeButton></Modal.Header>
+        <Modal.Body className="modal__body">
+            <h4>Are you sure you want to delete your account?</h4>
+            <p>This action cannot be undone.</p>
+        </Modal.Body>
+        <Modal.Footer className="modal__footer">
+            <Button className="btn__btn-secondary" onClick={(e) => {
+                e.stopPropagation();
+                setShow(false)
+            }}>Cancel</Button>
+            <Button className="btn__btn-primary" onClick={() => DeleteProfileAndUser(userId)}>Delete</Button>
+        </Modal.Footer>
+    </Modal>
     </> : null
     )
 }

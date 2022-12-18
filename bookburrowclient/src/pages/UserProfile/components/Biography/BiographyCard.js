@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Col, Row } from "react-bootstrap";
 import "./Biography.css";
 
@@ -7,6 +8,12 @@ const BiographyCard = ({userProfile, user, currentUser, userPronoun}) => {
     const [userFollowerCount, setUserFollowerCount] = useState(0); //initial state variable for current userFollowerCount object
     const [userFollowingCount, setUserFollowingCount] = useState(0); //initial state variable for current userFollowingCount object
     //const [profileSet, setProfile] = useState(false);
+
+    const navigation = useNavigate();
+  
+    const navigateToEditProfile = () => {
+      navigation(`/user/settings/${userProfile.id}`)
+    }
 
     //Get userPostCount information from API and update state when the value of userPostCount changes
     useEffect(() => {
@@ -57,15 +64,11 @@ const BiographyCard = ({userProfile, user, currentUser, userPronoun}) => {
             }, [userFollowingCount, userProfile]);
 
 
-    // const profileButton = () => {
-    //     if (user === currentUser){
-    //         <Button className="btn-primary">Edit profile</Button>
-    //     } else if (user === following){
-    //         <Button className="btn-primary">Following</Button>
-    //     } else {
-    //         <Button className="btn-primary">Follow</Button>
-    //     }
-    // }
+    const profileButton = () => {
+        if (currentUser.id === userProfile.userId){
+            return <Button className="btn-primary" onClick={navigateToEditProfile}>Edit profile</Button>
+        } return <Button className="btn-primary">Follow/Following</Button>
+    }
     
     return (
         <div className="biography-card">
@@ -79,7 +82,7 @@ const BiographyCard = ({userProfile, user, currentUser, userPronoun}) => {
                             <h2 className="biography-card-handle">{userProfile.id ? userProfile.handle : null}</h2>
                         </Col>
                         <Col>
-                            <Button className="btn-primary">Edit profile/follow/following</Button>
+                        {profileButton()}
                         </Col>
                     </Row>
                     <Row>

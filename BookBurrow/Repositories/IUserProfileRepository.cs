@@ -6,6 +6,7 @@ namespace BookBurrow.Repositories
     {
         public List<UserProfile> GetAll();
         public UserProfile GetById(int id);
+        public UserProfile GetByUserId(int id);
         public void Add(UserProfile userProfile);
         public void Update(UserProfile userProfile);
         public void Delete(int id);

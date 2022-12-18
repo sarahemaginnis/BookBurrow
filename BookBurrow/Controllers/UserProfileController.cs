@@ -7,7 +7,7 @@ using BookBurrow.Models;
 
 namespace BookBurrow.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UserProfileController : ControllerBase
     {
@@ -29,6 +29,19 @@ namespace BookBurrow.Controllers
         public IActionResult Get(int id)
         {
             var userProfile = _userProfileRepository.GetById(id);
+            if (userProfile == null)
+            {
+                return NotFound();
+            }
+            return Ok(userProfile);
+        }
+
+        // GET api/<UserProfileController>/5
+        [HttpGet("{id}")]
+        [ActionName("UserProfileByUserId")]
+        public IActionResult GetByUserId(int id)
+        {
+            var userProfile = _userProfileRepository.GetByUserId(id);
             if (userProfile == null)
             {
                 return NotFound();
