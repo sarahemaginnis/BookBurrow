@@ -109,6 +109,55 @@ namespace BookBurrow.Repositories
             }
         }
 
+        public UserProfile GetByUserId(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT u.id, u.userId, u.profileImageUrl, u.firstName, u.lastName, u.handle, u.pronounId, u.biography, u.biographyUrl, u.birthday, u.createdAt, u.updatedAt,
+                            up.pronouns
+                        FROM dbo.UserProfile u
+                        LEFT JOIN dbo.UserPronoun up ON u.pronounId = up.id
+                        WHERE u.userId = @id
+                    ";
+                    DbUtils.AddParameter(cmd, "@id", id);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        UserProfile userProfile = null;
+                        if (reader.Read())
+                        {
+                            var pronounId = DbUtils.GetNullableInt(reader, "pronounId");
+                            userProfile = new UserProfile()
+                            {
+                                Id = DbUtils.GetInt(reader, "id"),
+                                UserId = id,
+                                ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
+                                FirstName = DbUtils.GetString(reader, "firstName"),
+                                LastName = DbUtils.GetString(reader, "lastName"),
+                                Handle = DbUtils.GetString(reader, "handle"),
+                                PronounId = pronounId,
+                                UserPronoun = pronounId == null ? null : new UserPronoun()
+                                {
+                                    Id = DbUtils.GetInt(reader, "pronounId"),
+                                    Pronouns = DbUtils.GetString(reader, "pronouns"),
+                                },
+                                Biography = DbUtils.GetString(reader, "biography"),
+                                BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
+                                Birthday = DbUtils.GetDateTime(reader, "birthday"),
+                                CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
+                                UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
+                            };
+                        }
+                        return userProfile;
+                    }
+                }
+            }
+        }
+
         public void Add(UserProfile userProfile)
         {
             using (var conn = Connection)
