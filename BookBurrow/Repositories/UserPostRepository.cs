@@ -189,7 +189,7 @@ namespace BookBurrow.Repositories
                             songUrlSummary, createdAt, updatedAt)
                         OUTPUT INSERTED.ID
                         VALUES (@userId, @postTypeId, @bookId, @title, @cloudinaryUrl, @caption, @source, @songUrl, 
-                            @songUrlSummary, @createdAt, @updatedAt)
+                            @songUrlSummary, getDate(), getDate())
                     ";
 
                     DbUtils.AddParameter(cmd, "@userId", userPost.UserId);
@@ -201,8 +201,6 @@ namespace BookBurrow.Repositories
                     DbUtils.AddParameter(cmd, "@source", userPost.Source);
                     DbUtils.AddParameter(cmd, "@songUrl", userPost.SongUrl);
                     DbUtils.AddParameter(cmd, "@songUrlSummary", userPost.SongUrlSummary);
-                    DbUtils.AddParameter(cmd, "@createdAt", userPost.CreatedAt);
-                    DbUtils.AddParameter(cmd, "@updatedAt", userPost.UpdatedAt);
 
                     userPost.Id = (int)cmd.ExecuteScalar();
                 }

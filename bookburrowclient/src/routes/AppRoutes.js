@@ -3,11 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Authenticated from "../pages/Authenticated";
 import BookPage from "../pages/Book/Book";
-import New from "../pages/NewPost/New";
 import PostPage from "../pages/Post/Post";
 import RegisterUser from "../pages/Register/Register";
 import UserProfile from "../pages/UserProfile/UserProfile";
-import UploadWidget from "../components/UploadWidget";
 import EditUserProfile from "../pages/EditUserProfile/EditUserProfile";
 
 export default function AppRoutes({ user }) {
@@ -64,14 +62,6 @@ export default function AppRoutes({ user }) {
         <Route path="/user/:userProfileId" element={<UserProfile user={user} currentUser={currentUser} />} />
         <Route path="user/settings/:userId" element={<EditUserProfile user={user} currentUser={currentUser} />} />
         <Route path="post/:postId" element={<PostPage user={user} currentUser={currentUser} />} />
-        <Route path="new" element={<New user={user} currentUser={currentUser} />} />
-        <Route path="new/text" />
-        <Route path="new/photo" />
-        <Route path="new/quote" />
-        <Route path="new/link" />
-        <Route path="new/chat" />
-        <Route path="new/audio" />
-        <Route path="new/video" />
         <Route path="*" element={<Authenticated user={user} currentUser={currentUser} />} />
       </Routes>
     </div>

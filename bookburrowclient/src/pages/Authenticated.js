@@ -1,9 +1,14 @@
 import React from 'react';
 import { signIntoFirebase, signOutOfFirebase } from '../utils/auth';
 import {Container, Row, Col} from "react-bootstrap";
-import NewPost from '../components/new/NewPostComponent';
 import {IoHeartSharp, IoPricetagsOutline} from "react-icons/io5";
 import {GiMagicLamp} from "react-icons/gi";
+import {GoTextSize} from "react-icons/go";
+import {AiOutlineCamera} from "react-icons/ai";
+import {HiChatBubbleLeftRight} from "react-icons/hi2";
+import {FaHeadphonesAlt} from "react-icons/fa";
+import {BsCameraVideoFill } from "react-icons/bs";
+import {ImQuotesLeft, ImLink} from "react-icons/im";
 
 export default function Authenticated({ user, currentUser }) {
   console.log(currentUser);
@@ -24,7 +29,17 @@ export default function Authenticated({ user, currentUser }) {
               <img src={user.photoURL} alt={user.displayName} />
             </Col>
             <Col sm={6}>
-              <NewPost />
+              <Container>
+            <Row>
+                <Col><GoTextSize /></Col>
+                <Col><AiOutlineCamera /></Col>
+                <Col><ImQuotesLeft /></Col>
+                <Col><ImLink /></Col>
+                <Col><HiChatBubbleLeftRight /></Col>
+                <Col><FaHeadphonesAlt /></Col>
+                <Col><BsCameraVideoFill /></Col>
+            </Row>
+        </Container>
             </Col>
           </Row>
         <Row>

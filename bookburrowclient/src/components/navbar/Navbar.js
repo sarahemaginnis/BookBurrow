@@ -1,15 +1,24 @@
 import React, {useState, useEffect} from "react";
 import "./Navbar.css";
-import {BsFillHouseDoorFill, BsFillEnvelopeFill, BsFillBellFill, BsFillPersonFill, BsPencilFill } from "react-icons/bs";
-import {ImCompass2} from "react-icons/im";
+import {BsFillHouseDoorFill, BsFillEnvelopeFill, BsFillBellFill, BsFillPersonFill, BsPencilFill, BsCameraVideoFill } from "react-icons/bs";
+import {ImCompass2, ImQuotesLeft, ImLink} from "react-icons/im";
 import { signOutOfFirebase } from "../../utils/auth";
-import { Nav, NavItem, NavLink, NavDropdown, Button, Container, Navbar, Form } from 'react-bootstrap';
-import { useNavigate } from "react-router";
+import { Nav, NavItem, NavLink, NavDropdown, Button, Container, Navbar, Form, Col, Row, Modal } from 'react-bootstrap';
 import logo from './BookBurrowLogo.png';
+import { useNavigate } from "react-router-dom";
+import {GoTextSize} from "react-icons/go";
+import {AiOutlineCamera} from "react-icons/ai";
+import {HiChatBubbleLeftRight} from "react-icons/hi2";
+import {FaHeadphonesAlt} from "react-icons/fa";
+import CreatePost from "../newPost/NewPost";
 
 export const NavBar = ({ user }) => {
   const [userProfileObject, setUserProfileObject] = useState({});
   const [currentUser, setCurrentUser] = useState({});
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   useEffect(() => {
     GetUser(user);
@@ -71,10 +80,6 @@ export const NavBar = ({ user }) => {
     navigation(`/user/${userProfileObject.userId}`)
   }
 
-  const navigateToMakePost = () => {
-    navigation('/new')
-  }
-
   return (
     <Navbar bg="#f6f2e9" expand="lg" className="navbar">
       <Container className="navbar__border">
@@ -104,10 +109,30 @@ export const NavBar = ({ user }) => {
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={signOutOfFirebase}>Sign Out</NavDropdown.Item>
               </NavDropdown>
-              <Nav.Link onClick={navigateToMakePost}><BsPencilFill /></Nav.Link>
+              <Nav.Link><BsPencilFill onClick={(e) => {
+                    e.stopPropagation();
+                    setShow(true)
+                    }} /></Nav.Link>
             </Nav>
           </Navbar.Collapse>
       </Container>
+      <Modal show={show} onHide={handleClose} size="lg" centered className="modal__new">
+        <Modal.Header className="modal__header" closeButton></Modal.Header>
+        <Modal.Body className="modal__body">
+          <Container>
+              <Row>
+                  <Col><GoTextSize onClick={() => {<CreatePost user={user} currentUser={currentUser} userProfile={userProfileObject} show={handleShow} />}} /></Col>
+                  <Col><AiOutlineCamera /></Col>
+                  <Col><ImQuotesLeft /></Col>
+                  <Col><ImLink /></Col>
+                  <Col><HiChatBubbleLeftRight /></Col>
+                  <Col><FaHeadphonesAlt /></Col>
+                  <Col><BsCameraVideoFill /></Col>
+              </Row>
+          </Container>
+        </Modal.Body>
+        <Modal.Footer className="modal__footer"></Modal.Footer>
+    </Modal>
     </Navbar>
   );
 };
