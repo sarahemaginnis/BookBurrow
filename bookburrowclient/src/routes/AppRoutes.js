@@ -7,6 +7,7 @@ import PostPage from "../pages/Post/Post";
 import RegisterUser from "../pages/Register/Register";
 import UserProfile from "../pages/UserProfile/UserProfile";
 import EditUserProfile from "../pages/EditUserProfile/EditUserProfile";
+import EditPostPage from "../pages/EditPost/EditPost";
 
 export default function AppRoutes({ user }) {
   const [currentUser, setCurrentUser] = useState({});
@@ -62,6 +63,7 @@ export default function AppRoutes({ user }) {
         <Route path="/user/:userProfileId" element={<UserProfile user={user} currentUser={currentUser} />} />
         <Route path="user/settings/:userId" element={<EditUserProfile user={user} currentUser={currentUser} />} />
         <Route path="post/:postId" element={<PostPage user={user} currentUser={currentUser} />} />
+        <Route path="post/edit/:postId" element={<EditPostPage user={user} currentUser={currentUser} />} />
         <Route path="*" element={<Authenticated user={user} currentUser={currentUser} />} />
       </Routes>
     </div>

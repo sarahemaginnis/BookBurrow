@@ -226,7 +226,7 @@ namespace BookBurrow.Repositories
                                 songUrl = @songUrl, 
                                 songUrlSummary = @songUrlSummary, 
                                 createdAt = @createdAt, 
-                                updatedAt = @updatedAt
+                                updatedAt = getDate()
                         WHERE Id = @id
                     ";
 
@@ -240,7 +240,6 @@ namespace BookBurrow.Repositories
                     DbUtils.AddParameter(cmd, "@songUrl", userPost.SongUrl);
                     DbUtils.AddParameter(cmd, "@songUrlSummary", userPost.SongUrlSummary);
                     DbUtils.AddParameter(cmd, "@createdAt", userPost.CreatedAt);
-                    DbUtils.AddParameter(cmd, "@updatedAt", userPost.UpdatedAt);
                     DbUtils.AddParameter(cmd, "@id", userPost.Id);
 
                     cmd.ExecuteNonQuery();
