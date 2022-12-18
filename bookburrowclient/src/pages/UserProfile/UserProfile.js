@@ -100,11 +100,7 @@ export default function UserProfile ({user, currentUser}) {
         <Row>
             <h1>Burrow</h1>
             <div>
-            {posts.length > 0 ? (
-                posts.map((post) => (
-                    <BurrowPostGrid user={userProfileObject} post={post} key={post.id} />
-                    )) 
-                ) : (<div></div>)}
+            {posts.length > 0 ? <BurrowPostGrid user={userProfileObject} posts={posts} /> : (<div></div>)}
             </div>
         </Row>
       </Container>
