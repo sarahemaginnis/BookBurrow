@@ -126,7 +126,7 @@ namespace BookBurrow.Repositories
                                 JOIN dbo.UserProfile up ON ub.userId = up.userId
                                 JOIN dbo.Rating r ON ub.ratingId = r.id
                                 JOIN dbo.UserPronoun p ON up.pronounId = p.id
-                    WHERE ub.Id = @id
+                    WHERE ub.userId = @id
                     ";
 
                     DbUtils.AddParameter(cmd, "@id", id);
@@ -151,11 +151,11 @@ namespace BookBurrow.Repositories
                                     CreatedAt = DbUtils.GetDateTime(reader, "bookRecordCreatedAt"),
                                     UpdatedAt = DbUtils.GetDateTime(reader, "bookRecordUpdatedAt"),
                                 },
-                                UserId = DbUtils.GetInt(reader, "userId"),
+                                UserId = id,
                                 UserProfile = new UserProfile()
                                 {
                                     Id = DbUtils.GetInt(reader, "userProfileId"),
-                                    UserId = DbUtils.GetInt(reader, "userId"),
+                                    UserId = id,
                                     ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
                                     FirstName = DbUtils.GetString(reader, "firstName"),
                                     LastName = DbUtils.GetString(reader, "lastName"),
