@@ -5,10 +5,12 @@ import "./BookCard.css";
 
 const BookCard = ({book, user, currentUser}) => {
     const [userBookObject, setUserBookObject] = useState({}); //initial state variable for current userBook object
+    const [userProfileObject, setUserProfileObject] = useState({}); //initial state variable for currentUser userProfile object
     const [bookStatuses, setBookStatuses] = useState([]); //State variable for array of book statuses
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
+    
     //get array of Book statuses - currently hardcoded in
 
     //Get userBook information from API and update state when the value of currenUser.id changes
@@ -25,6 +27,26 @@ const BookCard = ({book, user, currentUser}) => {
             setUserBookObject(data)
         })
     }, []);
+
+    //Get userProfile
+    useEffect(() => {
+        fetch(`https://localhost:7210/api/UserProfile/UserProfileByUserId/${currentUser.id}`, {
+            method: "GET",
+            headers: {
+              "Access-Control-Allow-Origin": "https://localhost:7210",
+              "Content-Type": "application/json",
+            },
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            setUserProfileObject(data)
+        })
+    }, []);
+
+
+    //Add book to userBook (adding a book to the bookshelf)
+
+    //Edit a userBook (put request)
 
     //need an event listener/event handler for updating Bookshelf
 
@@ -55,7 +77,7 @@ const BookCard = ({book, user, currentUser}) => {
             return <Button className="btn-primary" onClick={(e) => {
                 e.stopPropagation();
                 setShow(true)
-            }}>To be read</Button>
+            }}>Want to read</Button>
         }
     }
 
@@ -95,27 +117,47 @@ const BookCard = ({book, user, currentUser}) => {
                 <Modal.Body className="modal__body">
                     <Container>
                         <Row>
-                            <Col>
-                                <Button>Want to read</Button>
+                            <Col md={{offset: 4}}>
+                                <Button>To be read</Button>
                             </Col>
                         </Row>
                         <Row>
                             <Col>
+                                <p></p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={{offset: 4}}>
                                 <Button>Currently reading</Button>
                             </Col>
                         </Row>
                         <Row>
                             <Col>
+                                <p></p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={{offset: 4}}>
                                 <Button>Read</Button>
                             </Col>
                         </Row>
                         <Row>
                             <Col>
+                                <p></p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={{offset: 4}}>
                                 <Button>Did not finish</Button>
                             </Col>
                         </Row>
                         <Row>
                             <Col>
+                                <p></p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col md={{offset: 4}}>
                                 <Button><BsFillTrashFill />Remove from my shelf</Button>
                             </Col>
                         </Row>

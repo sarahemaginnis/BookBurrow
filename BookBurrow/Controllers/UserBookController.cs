@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using BookBurrow.Repositories;
 using BookBurrow.Models;
+using BookBurrow.ViewModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,7 +34,9 @@ namespace BookBurrow.Controllers
             {
                 return NotFound();
             }
-            return Ok(userBook);
+            var options = BookStatus.ListBookStatuses();
+            var vm = new UserBookViewModel { UserBook = userBook, BookStatusOptions = options };
+            return Ok(vm);
         }
 
         // POST api/<UserBookController>

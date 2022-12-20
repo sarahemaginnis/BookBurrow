@@ -30,7 +30,7 @@ namespace BookBurrow.Models
             Name = name;
         }
 
-        private static List<Role> ListRoles()
+        public static List<Role> ListRoles()
         {
             return typeof(Role).GetProperties(BindingFlags.Public | BindingFlags.Static)
                 .Where(p => p.PropertyType == typeof(Role))
