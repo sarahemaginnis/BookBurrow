@@ -19,7 +19,7 @@ import BurrowPostGrid from "../../../components/burrow/Burrow";
 import "./BurrowCard.css";
 
 
-const BurrowCard = ({book, user, currentUser}) => {
+const BurrowCard = ({book, user, currentUser, userBook, userProfile}) => {
     const [posts, syncPosts] = useState([]); //State variable for array of posts
 
     //Fetch all bookPosts

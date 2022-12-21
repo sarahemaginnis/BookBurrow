@@ -28,7 +28,9 @@ namespace BookBurrow.Controllers
             {
                 return NoContent();
             }
-            return Ok(book);
+            var options = BookStatus.ListBookStatuses();
+            var vm = new BookAuthorViewModel { BookAuthor = book, BookStatusOptions = options };
+            return Ok(vm);
         }
     }
 }

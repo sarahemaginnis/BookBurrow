@@ -207,18 +207,14 @@ namespace BookBurrow.Repositories
                     cmd.CommandText = @"
                         INSERT INTO dbo.UserBook (bookId, userId, startDate, endDate, ratingId, statusId, review, reviewCreatedAt, reviewEditedAt)
                         OUTPUT INSERTED.id
-                        VALUES (@bookId, @userId, @startDate, @endDate, @ratingId, @statusId, @review, @reviewCreatedAt, @reviewEditedAt)
+                        VALUES (@bookId, @userId, getDate(), getDate(), @ratingId, @statusId, @review, getDate(), getDate())
                     ";
 
                     DbUtils.AddParameter(cmd, "@bookId", userBook.BookId);
                     DbUtils.AddParameter(cmd, "@userId", userBook.UserId);
-                    DbUtils.AddParameter(cmd, "@startDate", userBook.StartDate);
-                    DbUtils.AddParameter(cmd, "@endDate", userBook.EndDate);
                     DbUtils.AddParameter(cmd, "@ratingId", userBook.RatingId);
                     DbUtils.AddParameter(cmd, "@statusId", userBook.BookStatus.Value);
                     DbUtils.AddParameter(cmd, "@review", userBook.Review);
-                    DbUtils.AddParameter(cmd, "@reviewCreatedAt", userBook.ReviewCreatedAt);
-                    DbUtils.AddParameter(cmd, "@reviewEditedAt", userBook.ReviewEditedAt);
 
                     userBook.Id = (int)cmd.ExecuteScalar();
                 }
