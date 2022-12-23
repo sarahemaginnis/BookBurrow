@@ -10,6 +10,7 @@ import './Book.css';
 export default function BookPage ({user, currentUser}) {
     const [book, setBook] = useState({}); //initial state variable for current book object
     const {bookId} = useParams(); //variable storing the route parameter
+    const [bookStatuses, setBookStatuses] = useState([]); //State variable for array of book statuses
     const [userBookObject, setUserBookObject] = useState({}); //initial state variable for current userBook object
     const [userProfileObject, setUserProfileObject] = useState({}); //initial state variable for currentUser userProfile object
 
@@ -26,6 +27,9 @@ export default function BookPage ({user, currentUser}) {
         .then((res) => res.json())
         .then((data) => {
           setBook(data);
+        })
+        .then(() => {
+          setBookStatuses(book.bookStatusOptions)
         });
       }, []);
 
@@ -64,17 +68,23 @@ export default function BookPage ({user, currentUser}) {
   }
 
   useEffect(() => {
-    if(book.hasOwnProperty("bookAuthor")){GetUserBook() ; GetUserProfile() ; console.log("getting user book")}
+    if(book.hasOwnProperty("bookAuthor")){GetUserBook() ; GetUserProfile() ; console.log("getting user book", book, bookStatuses)}
   }, [book]);
 
 //pass down book object and user and currentUser object into components to render properly and pass into fetch calls    
   return ( userProfileObject.hasOwnProperty("id") ? 
     <>
       <Container>
-        <BookCard book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject} />
-        <AuthorCard book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject}/>
-        <ReviewCard book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject}/>
-        <BurrowCard book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject}/>
+        <BookCard 
+          book={book} 
+          user={user} 
+          currentUser={currentUser} 
+          userBook={userBookObject} 
+          userProfile={userProfileObject} 
+          bookStatusOptions={bookStatuses} />
+        <AuthorCard book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
+        <ReviewCard book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
+        <BurrowCard book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
       </Container>
     </> : null
   );

@@ -4,16 +4,13 @@ import { BsPencilFill, BsFillTrashFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import "./BookCard.css";
 
-const BookCard = ({book, user, currentUser, userBook, userProfile}) => {
-    const [bookStatuses, setBookStatuses] = useState([]); //State variable for array of book statuses
+const BookCard = ({book, user, currentUser, userBook, userProfile, bookStatusOptions}) => {
     const [currentUserBook, setCurrentUserBook] = useState(userBook) //can I do this, or does it need to be an empty object?
+    const [userBookStatus, setUserBookStatus] = useState({});
     const [userBookRatingId, setUserBookRatingId] = useState("");
     const [userBookRatingValue, setUserBookRatingValue] = useState("");
-    // const [userBookStatus, setUserBookStatus] = useState({"name": "To be read", "value": 0});
-    // const [userBookStatusName, setUserBookStatusName] = useState("To be read");
-    // const [userBookStatusValue, setUserBookStatusValue] = useState(0);
     const [userBookReview, setUserBookReview] = useState("");
-    
+    const [modalView, setModalView] = useState(1);
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -23,6 +20,18 @@ const BookCard = ({book, user, currentUser, userBook, userProfile}) => {
     const navigateToBookPage = () => {
         navigation(`/book/${book.bookAuthor.book.id}`)
     }
+
+    const submitEdits = () => {
+        navigation(`/book/${currentUserBook.bookId}`)
+    }
+
+    console.log(userBook);
+    console.log(currentUserBook);
+
+    const bookStatus0 = book.bookStatusOptions.find(({value}) => value === 0);
+    const bookStatus1 = book.bookStatusOptions.find(({value}) => value === 1);
+    const bookStatus2 = book.bookStatusOptions.find(({value}) => value === 2);
+    const bookStatus3 = book.bookStatusOptions.find(({value}) => value === 3);
 
     //Add book to userBook (adding a book to the bookshelf)
     const AddBookToUserBookshelf = () => {
@@ -67,8 +76,8 @@ const BookCard = ({book, user, currentUser, userBook, userProfile}) => {
                 displayValue: userBookRatingValue,
             },
             bookStatus: {
-                name: userBookStatusName,
-                value: userBookStatusValue,
+                name: userBookStatus.name,
+                value: userBookStatus.value,
             },
             review: userBookReview,
         }
@@ -91,33 +100,99 @@ const BookCard = ({book, user, currentUser, userBook, userProfile}) => {
     }
 
     //Edit a userBook (put request)
+    const UpdateUserBook = (evt) => {
+        evt.preventDefault();
+        //Construct a new object to replace the exisitng one in the API
+        const updatedUserBook = {
+            id:currentUserBook.id,
+            bookId: currentUserBook.bookId,
+            book: {
+                id: currentUserBook.book.id,
+                title: currentUserBook.book.title,
+                isbn:currentUserBook.book.isbn,
+                description: currentUserBook.book.description,
+                coverImageUrl: currentUserBook.book.coverImageURl,
+                datePublished: currentUserBook.book.datePublished,
+                createdAt: currentUserBook.book.createdAt,
+                updatedAt: currentUserBook.book.updatedAt,
+            },
+            userId: currentUserBook.userId,
+            userProfile: {
+                id: currentUserBook.userProfile.id,
+                userId: currentUserBook.userProfile.userId,
+                profileImageUrl: currentUserBook.userProfile.profileImageUrl,
+                firstName: currentUserBook.userProfile.firstName,
+                lastName: currentUserBook.userProfile.lastName,
+                handle: currentUserBook.userProfile.handle,
+                pronounId: currentUserBook.userProfile.pronounId,
+                userPronoun: {
+                    id: currentUserBook.userProfile.userPronoun.id,
+                    pronouns: currentUserBook.userProfile.userPronoun.pronouns,
+                },
+                biography: currentUserBook.userProfile.biography,
+                biographyUrl: currentUserBook.userProfile.biographyUrl,
+                birthday: currentUserBook.userProfile.birthday,
+                createdAt: currentUserBook.userProfile.createdAt,
+                updatedAt: currentUserBook.userProfile.updatedAt,
+            },
+            userPronoun: {
+                id: currentUserBook.userPronoun.id,
+                pronouns: currentUserBook.userPronoun.pronouns,
+            },
+            ratingId: currentUserBook.ratingId,
+            rating: {
+                id: currentUserBook.rating.id,
+                displayValue: currentUserBook.rating.displayValue,
+            },
+            bookStatus: {
+                name: currentUserBook.bookStatus.name,
+                value: currentUserBook.bookStatus.value,
+            },
+            review: currentUserBook.review,
+            reviewCreatedAt: currentUserBook.reviewCreatedAt,
+            reviewUpdatedAt: Date.now,
+        };
+        //Perform the PUT request to replace the object
+        fetch(`https://localhost:7210/api/UserBook/${currentUserBook.id}`, {
+            method: "PUT",
+            headers: {
+                "Access-Control-Allow-Origin": "https://localhost:7210",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedUserBook),
+        }).then(() => {
+            submitEdits()
+        });
+    }
 
-    //need an event listener/event handler for updating Bookshelf
+    //handleClick function for updating userBookStatus
+    const handleBookShelfClick = (userBookStatus) => {
+        setUserBookStatus(userBookStatus)
+        const copy = {...currentUserBook}
+        copy.bookStatus = userBookStatus
+        setCurrentUserBook(copy)
+    }
+
+    //conditional logic to determine if userBook exists for POST or PUT
+    const checkUserBookExists = () => {
+        if(Object.keys(currentUserBook).length === 0){
+            AddBookToUserBookshelf()
+        } else {
+            UpdateUserBook()
+        }
+    }
 
     //Delete book from bookshelves (delete UserBook)
-
-    //need a conditional modal for bookshelf selection - once delete from shelf is clicked then the modal text needs to change
-    //Are you sure you want to remove this book from your shelves?
-    //Removing this book will clear associated ratings, reviews, and reading activity
-    //Cancel & Remove
-
-    //use find through array of book.bookStatusOptions to find the right button to display
-    // const bookshelfButtonDisplay = () => {
-    //     const foundShelf = () => {
-    //         if (userBook.hasOwnProperty("userBook")){
-    //             return book.bookStatusOptions.find(b => b.value === userBook.userBook.bookStatus.value)
-    //         } else {
-    //             return userBookStatus
-    //         }
-    //     }
-    //     setUserBookStatus(foundShelf)
-    //     if (currentUser.id === userBook?.userBook?.userId){
-    //         return <Button className="btn-primary" onClick={(e) => {
-    //             e.stopPropagation();
-    //             setShow(true)
-    //         }}><BsPencilFill />{userBookStatus.name}</Button>
-    //     }
-    // }
+    const DeleteBookFromShelf = (id) => {
+        fetch(`https://localhost:7210/api/UserBook/${id}`, {
+            method: "DELETE"
+        })
+        .then(handleClose)
+        .then(setModalView(1))
+        .then(() => {
+            navigateToBookPage()
+        })
+    }
 
     //then use conditional logic to figure out which button should be displayed
     const bookshelfButton = () => {
@@ -125,22 +200,99 @@ const BookCard = ({book, user, currentUser, userBook, userProfile}) => {
             return <Button className="btn-primary" onClick={(e) => {
                 e.stopPropagation();
                 setShow(true)
-            }}><BsPencilFill />Currently reading</Button>
+            }}><BsPencilFill />{bookStatus1.name}</Button>
         } else if (currentUser.id === userBook?.userBook?.userId && userBook.userBook.bookStatus.value === 2) {
             return <Button className="btn-primary" onClick={(e) => {
                 e.stopPropagation();
                 setShow(true)
-            }}><BsPencilFill />Read</Button>
+            }}><BsPencilFill />{bookStatus2.name}</Button>
         } else if (currentUser.id === userBook?.userBook?.userId && userBook.userBook.bookStatus.value === 3) {
             return <Button className="btn-primary" onClick={(e) => {
                 e.stopPropagation();
                 setShow(true)
-            }}><BsPencilFill />Did not finish</Button>
+            }}><BsPencilFill />{bookStatus3.name}</Button>
         } else {
             return <Button className="btn-primary" onClick={(e) => {
                 e.stopPropagation();
                 setShow(true)
-            }}>Want to read</Button>
+            }}>{bookStatus0.name}</Button>
+        }
+    }
+
+    const modalViewSwitch = () => {
+        if(modalView === 1 && userBook.hasOwnProperty("id")) {
+            return <div>
+            <Modal show={show} onHide={handleClose} size="lg" centered className="modal__delete">
+                <Modal.Header className="modal__header" closeButton>Choose a shelf for this book</Modal.Header>
+            <Modal.Body className="modal__body">
+                <Container>
+                    {book.bookStatusOptions.map((b) => (
+                    <Row>
+                        <Col md={{offset: 4}}>
+                            <Button type="submit" key={`bookStatus--${b.value}`} value={b.value} onClick={(e) => {
+                                e.stopPropagation();
+                                handleBookShelfClick(b);
+                                checkUserBookExists();
+                            }}>{b.name}</Button>
+                        </Col>
+                    </Row>
+                    ))}
+                    <Row>
+                        <Col md={{offset: 4}}>
+                            <Button onClick={(e) => {
+                                e.stopPropagation();
+                                setModalView(2);
+                            }} ><BsFillTrashFill/>Remove from my shelf</Button>
+                        </Col>
+                    </Row>
+                </Container>
+            </Modal.Body>
+        <Modal.Footer className="modal__footer">
+        </Modal.Footer>
+        </Modal>
+        </div>
+        } else if(modalView === 1 ) {
+            return <div>
+            <Modal show={show} onHide={handleClose} size="lg" centered className="modal__delete">
+                <Modal.Header className="modal__header" closeButton>Choose a shelf for this book</Modal.Header>
+            <Modal.Body className="modal__body">
+                <Container>
+                    {book.bookStatusOptions.map((b) => (
+                    <Row>
+                        <Col md={{offset: 4}}>
+                            <Button type="submit" key={`bookStatus--${b.value}`} value={b.value} onClick={() => handleBookShelfClick(b)}>{b.name}</Button>
+                        </Col>
+                    </Row>
+                    ))}
+                </Container>
+            </Modal.Body>
+        <Modal.Footer className="modal__footer">
+        </Modal.Footer>
+        </Modal>
+        </div>
+        }
+        else if(modalView === 2){
+            return <div>
+                <Modal show={show} onHide={handleClose} size="lg" centered className="modal__delete">
+            <Modal.Header className="modal__header" closeButton>Are you sure you want to remove this book from your shelves?</Modal.Header>
+            <Modal.Body className="modal__body">
+                <Container>
+                    <Row>
+                        <Col>
+                        <p>Removing this book will clear associated ratings, reviews, and reading activity.</p>
+                        </Col>
+                    </Row>
+                </Container>
+            </Modal.Body>
+            <Modal.Footer className="modal__footer">
+                <Button className="btn__btn-secondary" onClick={() => {
+                    setShow(false); 
+                    setModalView(1)
+                    }}>Cancel</Button>
+                <Button className="btn__btn-primary" onClick={() => DeleteBookFromShelf(currentUserBook.id)}>Delete</Button>
+            </Modal.Footer>
+            </Modal>
+        </div>
         }
     }
 
@@ -175,27 +327,7 @@ const BookCard = ({book, user, currentUser, userBook, userProfile}) => {
                 </Col>
             </Row>
             </Container>
-            <Modal show={show} onHide={handleClose} size="lg" centered className="modal__delete">
-                <Modal.Header className="modal__header" closeButton>Choose a shelf for this book</Modal.Header>
-                <Modal.Body className="modal__body">
-                    <Container>
-                            {book.bookStatusOptions.map((b) => (
-                            <Row>
-                                <Col md={{offset: 4}}>
-                                    <Button key={`bookStatus--${b.value}`} value={b.value}>{b.name}</Button>
-                                </Col>
-                            </Row>
-                            ))}
-                        <Row>
-                            <Col md={{offset: 4}}>
-                                <Button><BsFillTrashFill />Remove from my shelf</Button>
-                            </Col>
-                        </Row>
-                    </Container>
-                </Modal.Body>
-                <Modal.Footer className="modal__footer">
-                </Modal.Footer>
-        </Modal>
+            {modalViewSwitch()}
         </div>
     );
 };
