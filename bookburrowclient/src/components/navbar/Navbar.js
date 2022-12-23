@@ -14,7 +14,20 @@ import CreatePost from "../newPost/NewPost";
 
 export const NavBar = ({ user }) => {
   const [userProfileObject, setUserProfileObject] = useState({});
+  const [books, syncBooks] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
+  const [userBookObject, setUserBookObject] = useState({});
+  const [postTypeName, setPostTypeName] = useState("Text");
+  const [postTypeValue, setPostTypeValue] = useState(0);
+  const [postBookId, setPostBookId] = useState("")
+  const [postBookTitle, setPostBookTitle] = useState("")
+  const [postTitle, setPostTitle] = useState("");
+  const [postCloudinaryUrl, setPostCloudinaryUrl] = useState("");
+  const [postCaption, setPostCaption] = useState("");
+  const [postSource, setPostSource] = useState("");
+  const [postSongUrl, setPostSongUrl] = useState("");
+  const [postSongUrlSummary, setPostSongUrlSummary] = useState("");
+  const [modalView, setModalView] = useState(1);
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -57,6 +70,21 @@ export const NavBar = ({ user }) => {
   useEffect(() => {
     if(currentUser.hasOwnProperty("id")){GetUserProfile() ; console.log("getting userProfile")}
   }, [currentUser]);
+
+  //Fetch all books
+  useEffect(() => {
+    fetch(`https://localhost:7210/api/Book`, {
+        method: "GET",
+        headers: {
+          "Access-Control-Allow-Origin": "https://localhost:7210",
+          "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((data) => {
+        syncBooks(data);
+    })
+}, []);
   
   const navigation = useNavigate();
   
@@ -78,6 +106,165 @@ export const NavBar = ({ user }) => {
 
   const navigateToProfile = () => {
     navigation(`/user/${userProfileObject.userId}`)
+  }
+
+  const CreateNewPost = () => {
+    const newPostObject = {
+        userId: currentUser.id,
+        userProfile: {
+            id: userProfileObject.id,
+            userId: userProfileObject.userId,
+            profileImageUrl:userProfileObject.profileImageUrl,
+            firstName:userProfileObject.firstName,
+            lastName:userProfileObject.lastName,
+            handle: userProfileObject.handle,
+            pronounId:userProfileObject.pronounId,
+            userPronoun: {
+                id: userProfileObject.userPronoun.id,
+                pronouns: userProfileObject.userPronoun.pronouns,
+            },
+            biography: userProfileObject.biography,
+            biographyUrl: userProfileObject.biographyUrl,
+            birthday: userProfileObject.birthday,
+            createdAt: userProfileObject.createdAt,
+            updatedAt: userProfileObject.updatedAt,
+        },
+        postType: {
+            name: postTypeName,
+            value: postTypeValue,
+        },
+        bookId: userBookObject.id,
+        book: {
+            id: userBookObject.id,
+            title: userBookObject.title,
+            isbn: userBookObject.isbn,
+            description: userBookObject.description,
+            coverImageUrl: userBookObject.coverImageUrl,
+            datePublished: userBookObject.datePublished,
+            createdAt: userBookObject.createdAt,
+            updatedAt: userBookObject.updatedAt,
+        },
+        title: postTitle,
+        cloudinaryUrl: postCloudinaryUrl,
+        caption: postCaption,
+        source: postSource,
+        songUrl: postSongUrl,
+        songUrlSummary: postSongUrlSummary,
+    }
+const fetchOptions = {
+    method: 'POST',
+    headers: {
+        "Access-Control-Allow-Origin": "https://localhost:7210",
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newPostObject)
+}
+return fetch('https://localhost:7210/api/UserPost', fetchOptions)
+.then(res => res.json())
+.then(handleClose)
+.then(setModalView(1))
+}
+
+
+  const modalViewSwitch = () => {
+    if(modalView === 1) {
+      return <div>
+        <Modal show={show} onHide={handleClose} size="lg" centered className="modal__new">
+        <Modal.Header className="modal__header" closeButton></Modal.Header>
+        <Modal.Body className="modal__body">
+          <Container>
+              <Row>
+                  <Col><GoTextSize onClick={(e) => {
+                    e.stopPropagation();
+                    setModalView(2);
+                  }} /></Col>
+                  <Col><AiOutlineCamera /></Col>
+                  <Col><ImQuotesLeft /></Col>
+                  <Col><ImLink /></Col>
+                  <Col><HiChatBubbleLeftRight /></Col>
+                  <Col><FaHeadphonesAlt /></Col>
+                  <Col><BsCameraVideoFill /></Col>
+              </Row>
+          </Container>
+        </Modal.Body>
+        <Modal.Footer className="modal__footer"></Modal.Footer>
+    </Modal>
+      </div>
+    } else if(modalView === 2) { 
+      return <div>
+        <Modal show={show} onHide={() => {
+          handleClose()
+          setModalView(1)}} size="lg" centered className="modal__new">
+        <Modal.Header className="modal__header" closeButton></Modal.Header>
+        <Modal.Body className="modal__body">
+          <Container>
+              <Row>
+                <Col>
+                    <img src={userProfileObject.profileImageUrl} alt={userProfileObject.handle} />
+                </Col>
+                <Col>
+                    <p>{userProfileObject.handle}</p>
+                </Col>
+              </Row>
+            <Form>
+              <Row>
+                <Col>
+                    <Form.Group className="mb-3" controlId="formBasicTitle">
+                        <Form.Label>Title</Form.Label>
+                        <Form.Control type="text" placeholder="Title" defaultValue="" onChange={(event) => setPostTitle(event.target.value)} />
+                    </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                    <Form.Group className="mb-3" controlId="formBasicCaption">
+                        <Form.Label>Caption</Form.Label>
+                        <Form.Control as="textarea" placeholder="Your text here" defaultValue="" onChange={(event) => setPostCaption(event.target.value)} />
+                    </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                <Form.Group className="mb-3" controlId="formBasicBook">
+                    <Form.Label>Tag a Book?</Form.Label>
+                    <Form.Control as="select" onChange={
+                        (event) => {
+                          const copy = {...userBookObject}
+                          copy.title = event.target.options[event.target.selectedIndex].innerHTML
+                          console.log(copy.title)
+                          console.log(books.find(b => b.title === copy.title))
+                          const selectedUserBookObject = books.find(b => b.title === copy.title)
+                          console.log(selectedUserBookObject)
+                          setUserBookObject(selectedUserBookObject)
+                          console.log(userBookObject)
+                        }
+                    }
+                        value={postBookId}>
+                        {books.map((e) => (
+                            <option key={`book--${e.id}`}
+                            value={e.id}
+                            >
+                                {e.title}
+                            </option>
+                        ))}
+                    </Form.Control>
+                    </Form.Group>
+                </Col>
+              </Row>
+            </Form>
+          </Container>
+        </Modal.Body>
+        <Modal.Footer className="modal__footer">
+            <Button className="btn__btn-secondary" onClick={(e) => {
+                    e.stopPropagation();
+                    setShow(false);
+                    setModalView(1);
+                    }}>Close</Button>
+            <Button className="btn__btn-primary" onClick={() => CreateNewPost()}>Post</Button>
+        </Modal.Footer>
+        </Modal>
+      </div>
+    }
   }
 
   return (
@@ -116,23 +303,7 @@ export const NavBar = ({ user }) => {
             </Nav>
           </Navbar.Collapse>
       </Container>
-      <Modal show={show} onHide={handleClose} size="lg" centered className="modal__new">
-        <Modal.Header className="modal__header" closeButton></Modal.Header>
-        <Modal.Body className="modal__body">
-          <Container>
-              <Row>
-                  <Col><GoTextSize onClick={() => {<CreatePost user={user} currentUser={currentUser} userProfile={userProfileObject} show={handleShow} />}} /></Col>
-                  <Col><AiOutlineCamera /></Col>
-                  <Col><ImQuotesLeft /></Col>
-                  <Col><ImLink /></Col>
-                  <Col><HiChatBubbleLeftRight /></Col>
-                  <Col><FaHeadphonesAlt /></Col>
-                  <Col><BsCameraVideoFill /></Col>
-              </Row>
-          </Container>
-        </Modal.Body>
-        <Modal.Footer className="modal__footer"></Modal.Footer>
-    </Modal>
+        {modalViewSwitch()}
     </Navbar>
   );
 };
