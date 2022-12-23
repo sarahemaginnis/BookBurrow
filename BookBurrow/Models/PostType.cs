@@ -34,7 +34,7 @@ namespace BookBurrow.Models
             Name = name;
         }
 
-        private static List<PostType> ListPostTypes()
+        public static List<PostType> ListPostTypes()
         {
             return typeof(PostType).GetProperties(BindingFlags.Public | BindingFlags.Static)
                 .Where(p => p.PropertyType == typeof(PostType))

@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import "./AuthorCard.css";
 
-const AuthorCard = ({book, user, currentUser}) => {
+const AuthorCard = ({book, user, currentUser, userBook, userProfile, bookStatusOptions}) => {
 
     return (
         <div className="author-card">
@@ -13,10 +13,10 @@ const AuthorCard = ({book, user, currentUser}) => {
                     <h2>About the Author</h2>
                     <Row>
                         <Col>
-                            <img src={`${book.author.profileImageUrl}`} />
+                            <img src={`${book.bookAuthor.author.profileImageUrl}`} />
                         </Col>
                         <Col>
-                            <p>{book.author.firstName} {book.author.middleName} {book.author.lastName}</p>
+                            <p>{book.bookAuthor.author.firstName} {book.bookAuthor.author.middleName} {book.bookAuthor.author.lastName}</p>
                         <Row>
                             <Col>
                                 <p>Total number of books on App (e.g., 20 books)</p>

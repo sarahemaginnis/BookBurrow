@@ -31,7 +31,7 @@ namespace BookBurrow.Models
             Name = name;
         }
 
-        private static List<BookStatus> ListBookStatuses()
+        public static List<BookStatus> ListBookStatuses()
         {
             return typeof(BookStatus).GetProperties(BindingFlags.Public | BindingFlags.Static)
                 .Where(p => p.PropertyType == typeof(BookStatus))

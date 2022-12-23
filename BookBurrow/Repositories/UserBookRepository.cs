@@ -126,7 +126,7 @@ namespace BookBurrow.Repositories
                                 JOIN dbo.UserProfile up ON ub.userId = up.userId
                                 JOIN dbo.Rating r ON ub.ratingId = r.id
                                 JOIN dbo.UserPronoun p ON up.pronounId = p.id
-                    WHERE ub.Id = @id
+                    WHERE ub.userId = @id
                     ";
 
                     DbUtils.AddParameter(cmd, "@id", id);
@@ -151,11 +151,11 @@ namespace BookBurrow.Repositories
                                     CreatedAt = DbUtils.GetDateTime(reader, "bookRecordCreatedAt"),
                                     UpdatedAt = DbUtils.GetDateTime(reader, "bookRecordUpdatedAt"),
                                 },
-                                UserId = DbUtils.GetInt(reader, "userId"),
+                                UserId = id,
                                 UserProfile = new UserProfile()
                                 {
                                     Id = DbUtils.GetInt(reader, "userProfileId"),
-                                    UserId = DbUtils.GetInt(reader, "userId"),
+                                    UserId = id,
                                     ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
                                     FirstName = DbUtils.GetString(reader, "firstName"),
                                     LastName = DbUtils.GetString(reader, "lastName"),
@@ -207,18 +207,14 @@ namespace BookBurrow.Repositories
                     cmd.CommandText = @"
                         INSERT INTO dbo.UserBook (bookId, userId, startDate, endDate, ratingId, statusId, review, reviewCreatedAt, reviewEditedAt)
                         OUTPUT INSERTED.id
-                        VALUES (@bookId, @userId, @startDate, @endDate, @ratingId, @statusId, @review, @reviewCreatedAt, @reviewEditedAt)
+                        VALUES (@bookId, @userId, getDate(), getDate(), @ratingId, @statusId, @review, getDate(), getDate())
                     ";
 
                     DbUtils.AddParameter(cmd, "@bookId", userBook.BookId);
                     DbUtils.AddParameter(cmd, "@userId", userBook.UserId);
-                    DbUtils.AddParameter(cmd, "@startDate", userBook.StartDate);
-                    DbUtils.AddParameter(cmd, "@endDate", userBook.EndDate);
                     DbUtils.AddParameter(cmd, "@ratingId", userBook.RatingId);
                     DbUtils.AddParameter(cmd, "@statusId", userBook.BookStatus.Value);
                     DbUtils.AddParameter(cmd, "@review", userBook.Review);
-                    DbUtils.AddParameter(cmd, "@reviewCreatedAt", userBook.ReviewCreatedAt);
-                    DbUtils.AddParameter(cmd, "@reviewEditedAt", userBook.ReviewEditedAt);
 
                     userBook.Id = (int)cmd.ExecuteScalar();
                 }
