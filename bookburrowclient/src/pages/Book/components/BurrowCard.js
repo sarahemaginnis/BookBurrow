@@ -45,7 +45,6 @@ const BurrowCard = ({bookId, book, user, currentUser, userBook, userProfile, boo
                             <h3>Top</h3>
                         </Col>
                     </Row>
-                    <p>Insert posts card</p>
                     <div>
                     <Row xs={1} md={3} className="g-3">
       {posts.length > 0 ? (posts.map((post) => {
