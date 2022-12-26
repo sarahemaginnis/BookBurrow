@@ -84,7 +84,7 @@ export default function BookPage ({user, currentUser}) {
           bookStatusOptions={bookStatuses} />
         <AuthorCard book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
         <ReviewCard book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
-        <BurrowCard book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
+        <BurrowCard bookId={bookId} book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
       </Container>
     </> : null
   );

@@ -13,9 +13,11 @@ namespace BookBurrow.Controllers
     public class BookViewModelController : ControllerBase
     {
         private readonly IBookAuthorRepository _bookAuthorRepository;
-        public BookViewModelController(IBookAuthorRepository bookAuthorRepository)
+        private readonly IUserPostRepository _userPostRepository;
+        public BookViewModelController(IBookAuthorRepository bookAuthorRepository, IUserPostRepository userPostRepository)
         {
             _bookAuthorRepository = bookAuthorRepository;
+            _userPostRepository = userPostRepository;
         }
 
         // GET: api/<PostCommentController>
@@ -31,6 +33,19 @@ namespace BookBurrow.Controllers
             var options = BookStatus.ListBookStatuses();
             var vm = new BookAuthorViewModel { BookAuthor = book, BookStatusOptions = options };
             return Ok(vm);
+        }
+
+        //GET: api/<BookViewModelController>
+        [HttpGet]
+        [ActionName("GetBookPosts/{id}")]
+        public IActionResult GetBookPosts([FromRoute]int id)
+        {
+            List<UserPost> userPosts = _userPostRepository.GetAllUserPostsForBookByBookIdOrderedByCreationDate(id);
+            if (userPosts == null)
+            {
+                return NotFound();
+            }
+            return Ok(userPosts);
         }
     }
 }
