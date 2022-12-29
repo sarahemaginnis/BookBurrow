@@ -33,10 +33,10 @@ export default function BookPage ({user, currentUser}) {
         });
       }, []);
 
-    //Get userBook information from API and update state when the value of currenUser.id changes
+    //Get userBook information from API and update state when the value of currentUser.id changes
     const GetUserBook = () => {
       console.log(currentUser.id)
-      fetch (`https://localhost:7210/api/UserBook/${currentUser.id}`, {
+      fetch (`https://localhost:7210/api/UserBook?user=${currentUser.id}&book=${bookId}`, {
         method: "GET",
         headers: {
           "Access-Control-Allow-Origin": "https://localhost:7210",
@@ -78,13 +78,13 @@ export default function BookPage ({user, currentUser}) {
         <BookCard 
           book={book} 
           user={user} 
+          userBook={userBookObject}
           currentUser={currentUser} 
-          userBook={userBookObject} 
           userProfile={userProfileObject} 
           bookStatusOptions={bookStatuses} />
-        <AuthorCard book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
-        <ReviewCard book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
-        <BurrowCard bookId={bookId} book={book} user={user} currentUser={currentUser} userBook={userBookObject} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
+        <AuthorCard book={book} user={user} currentUser={currentUser} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
+        <ReviewCard book={book} user={user} currentUser={currentUser} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
+        <BurrowCard bookId={bookId} book={book} user={user} currentUser={currentUser} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
       </Container>
     </> : null
   );

@@ -19,17 +19,17 @@ namespace BookBurrow.Controllers
         }
 
         // GET: api/<UserBookController>
-        [HttpGet]
+        [HttpGet("ToBeClarified")]
         public IActionResult Get()
         {
             return Ok(_userBookRepository.GetAllOrderedByReviewCreatedAt());
         }
 
         // GET api/<UserBookController>/5
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        [HttpGet]
+        public IActionResult Get(int user, int book)
         {
-            var userBook = _userBookRepository.GetById(id);
+            var userBook = _userBookRepository.GetById(user, book);
             if (userBook == null)
             {
                 return NotFound();
@@ -57,6 +57,24 @@ namespace BookBurrow.Controllers
             }
             _userBookRepository.Update(userBook);
             return NoContent();
+        }
+
+        //PUT api/<UserBookController>/TryChangeStatus
+        [HttpPut("TryChangeStatus")]
+        public IActionResult TryChangeStatus(UserBookStatusUpdateRequest request)
+        {
+            var userBook = _userBookRepository.GetById(request.UserId, request.BookId);
+            if (userBook == null)
+            {
+                userBook = new UserBook() { UserId = request.UserId, BookId = request.BookId, BookStatus = request.BookStatus};
+                _userBookRepository.Add(userBook);
+            } else
+            {
+                userBook.BookStatus = request.BookStatus;
+                _userBookRepository.Update(userBook);
+            }
+            userBook = _userBookRepository.GetById(request.UserId, request.BookId);
+            return Ok(userBook);
         }
 
         // DELETE api/<UserBookController>/5

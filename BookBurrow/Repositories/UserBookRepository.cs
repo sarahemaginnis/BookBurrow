@@ -103,7 +103,7 @@ namespace BookBurrow.Repositories
             }
         }
 
-        public UserBook GetById(int id)
+        public UserBook GetById(int user, int book)
         {
             using (var conn = Connection)
             {
@@ -122,14 +122,16 @@ namespace BookBurrow.Repositories
                             up.id AS userProfileId, up.profileImageUrl, up.firstName, up.lastName, up.handle, up.pronounId, p.pronouns, 
                             up.biography, up.biographyUrl, up.birthday, up.createdAt AS userProfileCreatedAt, up.updatedAt AS userProfileUpdatedAt
                             FROM dbo.UserBook ub
-                                JOIN dbo.Book b ON ub.bookId = b.id
-                                JOIN dbo.UserProfile up ON ub.userId = up.userId
-                                JOIN dbo.Rating r ON ub.ratingId = r.id
-                                JOIN dbo.UserPronoun p ON up.pronounId = p.id
-                    WHERE ub.userId = @id
+                                LEFT JOIN dbo.Book b ON ub.bookId = b.id
+                                LEFT JOIN dbo.UserProfile up ON ub.userId = up.userId
+                                LEFT JOIN dbo.Rating r ON ub.ratingId = r.id
+                                LEFT JOIN dbo.UserPronoun p ON up.pronounId = p.id
+                    WHERE ub.userId = @user
+                    AND ub.bookId = @book
                     ";
 
-                    DbUtils.AddParameter(cmd, "@id", id);
+                    DbUtils.AddParameter(cmd, "@user", user);
+                    DbUtils.AddParameter(cmd, "@book", book);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -139,10 +141,10 @@ namespace BookBurrow.Repositories
                             userBook = new UserBook()
                             {
                                 Id = DbUtils.GetInt(reader, "id"),
-                                BookId = DbUtils.GetInt(reader, "bookId"),
+                                BookId = book,
                                 Book = new Book()
                                 {
-                                    Id = DbUtils.GetInt(reader, "bookId"),
+                                    Id = book,
                                     Title = DbUtils.GetString(reader, "title"),
                                     Isbn = DbUtils.GetString(reader, "isbn"),
                                     Description = DbUtils.GetString(reader, "description"),
@@ -151,11 +153,11 @@ namespace BookBurrow.Repositories
                                     CreatedAt = DbUtils.GetDateTime(reader, "bookRecordCreatedAt"),
                                     UpdatedAt = DbUtils.GetDateTime(reader, "bookRecordUpdatedAt"),
                                 },
-                                UserId = id,
+                                UserId = user,
                                 UserProfile = new UserProfile()
                                 {
                                     Id = DbUtils.GetInt(reader, "userProfileId"),
-                                    UserId = id,
+                                    UserId = user,
                                     ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
                                     FirstName = DbUtils.GetString(reader, "firstName"),
                                     LastName = DbUtils.GetString(reader, "lastName"),
@@ -182,8 +184,8 @@ namespace BookBurrow.Repositories
                                 RatingId = DbUtils.GetNullableInt(reader, "ratingId"),
                                 Rating = new Rating()
                                 {
-                                    Id = DbUtils.GetInt(reader, "ratingId"),
-                                    DisplayValue = reader.GetDecimal(reader.GetOrdinal("rating")),
+                                    Id = DbUtils.GetNullableInt(reader, "ratingId") ?? 0,
+                                    DisplayValue = DbUtils.GetNullableDecimal(reader, "rating") ?? 0,
                                 },
                                 BookStatus = BookStatus.FromValue(DbUtils.GetInt(reader, "statusId")),
                                 Review = DbUtils.GetString(reader, "review"),

@@ -4,8 +4,9 @@ import { BsPencilFill, BsFillTrashFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import "./BookCard.css";
 
-const BookCard = ({book, user, currentUser, userBook, userProfile, bookStatusOptions}) => {
-    const [currentUserBook, setCurrentUserBook] = useState(userBook) //can I do this, or does it need to be an empty object?
+const BookCard = ({book, user, userBook, currentUser, userProfile, bookStatusOptions}) => {
+    const [currentUserBook, setCurrentUserBook] = useState({});
+    const [currentUserBookTest, setCurrentUserBookTest] = useState({});
     const [userBookStatus, setUserBookStatus] = useState({});
     const [userBookRatingId, setUserBookRatingId] = useState("");
     const [userBookRatingValue, setUserBookRatingValue] = useState("");
@@ -22,11 +23,8 @@ const BookCard = ({book, user, currentUser, userBook, userProfile, bookStatusOpt
     }
 
     const submitEdits = () => {
-        navigation(`/book/${currentUserBook.bookId}`)
+        navigation(`/book/${currentUserBookTest.bookId}`)
     }
-
-    console.log(userBook);
-    console.log(currentUserBook);
 
     const bookStatus0 = book.bookStatusOptions.find(({value}) => value === 0);
     const bookStatus1 = book.bookStatusOptions.find(({value}) => value === 1);
@@ -165,12 +163,33 @@ const BookCard = ({book, user, currentUser, userBook, userProfile, bookStatusOpt
         });
     }
 
+    const tryChangeStatus = (requestObject) => {
+        return fetch(`https://localhost:7210/api/UserBook/TryChangeStatus`, {
+            method: "PUT",
+            headers: {
+                "Access-Control-Allow-Origin": "https://localhost:7210",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestObject),
+        }).then((res) => res.json())
+    }
+
     //handleClick function for updating userBookStatus
-    const handleBookShelfClick = (userBookStatus) => {
+    //do a fetch call, in the body would be the user.id, book.id, and status.value
+    //endpoint should probably be a PUT UserBook/TryChangeStatus
+    const handleBookShelfClick = async (userBookStatus) => {
         setUserBookStatus(userBookStatus)
-        const copy = {...currentUserBook}
-        copy.bookStatus = userBookStatus
-        setCurrentUserBook(copy)
+        const requestObject = {userId: currentUser.id, bookId: book.bookAuthor.book.id, bookStatus: userBookStatus}
+        //do the fetch call here
+        const data = await tryChangeStatus(requestObject)
+            console.log({data})
+            setCurrentUserBookTest(data)
+            console.log(data)
+            const ub = currentUserBookTest
+            console.log(ub)
+            console.log({currentUserBookTest})
+            handleClose()
+            submitEdits()
     }
 
     //conditional logic to determine if userBook exists for POST or PUT
@@ -232,7 +251,6 @@ const BookCard = ({book, user, currentUser, userBook, userProfile, bookStatusOpt
                             <Button type="submit" key={`bookStatus--${b.value}`} value={b.value} onClick={(e) => {
                                 e.stopPropagation();
                                 handleBookShelfClick(b);
-                                checkUserBookExists();
                             }}>{b.name}</Button>
                         </Col>
                     </Row>
