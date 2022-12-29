@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import "./AuthorCard.css";
 
-const AuthorCard = ({book, user, currentUser, userBook, userProfile, bookStatusOptions}) => {
+const AuthorCard = ({book, user, currentUser, userProfile, bookStatusOptions}) => {
 
     return (
         <div className="author-card">

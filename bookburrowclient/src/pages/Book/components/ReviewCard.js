@@ -3,7 +3,7 @@ import { Button, Col, Row } from "react-bootstrap";
 import { BsPencilFill } from "react-icons/bs";
 import "./ReviewCard.css";
 
-const ReviewCard = ({book, user, currentUser, userBook, userProfile, bookStatusOptions}) => {
+const ReviewCard = ({book, user, currentUser, userProfile, bookStatusOptions}) => {
 
     return(
         <div className="review-card">
