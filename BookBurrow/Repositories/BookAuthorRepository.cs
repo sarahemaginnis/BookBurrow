@@ -65,6 +65,62 @@ namespace BookBurrow.Repositories
             }
         }
 
+        public List<BookAuthor> Search(string criterion)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    var sql = @"
+                        SELECT b.id AS bookId, b.title, b.isbn, b.description, b.coverImageUrl, b.datePublished, b.createdAt, b.updatedAt,
+                                a.id AS authorId, a.userId, a.firstName, a.middleName, a.lastName, a.profileImageUrl
+                            FROM dbo.Book b
+                                LEFT JOIN dbo.BookAuthor ba ON b.id = ba.bookId
+                                LEFT JOIN dbo.Author a ON ba.authorId = a.id
+                        WHERE b.title LIKE @criterion OR b.description LIKE @criterion OR a.firstName LIKE @criterion OR a.middleName LIKE @criterion 
+                            OR a.lastName LIKE @criterion
+                    ";
+
+                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@criterion", criterion + "%");
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        var books = new List<BookAuthor>();
+                        while (reader.Read())
+                        {
+                            books.Add(new BookAuthor()
+                            {
+                                BookId = DbUtils.GetInt(reader, "bookId"),
+                                Book = new Book()
+                                {
+                                    Id = DbUtils.GetInt(reader, "bookId"),
+                                    Title = DbUtils.GetString(reader, "title"),
+                                    Isbn = DbUtils.GetString(reader, "isbn"),
+                                    Description = DbUtils.GetString(reader, "description"),
+                                    CoverImageUrl = DbUtils.GetString(reader, "coverImageUrl"),
+                                    DatePublished = DbUtils.GetDateTime(reader, "datePublished"),
+                                    CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
+                                    UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
+                                },
+                                AuthorId = DbUtils.GetInt(reader, "authorId"),
+                                Author = new Author()
+                                {
+                                    Id = DbUtils.GetInt(reader, "authorId"),
+                                    UserId = DbUtils.GetNullableInt(reader, "userId"),
+                                    FirstName = DbUtils.GetString(reader, "firstName"),
+                                    MiddleName = DbUtils.GetString(reader, "middleName"),
+                                    LastName = DbUtils.GetString(reader, "lastName"),
+                                    ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
+                                },
+                            });
+                        }
+                        return books;
+                    }
+                }
+            }
+        }
+
         public BookAuthor GetById(int id)
         {
             using (var conn = Connection)

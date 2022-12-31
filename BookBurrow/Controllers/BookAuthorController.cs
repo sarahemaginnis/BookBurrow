@@ -23,6 +23,13 @@ namespace BookBurrow.Controllers
             return Ok(_bookAuthorRepository.GetAllOrderedByTitle());
         }
 
+        //GET: api/<BookAuthorController>/search
+        [HttpGet("search")]
+        public IActionResult Search(string q)
+        {
+            return Ok(_bookAuthorRepository.Search(q));
+        }
+
         // GET api/<BookAuthorController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
