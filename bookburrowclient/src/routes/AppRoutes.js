@@ -8,9 +8,12 @@ import RegisterUser from "../pages/Register/Register";
 import UserProfile from "../pages/UserProfile/UserProfile";
 import EditUserProfile from "../pages/EditUserProfile/EditUserProfile";
 import EditPostPage from "../pages/EditPost/EditPost";
+import Search from "../pages/Search/Search";
 
 export default function AppRoutes({ user }) {
   const [currentUser, setCurrentUser] = useState({});
+  const [books, setBooks] = useState([]);
+  const [searchBookValue, setSearchBookValue] = useState("");
 
     //Verify user by firebaseUID
   //   useEffect(() => {
@@ -46,6 +49,20 @@ export default function AppRoutes({ user }) {
       });
   };
 
+  const getBookRequest = async (searchBookValue) => {
+    const res = await fetch(`https://localhost:7210/api/BookAuthor/search?q=${searchBookValue}`);
+    if (res.status === 200) {
+      const res2 = await res.json();
+      setBooks(res2);
+    }
+  };
+
+  useEffect(() => {
+    getBookRequest(searchBookValue);
+  }, [searchBookValue]);
+
+  //consider fetching books here and passing those down
+
   return currentUser === "" ? (
     <div>
       <Routes>
@@ -64,6 +81,7 @@ export default function AppRoutes({ user }) {
         <Route path="user/settings/:userId" element={<EditUserProfile user={user} currentUser={currentUser} />} />
         <Route path="post/:postId" element={<PostPage user={user} currentUser={currentUser} />} />
         <Route path="post/edit/:postId" element={<EditPostPage user={user} currentUser={currentUser} />} />
+        <Route path="/search" element={<Search user={user} currentUser={currentUser} searchBookValue={searchBookValue} setSearchBookValue={setSearchBookValue} books={books} />} />
         <Route path="*" element={<Authenticated user={user} currentUser={currentUser} />} />
       </Routes>
     </div>
