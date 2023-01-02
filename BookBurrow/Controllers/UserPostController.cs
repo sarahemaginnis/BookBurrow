@@ -24,6 +24,13 @@ namespace BookBurrow.Controllers
             return Ok(_userPostRepository.GetAllOrderedByPostCreationDate());
         }
 
+        //GET: api/<UserPostController>/search
+        [HttpGet("search")]
+        public IActionResult Search(string q)
+        {
+            return Ok(_userPostRepository.Search(q));
+        }
+
         // GET api/<UserPostController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)    
