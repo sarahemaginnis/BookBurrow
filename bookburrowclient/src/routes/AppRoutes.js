@@ -14,8 +14,10 @@ export default function AppRoutes({ user }) {
   const [currentUser, setCurrentUser] = useState({});
   const [books, setBooks] = useState([]);
   const [searchBookValue, setSearchBookValue] = useState("");
+  const [userProfiles, setUserProfiles] = useState([]);
+  const [searchUserProfileValue, setSearchUserProfileValue] = useState("");
 
-    //Verify user by firebaseUID
+  //Verify user by firebaseUID
   //   useEffect(() => {
   //     console.log(currentUser);
   //     fetch(`https://localhost:7210/api/LoginViewModel/VerifyUser/${user.uid}`, {
@@ -50,7 +52,9 @@ export default function AppRoutes({ user }) {
   };
 
   const getBookRequest = async (searchBookValue) => {
-    const res = await fetch(`https://localhost:7210/api/BookAuthor/search?q=${searchBookValue}`);
+    const res = await fetch(
+      `https://localhost:7210/api/BookAuthor/search?q=${searchBookValue}`
+    );
     if (res.status === 200) {
       const res2 = await res.json();
       setBooks(res2);
@@ -60,6 +64,20 @@ export default function AppRoutes({ user }) {
   useEffect(() => {
     getBookRequest(searchBookValue);
   }, [searchBookValue]);
+
+  const getUserProfileRequest = async (searchUserProfileValue) => {
+    const res = await fetch(
+      `https://localhost:7210/api/UserProfile/Search/search?q=${searchUserProfileValue}`
+    );
+    if (res.status === 200) {
+      const res2 = await res.json();
+      setUserProfiles(res2);
+    }
+  };
+
+  useEffect(() => {
+    getUserProfileRequest(searchUserProfileValue);
+  }, [searchUserProfileValue]);
 
   //consider fetching books here and passing those down
 
@@ -75,14 +93,50 @@ export default function AppRoutes({ user }) {
   ) : (
     <div>
       <Routes>
-        <Route exact path="/" element={<Authenticated user={user} currentUser={currentUser} />} />
-        <Route path="/book/:bookId" element={<BookPage user={user} currentUser={currentUser} />} />
-        <Route path="/user/:userProfileId" element={<UserProfile user={user} currentUser={currentUser} />} />
-        <Route path="user/settings/:userId" element={<EditUserProfile user={user} currentUser={currentUser} />} />
-        <Route path="post/:postId" element={<PostPage user={user} currentUser={currentUser} />} />
-        <Route path="post/edit/:postId" element={<EditPostPage user={user} currentUser={currentUser} />} />
-        <Route path="/search" element={<Search user={user} currentUser={currentUser} searchBookValue={searchBookValue} setSearchBookValue={setSearchBookValue} books={books} />} />
-        <Route path="*" element={<Authenticated user={user} currentUser={currentUser} />} />
+        <Route
+          exact
+          path="/"
+          element={<Authenticated user={user} currentUser={currentUser} />}
+        />
+        <Route
+          path="/book/:bookId"
+          element={<BookPage user={user} currentUser={currentUser} />}
+        />
+        <Route
+          path="/user/:userProfileId"
+          element={<UserProfile user={user} currentUser={currentUser} />}
+        />
+        <Route
+          path="user/settings/:userId"
+          element={<EditUserProfile user={user} currentUser={currentUser} />}
+        />
+        <Route
+          path="post/:postId"
+          element={<PostPage user={user} currentUser={currentUser} />}
+        />
+        <Route
+          path="post/edit/:postId"
+          element={<EditPostPage user={user} currentUser={currentUser} />}
+        />
+        <Route
+          path="/search"
+          element={
+            <Search
+              user={user}
+              currentUser={currentUser}
+              searchBookValue={searchBookValue}
+              setSearchBookValue={setSearchBookValue}
+              books={books}
+              searchUserProfileValue={searchUserProfileValue}
+              setSearchUserProfileValue={setSearchUserProfileValue}
+              userProfiles={userProfiles}
+            />
+          }
+        />
+        <Route
+          path="*"
+          element={<Authenticated user={user} currentUser={currentUser} />}
+        />
       </Routes>
     </div>
   );

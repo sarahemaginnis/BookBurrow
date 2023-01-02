@@ -60,6 +60,55 @@ namespace BookBurrow.Repositories
             }
         }
 
+        public List<UserProfile> Search(string criterion)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    var sql = @"
+                        SELECT u.id, u.userId, u.profileImageUrl, u.firstName, u.lastName, u.handle, u.pronounId, u.biography, u.biographyUrl, u.birthday, u.createdAt, u.updatedAt,
+                            up.pronouns
+                        FROM dbo.UserProfile u
+                            LEFT JOIN dbo.UserPronoun up ON u.pronounId = up.id
+                        WHERE u.firstName LIKE @criterion OR u.lastName LIKE @criterion OR u.handle LIKE @criterion OR u.biography LIKE @criterion
+                    ";
+                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@criterion", criterion + "%");
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        var userProfiles = new List<UserProfile>();
+                        while (reader.Read())
+                        {
+                            var pronounId = DbUtils.GetNullableInt(reader, "pronounId");
+                            userProfiles.Add(new UserProfile()
+                            {
+                                Id = DbUtils.GetInt(reader, "id"),
+                                UserId = DbUtils.GetInt(reader, "userId"),
+                                ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
+                                FirstName = DbUtils.GetString(reader, "firstName"),
+                                LastName = DbUtils.GetString(reader, "lastName"),
+                                Handle = DbUtils.GetString(reader, "handle"),
+                                PronounId = pronounId,
+                                UserPronoun = pronounId == null ? null : new UserPronoun()
+                                {
+                                    Id = DbUtils.GetInt(reader, "pronounId"),
+                                    Pronouns = DbUtils.GetString(reader, "pronouns"),
+                                },
+                                Biography = DbUtils.GetString(reader, "biography"),
+                                BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
+                                Birthday = DbUtils.GetDateTime(reader, "birthday"),
+                                CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
+                                UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
+                            });
+                        }
+                        return userProfiles;
+                    }
+                }
+            }
+        }
+
         public UserProfile GetById(int id)
         {
             using (var conn = Connection)

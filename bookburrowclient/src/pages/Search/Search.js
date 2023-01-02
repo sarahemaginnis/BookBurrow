@@ -10,18 +10,42 @@ export default function Search({
   books,
   searchBookValue,
   setSearchBookValue,
+  userProfiles,
+  searchUserProfileValue,
+  setSearchUserProfileValue
 }) {
+
   const [key, setKey] = useState('books');
   const navigate = useNavigate();
+
+  const setSearchBox = () => {
+    if(key==='books') {
+        return <SearchBox
+          searchValue={searchBookValue}
+          setSearchValue={setSearchBookValue}
+        />
+    } else if(key==='people') {
+        return <SearchBox
+          searchValue={searchUserProfileValue}
+          setSearchValue={setSearchUserProfileValue}
+        />
+    } else {
+        return <SearchBox
+          searchValue={searchBookValue}
+          setSearchValue={setSearchBookValue}
+        />
+    }
+  }
 
   return (
     <div>
       <Container>
         <h1>Search</h1>
-        <SearchBox
+        {setSearchBox()}
+        {/* <SearchBox
           searchValue={searchBookValue}
           setSearchValue={setSearchBookValue}
-        />
+        /> */}
         <Container>
           <Tabs
             activeKey={key}
@@ -75,7 +99,52 @@ export default function Search({
               </div>
             </Tab>
             <Tab eventKey="posts" title="Posts"></Tab>
-            <Tab eventKey="people" title="People"></Tab>
+            <Tab eventKey="people" title="People">
+            <div>
+                <Container>
+                  <Row xs={1} md={3} className="g-3">
+                    {userProfiles.length > 0 ? (
+                      userProfiles.map((userProfile) => {
+                        const navigateToProfile = () => {
+                          navigate(`/user/${userProfile.userId}`);
+                        };
+                        return (
+                          <Col>
+                            <Card
+                              className="burrow-userProfile-card"
+                              onClick={navigateToProfile}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <Card.Img
+                                variant="top"
+                                src={
+                                  userProfile.id ? userProfile.profileImageUrl : null
+                                }
+                              />
+                              <Card.Body>
+                                <Card.Title>
+                                  {userProfile.id ? userProfile.handle : null}
+                                </Card.Title>
+                                <Card.Subtitle>
+                                  {userProfile.id ? userProfile.firstName : null}{" "}
+                                  {userProfile.id ? userProfile.lastName : null}
+                                </Card.Subtitle>
+                                <Card.Text>
+                                  {userProfile.id ? userProfile.biography : null}
+                                </Card.Text>
+                              </Card.Body>
+                              <Card.Footer></Card.Footer>
+                            </Card>
+                          </Col>
+                        );
+                      })
+                    ) : (
+                      <div></div>
+                    )}
+                  </Row>
+                </Container>
+              </div>
+              </Tab>
           </Tabs>
         </Container>
       </Container>
