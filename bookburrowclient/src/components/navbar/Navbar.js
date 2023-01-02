@@ -108,6 +108,10 @@ export const NavBar = ({ user }) => {
     navigation(`/user/${userProfileObject.userId}`)
   }
 
+  const navigateToSearch = () => {
+    navigation('/search')
+  }
+
   const CreateNewPost = () => {
     const newPostObject = {
         userId: currentUser.id,
@@ -280,11 +284,11 @@ return fetch('https://localhost:7210/api/UserPost', fetchOptions)
           <Navbar.Collapse id="basic-navbar-nav">
           <Form className="d-flex">
             <Form.Control type="search"
-              placeholder="Search"
+              placeholder="Search Book Burrow"
               className="me-2"
               aria-label="Search"
               />
-              <Button variant="outline-success">Search</Button>
+              <Button onClick={navigateToSearch}>Search</Button>
           </Form>
             <Nav className="ms-auto">
               <Nav.Link onClick={navigateToDashboard}><BsFillHouseDoorFill /></Nav.Link>

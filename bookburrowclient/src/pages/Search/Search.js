@@ -12,7 +12,10 @@ export default function Search({
   setSearchBookValue,
   userProfiles,
   searchUserProfileValue,
-  setSearchUserProfileValue
+  setSearchUserProfileValue,
+  userPosts,
+  searchUserPostValue,
+  setSearchUserPostValue
 }) {
 
   const [key, setKey] = useState('books');
@@ -29,10 +32,10 @@ export default function Search({
           searchValue={searchUserProfileValue}
           setSearchValue={setSearchUserProfileValue}
         />
-    } else {
+    } else if(key==='posts') {
         return <SearchBox
-          searchValue={searchBookValue}
-          setSearchValue={setSearchBookValue}
+          searchValue={searchUserPostValue}
+          setSearchValue={setSearchUserPostValue}
         />
     }
   }
@@ -98,7 +101,51 @@ export default function Search({
                 </Container>
               </div>
             </Tab>
-            <Tab eventKey="posts" title="Posts"></Tab>
+            <Tab eventKey="posts" title="Posts">
+            <div>
+                <Container>
+                  <Row xs={1} md={3} className="g-3">
+                    {userPosts.length > 0 ? (
+                      userPosts.map((post) => {
+                        const navigateToPost = () => {
+                          navigate(`/post/${post.id}`);
+                        };
+                        return (
+                          <Col>
+                            <Card
+                              className="burrow-book-card"
+                              onClick={navigateToPost}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <Card.Img
+                                variant="top"
+                                src={
+                                  post.cloudinaryUrl ? post.cloudinaryUrl : post.book.coverImageUrl
+                                }
+                              />
+                              <Card.Body>
+                                <Card.Title>
+                                  {post.id ? post.title : null}
+                                </Card.Title>
+                                <Card.Subtitle>
+                                  {post.id ? post.userProfile.handle : null}
+                                </Card.Subtitle>
+                                <Card.Text>
+                                  {post.id ? post.caption : null}
+                                </Card.Text>
+                              </Card.Body>
+                              <Card.Footer></Card.Footer>
+                            </Card>
+                          </Col>
+                        );
+                      })
+                    ) : (
+                      <div></div>
+                    )}
+                  </Row>
+                </Container>
+              </div>
+            </Tab>
             <Tab eventKey="people" title="People">
             <div>
                 <Container>

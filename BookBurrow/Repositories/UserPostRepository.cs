@@ -93,6 +93,94 @@ namespace BookBurrow.Repositories
             }
         }
 
+        public List<UserPost> Search(string criterion)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    var sql = @"
+                        SELECT up.id, up.userId, up.postTypeId, 
+                            up.bookId, 
+                            b.title AS bookTitle, b.isbn, b.description, b.coverImageUrl, b.datePublished, b.createdAt AS bookRecordCreatedAt, 
+                            b.updatedAt AS bookRecordUpdatedAt,
+                            a.id AS authorId, a.userId, a.firstName, a.middleName, a.lastName, a.profileImageUrl,
+                            up.title AS postTitle, up.cloudinaryUrl, up.caption AS postCaption, up.source, up.songUrl, up.songUrlSummary, 
+                            up.createdAt, up.updatedAt,
+                            p.id AS userProfileId, p.profileImageUrl, p.firstName, p.lastName, p.handle, p.pronounId, 
+                            pr.pronouns, 
+                            p.biography, p.biographyUrl, p.birthday, p.createdAt AS userProfileCreatedAt, p.updatedAt AS userProfileUpdatedAt
+                            FROM dbo.UserPost up
+                                LEFT JOIN dbo.Book b ON up.bookId = b.id
+                                LEFT JOIN dbo.BookAuthor ba ON b.id = ba.bookId
+                                LEFT JOIN dbo.Author a ON ba.authorId = a.id
+                                LEFT JOIN dbo.UserProfile p ON up.userId = p.userId
+                                LEFT JOIN dbo.UserPronoun pr ON p.pronounId = pr.id
+                        WHERE b.title LIKE @criterion OR b.description LIKE @criterion OR a.firstName LIKE @criterion OR a.middleName LIKE @criterion 
+                            OR a.lastName LIKE @criterion OR up.title LIKE @criterion OR up.caption LIKE @criterion OR p.firstName LIKE @criterion
+                            OR p.lastName LIKE @criterion OR p.handle LIKE @criterion
+                    ";
+                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@criterion", criterion + "%");
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        var userPosts = new List<UserPost>();
+                        while (reader.Read())
+                        {
+                            userPosts.Add(new UserPost()
+                            {
+                                Id = DbUtils.GetInt(reader, "id"),
+                                UserId = DbUtils.GetInt(reader, "userId"),
+                                UserProfile = new UserProfile()
+                                {
+                                    Id = DbUtils.GetInt(reader, "userProfileId"),
+                                    UserId = DbUtils.GetInt(reader, "userId"),
+                                    ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
+                                    FirstName = DbUtils.GetString(reader, "firstName"),
+                                    LastName = DbUtils.GetString(reader, "lastName"),
+                                    Handle = DbUtils.GetString(reader, "handle"),
+                                    PronounId = DbUtils.GetNullableInt(reader, "pronounId"),
+                                    UserPronoun = new UserPronoun()
+                                    {
+                                        Id = DbUtils.GetInt(reader, "pronounId"),
+                                        Pronouns = DbUtils.GetString(reader, "pronouns"),
+                                    },
+                                    Biography = DbUtils.GetString(reader, "biography"),
+                                    BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
+                                    Birthday = DbUtils.GetDateTime(reader, "birthday"),
+                                    CreatedAt = DbUtils.GetDateTime(reader, "userProfileCreatedAt"),
+                                    UpdatedAt = DbUtils.GetDateTime(reader, "userProfileUpdatedAt"),
+                                },
+                                PostType = PostType.FromValue(DbUtils.GetInt(reader, "postTypeId")),
+                                BookId = DbUtils.GetInt(reader, "bookId"),
+                                Book = new Book()
+                                {
+                                    Id = DbUtils.GetInt(reader, "bookId"),
+                                    Title = DbUtils.GetString(reader, "bookTitle"),
+                                    Isbn = DbUtils.GetString(reader, "isbn"),
+                                    Description = DbUtils.GetString(reader, "description"),
+                                    CoverImageUrl = DbUtils.GetString(reader, "coverImageUrl"),
+                                    DatePublished = DbUtils.GetDateTime(reader, "datePublished"),
+                                    CreatedAt = DbUtils.GetDateTime(reader, "bookRecordCreatedAt"),
+                                    UpdatedAt = DbUtils.GetDateTime(reader, "bookRecordUpdatedAt"),
+                                },
+                                Title = DbUtils.GetString(reader, "postTitle"),
+                                CloudinaryUrl = DbUtils.GetString(reader, "cloudinaryUrl"),
+                                Caption = DbUtils.GetString(reader, "postCaption"),
+                                Source = DbUtils.GetString(reader, "source"),
+                                SongUrl = DbUtils.GetString(reader, "songUrl"),
+                                SongUrlSummary = DbUtils.GetString(reader, "songUrlSummary"),
+                                CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
+                                UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
+                            });
+                        }
+                        return userPosts;
+                    }
+                }
+            }
+        }
+
         public List <UserPost> GetAllUserPostsForBookByBookIdOrderedByCreationDate(int id)
         {
             using (var conn = Connection)

@@ -16,6 +16,8 @@ export default function AppRoutes({ user }) {
   const [searchBookValue, setSearchBookValue] = useState("");
   const [userProfiles, setUserProfiles] = useState([]);
   const [searchUserProfileValue, setSearchUserProfileValue] = useState("");
+  const [userPosts, setUserPosts] = useState([]);
+  const [searchUserPostValue, setSearchUserPostValue] = useState("");
 
   //Verify user by firebaseUID
   //   useEffect(() => {
@@ -79,6 +81,18 @@ export default function AppRoutes({ user }) {
     getUserProfileRequest(searchUserProfileValue);
   }, [searchUserProfileValue]);
 
+  const getUserPostRequest = async (searchUserPostValue) => {
+    const res = await fetch(`https://localhost:7210/api/UserPost/search?q=${searchUserPostValue}`);
+    if (res.status === 200) {
+      const res2 = await res.json();
+      setUserPosts(res2);
+    }
+  }
+
+  useEffect(() => {
+    getUserPostRequest(searchUserPostValue);
+  }, [searchUserPostValue]);
+
   //consider fetching books here and passing those down
 
   return currentUser === "" ? (
@@ -130,6 +144,9 @@ export default function AppRoutes({ user }) {
               searchUserProfileValue={searchUserProfileValue}
               setSearchUserProfileValue={setSearchUserProfileValue}
               userProfiles={userProfiles}
+              searchUserPostValue={searchUserPostValue}
+              setSearchUserPostValue={setSearchUserPostValue}
+              userPosts={userPosts}
             />
           }
         />
