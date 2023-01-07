@@ -8,6 +8,7 @@ import './EditUserProfile.css';
 export default function EditUserProfile ({user, currentUser}) {
     const {userId} = useParams(); //variable storing the route parameter
     const [userProfileObject, setUserProfileObject] = useState({});
+    const [userProfileImage, setUserProfileImage] = useState(""); //state variable for profileImage
     const [pronouns, syncPronouns] = useState([]); //state variable for array of pronouns
     const [show, setShow] = useState(false);
 
@@ -15,6 +16,14 @@ export default function EditUserProfile ({user, currentUser}) {
     
     console.log(userProfileObject);
     console.log(userProfileObject.pronounId);
+    console.log(userProfileImage);
+
+    //Function that gets passed down to UploadWidget
+    const pullData = (data) => {
+        console.log(data);
+        setUserProfileImage(data);
+        console.log(userProfileImage)
+    }
 
     //Fetch all pronouns
     useEffect(() => {
@@ -43,6 +52,7 @@ export default function EditUserProfile ({user, currentUser}) {
         .then((res) => res.json())
         .then((profile) => {
             setUserProfileObject(profile)
+            setUserProfileImage(profile.profileImageUrl)
             console.log(userProfileObject)
         })
     }, []);
@@ -77,7 +87,7 @@ export default function EditUserProfile ({user, currentUser}) {
         const updatedUserProfile = {
             id: userProfileObject.id,
             userId: userProfileObject.userId,
-            profileImageUrl: userProfileObject.profileImageUrl,
+            profileImageUrl: userProfileImage,
             firstName: userProfileObject.firstName,
             lastName: userProfileObject.lastName,
             handle: userProfileObject.handle,
@@ -124,12 +134,12 @@ export default function EditUserProfile ({user, currentUser}) {
         </Row>
         <Row>
             <Col>
-                <h3>Profile Image</h3>
+                <img src={`${userProfileObject.id ? userProfileImage : null}`} />
             </Col>
         </Row>
         <Row>
             <Col>
-                <UploadWidget />        
+                <UploadWidget func={pullData} />        
             </Col>
         </Row>
         <Row>
