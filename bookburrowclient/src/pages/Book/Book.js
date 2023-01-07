@@ -79,6 +79,7 @@ export default function BookPage ({user, currentUser}) {
           book={book} 
           user={user} 
           userBook={userBookObject}
+          getUserBook={GetUserBook}
           currentUser={currentUser} 
           userProfile={userProfileObject} 
           bookStatusOptions={bookStatuses} />
