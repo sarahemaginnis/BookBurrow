@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import Select from "react-select";
 import "./Navbar.css";
 import {BsFillHouseDoorFill, BsFillEnvelopeFill, BsFillBellFill, BsFillPersonFill, BsPencilFill, BsCameraVideoFill } from "react-icons/bs";
 import {ImCompass2, ImQuotesLeft, ImLink} from "react-icons/im";
@@ -30,6 +31,7 @@ export const NavBar = ({ user }) => {
   const [postSongUrlSummary, setPostSongUrlSummary] = useState("");
   const [modalView, setModalView] = useState(1);
   const [show, setShow] = useState(false);
+  const [selectedBookId, setSelectedBookId] = useState("");
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -173,6 +175,7 @@ const fetchOptions = {
 }
 return fetch('https://localhost:7210/api/UserPost', fetchOptions)
 .then(res => res.json())
+.then(setPostCloudinaryUrl(""))
 .then(handleClose)
 .then(setModalView(1))
 }
@@ -266,27 +269,17 @@ return fetch('https://localhost:7210/api/UserPost', fetchOptions)
                 <Col>
                 <Form.Group className="mb-3" controlId="formBasicBook">
                     <Form.Label>Tag a Book?</Form.Label>
-                    <Form.Control as="select" onChange={
-                        (event) => {
-                          const copy = {...userBookObject}
-                          copy.title = event.target.options[event.target.selectedIndex].innerHTML
-                          console.log(copy.title)
-                          console.log(books.find(b => b.title === copy.title))
-                          const selectedUserBookObject = books.find(b => b.title === copy.title)
-                          console.log(selectedUserBookObject)
-                          setUserBookObject(selectedUserBookObject)
-                          console.log(userBookObject)
-                        }
-                    }
-                        value={postBookId}>
-                        {books.map((e) => (
-                            <option key={`book--${e.id}`}
-                            value={e.id}
-                            >
-                                {e.title}
-                            </option>
-                        ))}
-                    </Form.Control>
+                    <Select onChange={(event) => {
+                      const selectedUserBookObject = books.find(b => b.id === event.value)
+                      console.log(selectedUserBookObject)
+                      setUserBookObject(selectedUserBookObject)
+                      console.log(userBookObject)
+                      setSelectedBookId(event.value)
+                    }} 
+                    options={books.map((e) => ({
+                      value: e.id, 
+                      label: e.title
+                    }))} />
                     </Form.Group>
                 </Col>
               </Row>
@@ -351,27 +344,17 @@ return fetch('https://localhost:7210/api/UserPost', fetchOptions)
                 <Col>
                 <Form.Group className="mb-3" controlId="formBasicBook">
                     <Form.Label>Tag a Book?</Form.Label>
-                    <Form.Control as="select" onChange={
-                        (event) => {
-                          const copy = {...userBookObject}
-                          copy.title = event.target.options[event.target.selectedIndex].innerHTML
-                          console.log(copy.title)
-                          console.log(books.find(b => b.title === copy.title))
-                          const selectedUserBookObject = books.find(b => b.title === copy.title)
-                          console.log(selectedUserBookObject)
-                          setUserBookObject(selectedUserBookObject)
-                          console.log(userBookObject)
-                        }
-                    }
-                        value={postBookId}>
-                        {books.map((e) => (
-                            <option key={`book--${e.id}`}
-                            value={e.id}
-                            >
-                                {e.title}
-                            </option>
-                        ))}
-                    </Form.Control>
+                    <Select onChange={(event) => {
+                      const selectedUserBookObject = books.find(b => b.id === event.value)
+                      console.log(selectedUserBookObject)
+                      setUserBookObject(selectedUserBookObject)
+                      console.log(userBookObject)
+                      setSelectedBookId(event.value)
+                    }} 
+                    options={books.map((e) => ({
+                      value: e.id, 
+                      label: e.title
+                    }))} />
                     </Form.Group>
                 </Col>
               </Row>
