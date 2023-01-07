@@ -10,6 +10,7 @@ import {HiChatBubbleLeftRight} from "react-icons/hi2";
 import {FaHeadphonesAlt} from "react-icons/fa";
 import {BsCameraVideoFill } from "react-icons/bs";
 import {ImQuotesLeft, ImLink} from "react-icons/im";
+import './Authenticated.css';
 
 export default function Authenticated({ user, currentUser }) {
   const [postTypes, syncPostTypes] = useState([]);
@@ -147,7 +148,7 @@ export default function Authenticated({ user, currentUser }) {
         <Col sm={9}>
           <Row>
             <Col sm={3}>
-              <img src={user.photoURL} alt={user.displayName} />
+              <img src={userProfileObject.profileImageUrl} alt={user.displayName} />
             </Col>
             <Col sm={6}>
               <Container>
