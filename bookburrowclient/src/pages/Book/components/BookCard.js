@@ -4,7 +4,7 @@ import { BsPencilFill, BsFillTrashFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import "./BookCard.css";
 
-const BookCard = ({book, user, userBook, currentUser, userProfile, bookStatusOptions}) => {
+const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, bookStatusOptions}) => {
     const [currentUserBook, setCurrentUserBook] = useState({});
     const [currentUserBookTest, setCurrentUserBookTest] = useState({});
     const [userBookStatus, setUserBookStatus] = useState({});
@@ -23,7 +23,7 @@ const BookCard = ({book, user, userBook, currentUser, userProfile, bookStatusOpt
     }
 
     const submitEdits = () => {
-        navigation(`/book/${currentUserBookTest.bookId}`)
+        navigation(`/book/${book.bookAuthor.book.id}`)
     }
 
     const bookStatus0 = book.bookStatusOptions.find(({value}) => value === 0);
@@ -189,7 +189,8 @@ const BookCard = ({book, user, userBook, currentUser, userProfile, bookStatusOpt
             console.log(ub)
             console.log({currentUserBookTest})
             handleClose()
-            submitEdits()
+            //submitEdits()
+            getUserBook()
     }
 
     //conditional logic to determine if userBook exists for POST or PUT
