@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Button } from "react-bootstrap";
 
-const UploadWidget = () => {
+const UploadWidget = (props) => {
     const cloudinaryRef = useRef();
     const widgetRef = useRef();
     useEffect(() => {
@@ -11,6 +11,9 @@ const UploadWidget = () => {
             uploadPreset: 'bookBurrow'
         }, function(error, result){
             console.log(result);
+            console.log(result.info.files);
+            console.log(result.info.files[0].uploadInfo.secure_url); //this url needs to be sent to the backend - how do I pass this up to parent component?
+            props.func(result.info.files[0].uploadInfo.secure_url);
         });
     }, [])
     return(

@@ -11,6 +11,7 @@ import {AiOutlineCamera} from "react-icons/ai";
 import {HiChatBubbleLeftRight} from "react-icons/hi2";
 import {FaHeadphonesAlt} from "react-icons/fa";
 import CreatePost from "../newPost/NewPost";
+import UploadWidget from "../UploadWidget";
 
 export const NavBar = ({ user }) => {
   const [userProfileObject, setUserProfileObject] = useState({});
@@ -85,6 +86,13 @@ export const NavBar = ({ user }) => {
         syncBooks(data);
     })
 }, []);
+
+    //Function that gets passed down to UploadWidget
+    const pullData = (data) => {
+      console.log(data);
+      setPostCloudinaryUrl(data);
+      console.log(postCloudinaryUrl)
+  }
   
   const navigation = useNavigate();
   
@@ -181,13 +189,40 @@ return fetch('https://localhost:7210/api/UserPost', fetchOptions)
                   <Col><GoTextSize onClick={(e) => {
                     e.stopPropagation();
                     setModalView(2);
+                    setPostTypeName("Text");
+                    setPostTypeValue(0);
                   }} /></Col>
-                  <Col><AiOutlineCamera /></Col>
-                  <Col><ImQuotesLeft /></Col>
-                  <Col><ImLink /></Col>
-                  <Col><HiChatBubbleLeftRight /></Col>
-                  <Col><FaHeadphonesAlt /></Col>
-                  <Col><BsCameraVideoFill /></Col>
+                  <Col><AiOutlineCamera onClick={(e) => {
+                    e.stopPropagation();
+                    setModalView(3);
+                    setPostTypeName("Photo");
+                    setPostTypeValue(1);
+                  }} /></Col>
+                  <Col><ImQuotesLeft onClick={(e) => {
+                    e.stopPropagation();
+                    setPostTypeName("Quote");
+                    setPostTypeValue(2);
+                  }} /></Col>
+                  <Col><ImLink onClick={(e) => {
+                    e.stopPropagation();
+                    setPostTypeName("Link");
+                    setPostTypeValue(3);
+                  }}/></Col>
+                  <Col><HiChatBubbleLeftRight onClick={(e) => {
+                    e.stopPropagation();
+                    setPostTypeName("Chat");
+                    setPostTypeValue(4);
+                  }}/></Col>
+                  <Col><FaHeadphonesAlt onClick={(e) => {
+                    e.stopPropagation();
+                    setPostTypeName("Audio");
+                    setPostTypeValue(5);
+                  }} /></Col>
+                  <Col><BsCameraVideoFill onClick={(e) => {
+                    e.stopPropagation();
+                    setPostTypeName("Video");
+                    setPostTypeValue(6);
+                  }} /></Col>
               </Row>
           </Container>
         </Modal.Body>
@@ -259,6 +294,91 @@ return fetch('https://localhost:7210/api/UserPost', fetchOptions)
           </Container>
         </Modal.Body>
         <Modal.Footer className="modal__footer">
+            <Button className="btn__btn-secondary" onClick={(e) => {
+                    e.stopPropagation();
+                    setShow(false);
+                    setModalView(1);
+                    }}>Close</Button>
+            <Button className="btn__btn-primary" onClick={() => CreateNewPost()}>Post</Button>
+        </Modal.Footer>
+        </Modal>
+      </div>
+    } else if(modalView === 3) {
+      return <div>
+        <Modal show={show} onHide={() => {
+          handleClose()
+          setModalView(1)
+        }} size="lg" centered className="modal_new">
+          <Modal.Header className="modal__header" closeButton></Modal.Header>
+          <Modal.Body className="modal__body">
+            <Container>
+              <Row>
+                <Col>
+                  <img src={userProfileObject.profileImageUrl} alt={userProfileObject.handle} />
+                </Col>
+                <Col>
+                  <p>{userProfileObject.handle}</p>
+                </Col>
+              </Row>
+              <Form>
+                <Row>
+                  <Col>
+                  <Form.Group className="mb-3" controlId="formBasicTitle">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control type="text" placeholder="Title" defaultValue="" onChange={(event) => setPostTitle(event.target.value)} />
+                  </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                  <UploadWidget func={pullData} />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <img src={`${userProfileObject.id ? postCloudinaryUrl : null}`} />
+                  </Col>
+                </Row>
+                <Row>
+                <Col>
+                    <Form.Group className="mb-3" controlId="formBasicCaption">
+                        <Form.Label>Caption</Form.Label>
+                        <Form.Control as="textarea" placeholder="Your text here" defaultValue="" onChange={(event) => setPostCaption(event.target.value)} />
+                    </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                <Form.Group className="mb-3" controlId="formBasicBook">
+                    <Form.Label>Tag a Book?</Form.Label>
+                    <Form.Control as="select" onChange={
+                        (event) => {
+                          const copy = {...userBookObject}
+                          copy.title = event.target.options[event.target.selectedIndex].innerHTML
+                          console.log(copy.title)
+                          console.log(books.find(b => b.title === copy.title))
+                          const selectedUserBookObject = books.find(b => b.title === copy.title)
+                          console.log(selectedUserBookObject)
+                          setUserBookObject(selectedUserBookObject)
+                          console.log(userBookObject)
+                        }
+                    }
+                        value={postBookId}>
+                        {books.map((e) => (
+                            <option key={`book--${e.id}`}
+                            value={e.id}
+                            >
+                                {e.title}
+                            </option>
+                        ))}
+                    </Form.Control>
+                    </Form.Group>
+                </Col>
+              </Row>
+              </Form>
+            </Container>
+          </Modal.Body>
+          <Modal.Footer className="modal__footer">
             <Button className="btn__btn-secondary" onClick={(e) => {
                     e.stopPropagation();
                     setShow(false);
