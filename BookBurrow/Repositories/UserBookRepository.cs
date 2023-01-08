@@ -199,6 +199,100 @@ namespace BookBurrow.Repositories
             }
         }
 
+        public List<UserBook> GetAllByUserId(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT ub.id, ub.bookId,
+                            b.title, b.isbn, b.description, b.coverImageUrl, b.datePublished, b.createdAt AS bookRecordCreatedAt, 
+                            b.updatedAt AS bookRecordUpdatedAt,
+                            ub.startDate, ub.endDate,
+                            ub.ratingId, r.displayValue AS rating,
+                            ub.statusId, 
+                            ub.review, ub.reviewCreatedAt, ub.reviewEditedAt,
+                            ub.userId,
+                            up.id AS userProfileId, up.profileImageUrl, up.firstName, up.lastName, up.handle, up.pronounId, p.pronouns, 
+                            up.biography, up.biographyUrl, up.birthday, up.createdAt AS userProfileCreatedAt, up.updatedAt AS userProfileUpdatedAt
+                            FROM dbo.UserBook ub
+                                LEFT JOIN dbo.Book b ON ub.bookId = b.id
+                                LEFT JOIN dbo.UserProfile up ON ub.userId = up.userId
+                                LEFT JOIN dbo.Rating r ON ub.ratingId = r.id
+                                LEFT JOIN dbo.UserPronoun p ON up.pronounId = p.id
+                        WHERE ub.userId = @id
+                        ORDER BY reviewCreatedAt DESC
+                    ";
+
+                    DbUtils.AddParameter(cmd, "@id", id);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        var userBooks = new List<UserBook>();
+                        while (reader.Read())
+                        {
+                            userBooks.Add(new UserBook()
+                            {
+                                Id = DbUtils.GetInt(reader, "id"),
+                                BookId = DbUtils.GetInt(reader, "bookId"),
+                                Book = new Book()
+                                {
+                                    Id = DbUtils.GetInt(reader, "bookId"),
+                                    Title = DbUtils.GetString(reader, "title"),
+                                    Isbn = DbUtils.GetString(reader, "isbn"),
+                                    Description = DbUtils.GetString(reader, "description"),
+                                    CoverImageUrl = DbUtils.GetString(reader, "coverImageUrl"),
+                                    DatePublished = DbUtils.GetDateTime(reader, "datePublished"),
+                                    CreatedAt = DbUtils.GetDateTime(reader, "bookRecordCreatedAt"),
+                                    UpdatedAt = DbUtils.GetDateTime(reader, "bookRecordUpdatedAt"),
+                                },
+                                UserId = id,
+                                UserProfile = new UserProfile()
+                                {
+                                    Id = DbUtils.GetInt(reader, "userProfileId"),
+                                    UserId = id,
+                                    ProfileImageUrl = DbUtils.GetString(reader, "profileImageUrl"),
+                                    FirstName = DbUtils.GetString(reader, "firstName"),
+                                    LastName = DbUtils.GetString(reader, "lastName"),
+                                    Handle = DbUtils.GetString(reader, "handle"),
+                                    PronounId = DbUtils.GetNullableInt(reader, "pronounId"),
+                                    UserPronoun = new UserPronoun()
+                                    {
+                                        Id = DbUtils.GetInt(reader, "pronounId"),
+                                        Pronouns = DbUtils.GetString(reader, "pronouns"),
+                                    },
+                                    Biography = DbUtils.GetString(reader, "biography"),
+                                    BiographyUrl = DbUtils.GetString(reader, "biographyUrl"),
+                                    Birthday = DbUtils.GetDateTime(reader, "birthday"),
+                                    CreatedAt = DbUtils.GetDateTime(reader, "userProfileCreatedAt"),
+                                    UpdatedAt = DbUtils.GetDateTime(reader, "userProfileUpdatedAt"),
+                                },
+                                UserPronoun = new UserPronoun()
+                                {
+                                    Id = DbUtils.GetInt(reader, "pronounId"),
+                                    Pronouns = DbUtils.GetString(reader, "pronouns"),
+                                },
+                                StartDate = DbUtils.GetNullableDateTime(reader, "startDate"),
+                                EndDate = DbUtils.GetNullableDateTime(reader, "endDate"),
+                                RatingId = DbUtils.GetNullableInt(reader, "ratingId"),
+                                Rating = new Rating()
+                                {
+                                    Id = DbUtils.GetNullableInt(reader, "ratingId") ?? 0,
+                                    DisplayValue = DbUtils.GetNullableDecimal(reader, "rating") ?? 0,
+                                },
+                                BookStatus = BookStatus.FromValue(DbUtils.GetInt(reader, "statusId")),
+                                Review = DbUtils.GetString(reader, "review"),
+                                ReviewCreatedAt = DbUtils.GetDateTime(reader, "reviewCreatedAt"),
+                                ReviewEditedAt = DbUtils.GetDateTime(reader, "reviewEditedAt"),
+                            });
+                        }
+                        return userBooks;
+                    }
+                }
+            }
+        }
+
         public void Add(UserBook userBook)
         {
             using (var conn = Connection)

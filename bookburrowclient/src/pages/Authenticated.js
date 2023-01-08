@@ -3,8 +3,9 @@ import { Container, Row, Col } from "react-bootstrap";
 import { IoHeartSharp, IoPricetagsOutline } from "react-icons/io5";
 import { GiMagicLamp } from "react-icons/gi";
 import "./Authenticated.css";
+import CurrentlyReadingGrid from "../components/currentlyReading/CurrentlyReading";
 
-export default function Authenticated({ user, currentUser }) {
+export default function Authenticated({ user, currentUser, userBooks, bookAuthors }) {
   const [books, syncBooks] = useState([]);
   const [userProfileObject, setUserProfileObject] = useState({});
   const [userBookObject, setUserBookObject] = useState({});
@@ -82,7 +83,8 @@ export default function Authenticated({ user, currentUser }) {
             </Row>
           </Col>
           <Col sm={3}>
-            <h3>Currently Reading Book Cards go below!</h3>
+            <h3>Currently Reading</h3>
+            <CurrentlyReadingGrid userBooks={userBooks} bookAuthors={bookAuthors} />
           </Col>
         </Row>
       </Container>
