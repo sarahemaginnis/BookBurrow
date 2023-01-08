@@ -13,6 +13,7 @@ export default function BookPage ({user, currentUser}) {
     const [bookStatuses, setBookStatuses] = useState([]); //State variable for array of book statuses
     const [userBookObject, setUserBookObject] = useState({}); //initial state variable for current userBook object
     const [userProfileObject, setUserProfileObject] = useState({}); //initial state variable for currentUser userProfile object
+    const [bookRatings, setBookRatings] = useState([]);//state variable for array of book ratings
 
     //Get book detail information from API and update state when the value of bookId changes
     useEffect(() => {
@@ -30,7 +31,10 @@ export default function BookPage ({user, currentUser}) {
         })
         .then(() => {
           setBookStatuses(book.bookStatusOptions)
-        });
+        })
+        .then(() => {
+          setBookRatings(book.ratingOptions)
+        })
       }, []);
 
     //Get userBook information from API and update state when the value of currentUser.id changes
@@ -82,7 +86,8 @@ export default function BookPage ({user, currentUser}) {
           getUserBook={GetUserBook}
           currentUser={currentUser} 
           userProfile={userProfileObject} 
-          bookStatusOptions={bookStatuses} />
+          bookStatusOptions={bookStatuses}
+          bookRatingOptions={bookRatings} />
         <AuthorCard book={book} user={user} currentUser={currentUser} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
         <ReviewCard book={book} user={user} currentUser={currentUser} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
         <BurrowCard bookId={bookId} book={book} user={user} currentUser={currentUser} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>

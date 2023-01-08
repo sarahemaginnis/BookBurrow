@@ -2,17 +2,22 @@ import React, { useState, useEffect }  from "react";
 import { Button, Col, Container, Row, Modal } from "react-bootstrap";
 import { BsPencilFill, BsFillTrashFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import HoverRating from "../../../components/rating/Rating.tsx";
 import "./BookCard.css";
 
-const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, bookStatusOptions}) => {
+const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, bookStatusOptions, bookRatings}) => {
     const [currentUserBook, setCurrentUserBook] = useState({});
     const [currentUserBookTest, setCurrentUserBookTest] = useState({});
     const [userBookStatus, setUserBookStatus] = useState({});
+    const [userBookRating, setUserBookRating] = useState({});
     const [userBookRatingId, setUserBookRatingId] = useState("");
     const [userBookRatingValue, setUserBookRatingValue] = useState("");
     const [userBookReview, setUserBookReview] = useState("");
     const [modalView, setModalView] = useState(1);
     const [show, setShow] = useState(false);
+
+
+    console.log(userBook);
 
     const handleClose = () => setShow(false);
 
@@ -193,6 +198,33 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
             getUserBook()
     }
 
+    const tryChangeRating = (requestObject) => {
+        return fetch(`https://localhost:7210/api/UserBook/TryChangeRating`, {
+            method: "PUT",
+            headers: {
+                "Access-Control-Allow-Origin": "https://localhost:7210",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestObject),
+        }).then((res) => res.json())
+    }
+
+    //handleClick function for updating userBookStatus with Rating
+    const handleStarRatingClick = async () => {
+        const userBookStatusObject = {name: "Read", value: 2}
+        setUserBookStatus(userBookStatusObject)
+        const userBookRatingObject = {id: userBookRatingId, displayValue: userBookRatingValue}
+        setUserBookRating(userBookRatingObject)
+        const requestObject = {userId: currentUser.id, bookId: book.bookAuthor.book.id, bookStatus: userBookStatusObject, rating: userBookRatingObject}
+        const data = await tryChangeRating(requestObject)
+        setCurrentUserBookTest(data)
+        getUserBook()
+    }
+
+    useEffect(() => {
+        if(userBookRatingId) {handleStarRatingClick()}
+    }, [userBookRatingId, userBookRatingValue])
+
     //conditional logic to determine if userBook exists for POST or PUT
     const checkUserBookExists = () => {
         if(Object.keys(currentUserBook).length === 0){
@@ -210,7 +242,7 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
         .then(handleClose)
         .then(setModalView(1))
         .then(() => {
-            navigateToBookPage()
+            getUserBook()
         })
     }
 
@@ -231,6 +263,11 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
                 e.stopPropagation();
                 setShow(true)
             }}><BsPencilFill />{bookStatus3.name}</Button>
+        } else if (currentUser.id === userBook?.userBook?.userId && userBook.userBook.bookStatus.value === 0) {
+            return <Button className="btn-primary" onClick={(e) => {
+                e.stopPropagation();
+                setShow(true)
+            }}><BsPencilFill />{bookStatus0.name}</Button>
         } else {
             return <Button className="btn-primary" onClick={(e) => {
                 e.stopPropagation();
@@ -240,10 +277,10 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
     }
 
     const modalViewSwitch = () => {
-        if(modalView === 1 && userBook.hasOwnProperty("id")) {
+        if(modalView === 1 && userBook?.userBook?.hasOwnProperty("id")) {
             return <div>
             <Modal show={show} onHide={handleClose} size="lg" centered className="modal__delete">
-                <Modal.Header className="modal__header" closeButton>Choose a shelf for this book</Modal.Header>
+                <Modal.Header className="modal__header" closeButton>Choose a shelf for this book Switch 1</Modal.Header>
             <Modal.Body className="modal__body">
                 <Container>
                     {book.bookStatusOptions.map((b) => (
@@ -270,10 +307,10 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
         </Modal.Footer>
         </Modal>
         </div>
-        } else if(modalView === 1 ) {
+        } else if(modalView === 1) {
             return <div>
             <Modal show={show} onHide={handleClose} size="lg" centered className="modal__delete">
-                <Modal.Header className="modal__header" closeButton>Choose a shelf for this book</Modal.Header>
+                <Modal.Header className="modal__header" closeButton>Choose a shelf for this book Switch 2</Modal.Header>
             <Modal.Body className="modal__body">
                 <Container>
                     {book.bookStatusOptions.map((b) => (
@@ -308,7 +345,7 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
                     setShow(false); 
                     setModalView(1)
                     }}>Cancel</Button>
-                <Button className="btn__btn-primary" onClick={() => DeleteBookFromShelf(currentUserBook.id)}>Delete</Button>
+                <Button className="btn__btn-primary" onClick={() => DeleteBookFromShelf(userBook.userBook.id)}>Delete</Button>
             </Modal.Footer>
             </Modal>
         </div>
@@ -323,6 +360,7 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
                     <img src={`${book.bookAuthor.book.coverImageUrl}`} />
                     {bookshelfButton()}
                     <p className="book-card-user-rating-star">Star rating component displaying currentUser's rating of the book (or no rating)</p>
+                    <HoverRating func={setUserBookRatingValue} id={setUserBookRatingId} value={userBook.userBook ? userBook.userBook.ratingId : 0} />
                 </Col>
                 <Col sm={8}>
                     <h2 className="book-card-series">Series Title & Number (e.g., The Atlas #1)</h2>

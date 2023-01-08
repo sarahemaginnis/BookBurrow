@@ -14,10 +14,12 @@ namespace BookBurrow.Controllers
     {
         private readonly IBookAuthorRepository _bookAuthorRepository;
         private readonly IUserPostRepository _userPostRepository;
-        public BookViewModelController(IBookAuthorRepository bookAuthorRepository, IUserPostRepository userPostRepository)
+        private readonly IRatingRepository _ratingRepository;
+        public BookViewModelController(IBookAuthorRepository bookAuthorRepository, IUserPostRepository userPostRepository, IRatingRepository ratingRepository)
         {
             _bookAuthorRepository = bookAuthorRepository;
             _userPostRepository = userPostRepository;
+            _ratingRepository = ratingRepository;
         }
 
         // GET: api/<PostCommentController>
@@ -31,7 +33,8 @@ namespace BookBurrow.Controllers
                 return NoContent();
             }
             var options = BookStatus.ListBookStatuses();
-            var vm = new BookAuthorViewModel { BookAuthor = book, BookStatusOptions = options };
+            var ratings = _ratingRepository.GetAll();
+            var vm = new BookAuthorViewModel { BookAuthor = book, BookStatusOptions = options, RatingOptions = ratings };
             return Ok(vm);
         }
 

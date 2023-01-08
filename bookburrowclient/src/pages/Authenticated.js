@@ -5,10 +5,11 @@ import { GiMagicLamp } from "react-icons/gi";
 import "./Authenticated.css";
 import CurrentlyReadingGrid from "../components/currentlyReading/CurrentlyReading";
 
-export default function Authenticated({ user, currentUser, userBooks, bookAuthors }) {
+export default function Authenticated({ user, currentUser, bookAuthors }) {
   const [books, syncBooks] = useState([]);
   const [userProfileObject, setUserProfileObject] = useState({});
   const [userBookObject, setUserBookObject] = useState({});
+  const [userBooks, setUserBooks] = useState([]);
 
   console.log(currentUser);
 
@@ -27,6 +28,21 @@ export default function Authenticated({ user, currentUser, userBooks, bookAuthor
       .then((data) => {
         syncBooks(data);
       });
+  }, []);
+
+//get userBooks by userId
+useEffect(() => {
+  fetch(`https://localhost:7210/api/UserBook/${currentUser.id}`, {
+    method: "GET",
+    headers: {
+      "Access-Control-Allow-Origin": "https://localhost:7210",
+      "Content-Type": "application/json",
+      },
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      setUserBooks(data);
+    })
   }, []);
 
   //Get userProfile information from API

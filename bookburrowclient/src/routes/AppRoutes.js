@@ -13,7 +13,6 @@ import Search from "../pages/Search/Search";
 export default function AppRoutes({ user }) {
   const [currentUser, setCurrentUser] = useState({});
   const [books, setBooks] = useState([]);
-  const [userBooks, setUserBooks] = useState([]);
   const [bookAuthors, setBookAuthors] = useState([]);
   const [searchBookValue, setSearchBookValue] = useState("");
   const [userProfiles, setUserProfiles] = useState([]);
@@ -54,26 +53,6 @@ export default function AppRoutes({ user }) {
         setCurrentUser(r);
       });
   };
-
-  //get userBooks by userId
-  const GetUserBooks = () => {
-    console.log(currentUser.id);
-    fetch(`https://localhost:7210/api/UserBook/${currentUser.id}`, {
-      method: "GET",
-      headers: {
-        "Access-Control-Allow-Origin": "https://localhost:7210",
-        "Content-Type": "application/json",
-        },
-      })
-      .then((res) => res.json())
-      .then((data) => {
-        setUserBooks(data);
-      })
-  }
-
-  useEffect(() => {
-    if(currentUser.hasOwnProperty("id")){GetUserBooks() ; console.log("getting UserBooks")}
-    }, [currentUser]);
 
   const getBookRequest = async (searchBookValue) => {
     const res = await fetch(
@@ -149,7 +128,7 @@ export default function AppRoutes({ user }) {
         <Route
           exact
           path="/"
-          element={<Authenticated user={user} currentUser={currentUser} userBooks={userBooks} bookAuthors={bookAuthors} />}
+          element={<Authenticated user={user} currentUser={currentUser} bookAuthors={bookAuthors} />}
         />
         <Route
           path="/book/:bookId"
@@ -191,7 +170,7 @@ export default function AppRoutes({ user }) {
         />
         <Route
           path="*"
-          element={<Authenticated user={user} currentUser={currentUser} userBooks={userBooks} bookAuthors={bookAuthors}  />}
+          element={<Authenticated user={user} currentUser={currentUser} bookAuthors={bookAuthors}  />}
         />
       </Routes>
     </div>
