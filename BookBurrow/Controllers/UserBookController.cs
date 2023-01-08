@@ -25,6 +25,18 @@ namespace BookBurrow.Controllers
             return Ok(_userBookRepository.GetAllOrderedByReviewCreatedAt());
         }
 
+        //GET: api/<UserBookController>/5
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            var userBook = _userBookRepository.GetAllByUserId(id);
+            if (userBook == null)
+            {
+                return NotFound();
+            }
+            return Ok(userBook);
+        }
+
         // GET api/<UserBookController>/5
         [HttpGet]
         public IActionResult Get(int user, int book)

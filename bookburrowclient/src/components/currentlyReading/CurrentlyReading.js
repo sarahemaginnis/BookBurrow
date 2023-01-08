@@ -1,14 +1,13 @@
 import React from "react";
-import { Container, Button, Col, Row } from "react-bootstrap";
-import { useNavigate } from "react-router";
 import "./CurrentlyReading.css";
+import {Container, Button, Col, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
-const CurrentlyReadingCard = ({userProfile, user, currentUser, userBooks, bookAuthors}) => {
+export default function CurrentlyReadingGrid({userBooks, bookAuthors}) {
     const navigate = useNavigate();
 
     return (
         <Container>
-            <Row xs={1} md={2}>
             {userBooks.length > 0 ? (userBooks.map((userBook) => {
                 const navigateToBook = () => {
                     navigate(`/book/${userBook.bookId}`)
@@ -16,7 +15,7 @@ const CurrentlyReadingCard = ({userProfile, user, currentUser, userBooks, bookAu
                 const foundBook = bookAuthors.find(({bookId}) => bookId === userBook.bookId)
                 console.log(foundBook);
                 return (
-                    <Row>
+                    <Row className="mb-2">
                         <Col>
                             <img src={userBook.book ? userBook.book.coverImageUrl : null} onClick={navigateToBook}/>
                         </Col>
@@ -27,22 +26,14 @@ const CurrentlyReadingCard = ({userProfile, user, currentUser, userBooks, bookAu
                             <Row>
                                 <p>by {userBook.book ? foundBook.author.firstName : null} {userBook.book ? foundBook.author.middleName : null} {userBook.book ? foundBook.author.lastName : null}</p>
                             </Row>
-                        </Col>
-                        <Col>
                             <Row>
                                 <Button>Update progress</Button>
-                            </Row>
-                            <Row>
-                                <p>Rate this book</p>
                             </Row>
                         </Col>
                     </Row>
                 )
             })
             ) : (<div></div>)}
-            </Row>
-        </Container>
+            </Container>
     );
 };
-
-export default CurrentlyReadingCard;
