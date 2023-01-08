@@ -15,7 +15,6 @@ namespace BookBurrow.Models
 
         [Required]
         public int FollowerId { get; set; }
-        public UserProfile UserProfile { get; set; }
 
         [Required]
         public DateTime CreatedAt { get; set; }

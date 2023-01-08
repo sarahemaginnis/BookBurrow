@@ -35,6 +35,18 @@ namespace BookBurrow.Controllers
             return Ok(userFollower);
         }
 
+        //GET api/<UserFollowerController>/5
+        [HttpGet("VerifyFollower")]
+        public IActionResult Get(int userId, int profileId)
+        {
+            var userFollower = _userFollowerRepository.VerifyFollowerStatus(userId, profileId);
+            if (userFollower == null)
+            {
+                return NotFound();
+            }
+            return Ok(userFollower);
+        }
+
         // POST api/<UserFollowerController>
         [HttpPost]
         public IActionResult Post(UserFollower userFollower)
