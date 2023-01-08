@@ -9,7 +9,7 @@ const CurrentlyReadingCard = ({userProfile, user, currentUser, userBooks, bookAu
     return (
         <Container>
             <Row xs={1} md={2}>
-            {userBooks.length > 0 ? (userBooks.map((userBook) => {
+            {userBooks.length > 0 ? (userBooks.filter(userBook => userBook.bookStatus.name === "Currently reading").map((userBook) => {
                 const navigateToBook = () => {
                     navigate(`/book/${userBook.bookId}`)
                 }
@@ -31,9 +31,6 @@ const CurrentlyReadingCard = ({userProfile, user, currentUser, userBooks, bookAu
                         <Col>
                             <Row>
                                 <Button>Update progress</Button>
-                            </Row>
-                            <Row>
-                                <p>Rate this book</p>
                             </Row>
                         </Col>
                     </Row>

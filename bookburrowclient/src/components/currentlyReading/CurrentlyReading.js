@@ -8,7 +8,7 @@ export default function CurrentlyReadingGrid({userBooks, bookAuthors}) {
 
     return (
         <Container>
-            {userBooks.length > 0 ? (userBooks.map((userBook) => {
+            {userBooks.length > 0 ? (userBooks.filter(userBook => userBook.bookStatus.name === "Currently reading").map((userBook) => {
                 const navigateToBook = () => {
                     navigate(`/book/${userBook.bookId}`)
                 }

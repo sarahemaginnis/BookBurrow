@@ -89,6 +89,25 @@ namespace BookBurrow.Controllers
             return Ok(userBook);
         }
 
+        //PUT api/<UserBookController>/TryChangeRating
+        [HttpPut("TryChangeRating")]
+        public IActionResult TryChangeRating(UserBookRatingUpdateRequest request)
+        {
+            var userBook = _userBookRepository.GetById(request.UserId, request.BookId);
+            if (userBook == null)
+            {
+                userBook = new UserBook() { UserId = request.UserId, BookId = request.BookId, BookStatus = request.BookStatus, RatingId = request.Rating.Id, Rating = request.Rating };
+                _userBookRepository.Add(userBook);
+            } else
+            {
+                userBook.BookStatus = request.BookStatus;
+                userBook.RatingId = request.Rating.Id;
+                _userBookRepository.Update(userBook);
+            }
+            userBook = _userBookRepository.GetById(request.UserId, request.BookId);
+            return Ok(userBook);
+        }
+
         // DELETE api/<UserBookController>/5
         [HttpDelete("{id}")]
         public IActionResult Delete (int id)
