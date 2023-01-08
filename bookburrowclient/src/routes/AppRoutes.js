@@ -157,7 +157,7 @@ export default function AppRoutes({ user }) {
         />
         <Route
           path="/user/:userProfileId"
-          element={<UserProfile user={user} currentUser={currentUser} userBooks={userBooks} bookAuthors={bookAuthors} />}
+          element={<UserProfile user={user} currentUser={currentUser} bookAuthors={bookAuthors} />}
         />
         <Route
           path="user/settings/:userId"

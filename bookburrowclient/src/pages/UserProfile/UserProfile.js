@@ -11,12 +11,12 @@ import BurrowPostGrid from "../../components/burrow/Burrow";
 export default function UserProfile({
   user,
   currentUser,
-  userBooks,
-  bookAuthors,
+  bookAuthors
 }) {
   const [userProfileObject, setUserProfile] = useState({}); //initial state variable for current userProfile object
   const [userObject, setUser] = useState({}); //initial state variable for current user object
   const [userPronounObject, setUserPronoun] = useState({}); //initial state variable for current userPronoun Object
+  const [userBooks, setUserBooks] = useState([]); //initial state variable for array of current userProfile userBooks
   const { userProfileId } = useParams(); //variable storing the route parameter
   const [posts, setPosts] = useState([]); //State variable for array of posts
 
@@ -69,6 +69,22 @@ export default function UserProfile({
       console.log("getting User Posts");
     }
   }, [userProfileObject]);
+
+    //get userBooks by userId
+    useEffect(() => {
+      console.log(userProfileId);
+      fetch(`https://localhost:7210/api/UserBook/${userProfileId}`, {
+        method: "GET",
+        headers: {
+          "Access-Control-Allow-Origin": "https://localhost:7210",
+          "Content-Type": "application/json",
+          },
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          setUserBooks(data);
+        })
+    }, []);
 
   //Get all userPosts
   // useEffect(() => {
