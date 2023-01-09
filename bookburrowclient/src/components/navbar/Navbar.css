@@ -1,4 +1,43 @@
 .navbar {
     background-color: #f6f2e9;
+    height: 64px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding: 25px 30px 40px 30px;
+    margin-bottom: 25px;
+}
+
+.icon{
+    color: black;
+}
+
+.icon:hover {
+    color: #306d8f;
+}
+
+.icon-2{
+    color: black;
+}
+
+.icon-2:hover{
+    color: white;
+}
+
+.navbar__logo {
+    height: 50px;
+}
+
+.dropdown-toggle::after {
+    display: none !important; 
+}
+
+.modal-header {
+    border-bottom: none !important;
+}
+
+.modal-footer {
+    border-top: none !important;
 }
     

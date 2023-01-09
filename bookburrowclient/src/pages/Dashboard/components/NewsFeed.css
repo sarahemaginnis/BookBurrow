@@ -1,3 +1,7 @@
-.Card {
-    background-color: #f6f2e9;
+.MuiPaper-root	 {
+    background-color: #f6f2e9 !important;
+}
+
+.row {
+    margin-bottom: 25px;
 }

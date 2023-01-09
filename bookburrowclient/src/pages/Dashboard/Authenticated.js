@@ -99,24 +99,9 @@ useEffect(() => {
         <Row>
           <Col sm={9}>
             <Row>
-              <Col>
-                <h4>
-                  Following <IoHeartSharp />
-                </h4>
-              </Col>
-              <Col>
-                <h4>
-                  For you <GiMagicLamp />
-                </h4>
-              </Col>
-              <Col>
-                <h4>
-                  Your tags <IoPricetagsOutline />
-                </h4>
-              </Col>
+              <div className="spacer-5"></div>
             </Row>
             <Row>
-              <h2>Post Cards Go Here!</h2>
               <NewsFeedCard posts={newsFeedPosts} />
             </Row>
           </Col>

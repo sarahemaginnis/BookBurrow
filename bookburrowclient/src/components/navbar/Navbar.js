@@ -11,8 +11,10 @@ import {GoTextSize} from "react-icons/go";
 import {AiOutlineCamera} from "react-icons/ai";
 import {HiChatBubbleLeftRight} from "react-icons/hi2";
 import {FaHeadphonesAlt} from "react-icons/fa";
+import {ImSearch} from "react-icons/im";
 import CreatePost from "../newPost/NewPost";
 import UploadWidget from "../UploadWidget";
+import { Avatar, AvatarGroup } from "@mui/material";
 
 export const NavBar = ({ user }) => {
   const [userProfileObject, setUserProfileObject] = useState({});
@@ -111,7 +113,7 @@ export const NavBar = ({ user }) => {
   }
 
   const navigateToNotifications = () => {
-    navigation('/${user}/activity')
+    navigation(`/${userProfileObject.userId}/activity`)
   }
 
   const navigateToProfile = () => {
@@ -189,43 +191,71 @@ return fetch('https://localhost:7210/api/UserPost', fetchOptions)
         <Modal.Body className="modal__body">
           <Container>
               <Row>
-                  <Col><GoTextSize onClick={(e) => {
+                  <Col>
+                  <Avatar sx={{width: 56, height: 56, cursor: "pointer", bgcolor: "#f6f2e9"}}>
+                  <GoTextSize className="icon-2" onClick={(e) => {
                     e.stopPropagation();
                     setModalView(2);
                     setPostTypeName("Text");
                     setPostTypeValue(0);
-                  }} /></Col>
-                  <Col><AiOutlineCamera onClick={(e) => {
+                  }} />
+                  </Avatar>
+                  </Col>
+                  <Col>
+                  <Avatar sx={{width: 56, height: 56, cursor: "pointer", bgcolor: "#bb6318"}}>
+                  <AiOutlineCamera className="icon-2" onClick={(e) => {
                     e.stopPropagation();
                     setModalView(3);
                     setPostTypeName("Photo");
                     setPostTypeValue(1);
-                  }} /></Col>
-                  <Col><ImQuotesLeft onClick={(e) => {
+                  }} />
+                  </Avatar>
+                  </Col>
+                  <Col>
+                  <Avatar sx={{width: 56, height: 56, cursor: "pointer", bgcolor: "#f69742"}}>
+                  <ImQuotesLeft className="icon-2" onClick={(e) => {
                     e.stopPropagation();
                     setPostTypeName("Quote");
                     setPostTypeValue(2);
-                  }} /></Col>
-                  <Col><ImLink onClick={(e) => {
+                  }} />
+                  </Avatar>
+                  </Col>
+                  <Col>
+                  <Avatar sx={{width: 56, height: 56, cursor: "pointer", bgcolor: "#306d8f"}}>
+                  <ImLink className="icon-2" onClick={(e) => {
                     e.stopPropagation();
                     setPostTypeName("Link");
                     setPostTypeValue(3);
-                  }}/></Col>
-                  <Col><HiChatBubbleLeftRight onClick={(e) => {
+                  }}/>
+                  </Avatar>
+                  </Col>
+                  <Col>
+                  <Avatar sx={{width: 56, height: 56, cursor: "pointer", bgcolor: "#f69742"}}>
+                  <HiChatBubbleLeftRight className="icon-2" onClick={(e) => {
                     e.stopPropagation();
                     setPostTypeName("Chat");
                     setPostTypeValue(4);
-                  }}/></Col>
-                  <Col><FaHeadphonesAlt onClick={(e) => {
+                  }}/>
+                  </Avatar>
+                  </Col>
+                  <Col>
+                  <Avatar sx={{width: 56, height: 56, cursor: "pointer", bgcolor: "#bb6318"}}>
+                  <FaHeadphonesAlt className="icon-2" onClick={(e) => {
                     e.stopPropagation();
                     setPostTypeName("Audio");
                     setPostTypeValue(5);
-                  }} /></Col>
-                  <Col><BsCameraVideoFill onClick={(e) => {
+                  }} />
+                  </Avatar>
+                  </Col>
+                  <Col>
+                  <Avatar sx={{width: 56, height: 56, cursor: "pointer", bgcolor: "#f6f2e9"}}>
+                  <BsCameraVideoFill className="icon-2" onClick={(e) => {
                     e.stopPropagation();
                     setPostTypeName("Video");
                     setPostTypeValue(6);
-                  }} /></Col>
+                  }} />
+                  </Avatar>
+                  </Col>
               </Row>
           </Container>
         </Modal.Body>
@@ -377,7 +407,7 @@ return fetch('https://localhost:7210/api/UserPost', fetchOptions)
   return (
     <Navbar bg="#f6f2e9" expand="lg" className="navbar">
       <Container className="navbar__border">
-        <Navbar.Brand onClick={navigateToDashboard}>
+        <Navbar.Brand style={{cursor: "pointer"}} onClick={navigateToDashboard}>
           <img src={logo}
           alt="Book Burrow"
           className="navbar__logo"
@@ -385,28 +415,21 @@ return fetch('https://localhost:7210/api/UserPost', fetchOptions)
           </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-          <Form className="d-flex">
-            <Form.Control type="search"
-              placeholder="Search Book Burrow"
-              className="me-2"
-              aria-label="Search"
-              />
-              <Button onClick={navigateToSearch}>Search</Button>
-          </Form>
             <Nav className="ms-auto">
-              <Nav.Link onClick={navigateToDashboard}><BsFillHouseDoorFill /></Nav.Link>
-              <Nav.Link onClick={navigateToExplore}><ImCompass2 /></Nav.Link>
-              <Nav.Link onClick={navigateToInbox}><BsFillEnvelopeFill /></Nav.Link>
-              <Nav.Link onClick={navigateToNotifications}><BsFillBellFill /></Nav.Link>
-              <NavDropdown title={<BsFillPersonFill/>} id="basic-nav-dropdown">
+              <Nav.Link onClick={navigateToSearch}><ImSearch className="icon"/></Nav.Link>
+              <Nav.Link onClick={navigateToDashboard}><BsFillHouseDoorFill className="icon"/></Nav.Link>
+              <Nav.Link onClick={navigateToExplore}><ImCompass2 className="icon"/></Nav.Link>
+              <Nav.Link onClick={navigateToInbox}><BsFillEnvelopeFill className="icon" /></Nav.Link>
+              <Nav.Link onClick={navigateToNotifications}><BsFillBellFill className="icon" /></Nav.Link>
+              <NavDropdown title={<Avatar alt={userProfileObject.handle} src={userProfileObject.profileImageUrl} sx={{width: 24, height: 24}}/>} id="basic-nav-dropdown">
                 <NavDropdown.Item onClick={navigateToProfile}>Profile</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={signOutOfFirebase}>Sign Out</NavDropdown.Item>
               </NavDropdown>
-              <Nav.Link><BsPencilFill onClick={(e) => {
-                    e.stopPropagation();
-                    setShow(true)
-                    }} /></Nav.Link>
+              <Nav.Link><BsPencilFill className="icon" onClick={(e) => {
+                e.stopPropagation();
+                setShow(true)
+              }} /></Nav.Link>
             </Nav>
           </Navbar.Collapse>
       </Container>

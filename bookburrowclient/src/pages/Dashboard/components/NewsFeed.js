@@ -10,10 +10,11 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
+import {FaShare, FaComment} from "react-icons/fa";
+import {BiRepost} from "react-icons/bi";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Container, Row } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
 import "./NewsFeed.css";
 
@@ -40,23 +41,35 @@ export default function NewsFeedCard(posts) {
 
   return (
     <div>
+        <Container>
+            <Row>
         {Array.isArray(posts.posts) ? (posts.posts.map((post) => {
             const navigateToPost = () => {
                 navigate(`post/${post.id}`)
             }
+            const navigateToProfile = () => {
+                navigate(`user/${post.userProfile.userId}`)
+            }
             return (
                 <Row>
+                    <Col xs={1}>
+                        <Avatar 
+                            alt={post.userProfile ?post.userProfile.handle : null} 
+                            src={post.userProfile ? post.userProfile.profileImageUrl : null}
+                            sx={{width: 56, height: 56}}
+                            onClick={navigateToProfile}
+                            style={{cursor: "pointer"}}
+                        />
+                    </Col>
+                <Col>
                 <Card>
                 <CardHeader
-                    avatar={
-                        <Avatar alt={post.userProfile ?post.userProfile.handle : null} src={post.userProfile ? post.userProfile.profileImageUrl : null} />
-                    }
                     action={
                         <IconButton aria-label="settings">
                         <MoreVertIcon />
                     </IconButton>
                     }
-                    title={post.title ? post.title : null}
+                    title={post.userProfile ? post.userProfile.handle : null}
                     />
                 <CardMedia
                     component="img"
@@ -65,17 +78,14 @@ export default function NewsFeedCard(posts) {
                     onClick={navigateToPost} style={{cursor: "pointer"}}
                     />
                 <CardContent>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography paragraph>
+                        {post.title ? post.title : null}
+                    </Typography>
+                    <Typography paragraph variant="body2" color="text.secondary">
                     {post.caption ? post.caption : null}
                     </Typography>
                 </CardContent>
                 <CardActions disableSpacing>
-                    <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
-                    </IconButton>
-                    <IconButton aria-label="share">
-                    <ShareIcon />
-                    </IconButton>
                     <ExpandMore
                     expand={expanded}
                     onClick={handleExpandClick}
@@ -84,6 +94,18 @@ export default function NewsFeedCard(posts) {
                     >
                     <ExpandMoreIcon />
                     </ExpandMore>
+                    <IconButton aria-label="share">
+                    <FaShare />
+                    </IconButton>
+                    <IconButton aria-label="comment">
+                        <FaComment />
+                    </IconButton>
+                    <IconButton aria-label="reblog">
+                        <BiRepost />
+                    </IconButton>
+                    <IconButton aria-label="add to favorites">
+                    <FavoriteIcon />
+                    </IconButton>
                 </CardActions>
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <CardContent>
@@ -91,11 +113,14 @@ export default function NewsFeedCard(posts) {
                     </CardContent>
                 </Collapse>
                 </Card>
+                </Col>
                 </Row>
             )
         })
         ) : (<div></div>)
     }
+    </Row>
+    </Container>
     </div>
   );
 }
