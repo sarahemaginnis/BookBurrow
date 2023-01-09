@@ -40,18 +40,20 @@ export default function BookPage ({user, currentUser}) {
     //Get userBook information from API and update state when the value of currentUser.id changes
     const GetUserBook = () => {
       console.log(currentUser.id)
-      fetch (`https://localhost:7210/api/UserBook?user=${currentUser.id}&book=${bookId}`, {
-        method: "GET",
-        headers: {
-          "Access-Control-Allow-Origin": "https://localhost:7210",
-          "Content-Type": "application/json",
-      },
-    })
-    .then((res) => res.json())
-    .then((data) => {
-      setUserBookObject(data)
-      console.log("setting user book", userBookObject)
-    })
+      if (currentUser.hasOwnProperty("id")){
+        fetch (`https://localhost:7210/api/UserBook?user=${currentUser.id}&book=${bookId}`, {
+          method: "GET",
+          headers: {
+            "Access-Control-Allow-Origin": "https://localhost:7210",
+            "Content-Type": "application/json",
+        },
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        setUserBookObject(data)
+        console.log("setting user book", userBookObject)
+      })
+      }
   }
   
   //Get userProfile
@@ -73,7 +75,7 @@ export default function BookPage ({user, currentUser}) {
 
   useEffect(() => {
     if(book.hasOwnProperty("bookAuthor")){GetUserBook() ; GetUserProfile() ; console.log("getting user book", book, bookStatuses)}
-  }, [book]);
+  }, [book, bookId]);
 
 //pass down book object and user and currentUser object into components to render properly and pass into fetch calls    
   return ( userProfileObject.hasOwnProperty("id") ? 
