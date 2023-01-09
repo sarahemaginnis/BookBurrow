@@ -271,11 +271,15 @@ return fetch('https://localhost:7210/api/UserPost', fetchOptions)
         <Modal.Body className="modal__body">
           <Container>
               <Row>
-                <Col>
-                    <img src={userProfileObject.profileImageUrl} alt={userProfileObject.handle} />
+                <Col sm={2}>
+                <Avatar 
+                  src={userProfileObject.profileImageUrl} alt={userProfileObject.handle}
+                  sx={{width: 64, height: 64}}
+                  variant="rounded"  
+                />
                 </Col>
                 <Col>
-                    <p>{userProfileObject.handle}</p>
+                    <p><b>{userProfileObject.handle}</b></p>
                 </Col>
               </Row>
             <Form>
@@ -336,11 +340,15 @@ return fetch('https://localhost:7210/api/UserPost', fetchOptions)
           <Modal.Body className="modal__body">
             <Container>
               <Row>
-                <Col>
-                  <img src={userProfileObject.profileImageUrl} alt={userProfileObject.handle} />
+              <Col sm={2}>
+                <Avatar 
+                  src={userProfileObject.profileImageUrl} alt={userProfileObject.handle}
+                  sx={{width: 64, height: 64}}
+                  variant="rounded"  
+                />
                 </Col>
                 <Col>
-                  <p>{userProfileObject.handle}</p>
+                    <p><b>{userProfileObject.handle}</b></p>
                 </Col>
               </Row>
               <Form>

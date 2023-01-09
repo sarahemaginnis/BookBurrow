@@ -3,7 +3,6 @@ import { useParams } from "react-router";
 import { Container, Row, Col } from "react-bootstrap";
 import "./UserProfile.css";
 import BiographyCard from "./components/Biography/BiographyCard";
-import bookshelf from "./Bookshelf.png";
 import BookshelfCard from "./components/Bookshelf/BookshelfCard";
 import CurrentlyReadingCard from "./components/CurrentlyReading/CurrentlyReadingCard";
 import BurrowPostGrid from "../../components/burrow/Burrow";
@@ -153,21 +152,14 @@ export default function UserProfile({
         />
         <Row>
           <Col>
-            <h1>
-              {userProfileObject.id ? userProfileObject.handle : null}{" "}
-              Bookshelves
-            </h1>
-          </Col>
-          <Col>
-            <img src={bookshelf} />
+            <h2 className="text-transform">Bookshelves</h2>
           </Col>
         </Row>
         <BookshelfCard userProfile={userProfileObject} />
         <Row>
-          <h1>
-            {userProfileObject.id ? userProfileObject.handle : null} is
+          <h2 className="text-transform">
             currently reading
-          </h1>
+          </h2>
           <div>
             <Col>
             {userBooks.length > 0 ? (
@@ -185,7 +177,7 @@ export default function UserProfile({
           </div>
         </Row>
         <Row >
-          <h1>Burrow</h1>
+          <h2 className="text-transform">Burrow</h2>
           <div>
             {posts.length > 0 ? (
               <BurrowPostGrid user={userProfileObject} posts={posts} />

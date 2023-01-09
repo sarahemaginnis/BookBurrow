@@ -1,3 +1,38 @@
 body {
     background-color: #f6f2e9;
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
   }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Merriweather", Georgia, "Times New Roman", serif !important;
+  }
+
+  .btn-primary {
+    background-color: #bb6318 !important;
+    color: black !important;
+    border-color: #bb6318 !important;
+  }
+
+  .btn-primary:hover {
+    background-color: #306d8f !important;
+    color: white !important;
+    border-color: #306d8f !important;
+  }
+
+  a {
+    color: #306d8f !important;
+  }
+
+  a:hover {
+    color: #f69742 !important;
+  }
+
+  .btn__btn-secondary {
+    background-color: #bdbdbd !important;
+    color: white !important;
+    border-color: #bdbdbd !important;
+  }
+
+  image {
+    width: 100%;
+    }

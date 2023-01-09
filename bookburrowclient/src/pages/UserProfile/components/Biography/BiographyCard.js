@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Image, Row } from "react-bootstrap";
+import bookshelf from "./Bookshelf.png";
 import "./Biography.css";
+import { Avatar } from "@mui/material";
 
 const BiographyCard = ({userProfile, user, currentUser, userPronoun, userFollower, setUserFollower, userProfileId, userFollowerObject, setUserFollowerObject}) => {
     const [userPostCount, setUserPostCount] = useState(0); //initial state variable for current userPostCount object
@@ -116,47 +118,56 @@ console.log(userFollower);
     return (
         <div className="biography-card">
             <Row>
-                <Col sm={4}>
-                    <img src={`${userProfile.id ? userProfile.profileImageUrl : null}`} />
+                <Col sm={3}>
+                    <Avatar 
+                        alt={`${userProfile.handle}`} 
+                        src={`${userProfile.id ? userProfile.profileImageUrl : null}`}
+                        sx={{width: 250, height: 250}}  
+                    />
+                    {/* <Image src={`${userProfile.id ? userProfile.profileImageUrl : null}`} roundedCircle/> */}
+                    {/* <img src={`${userProfile.id ? userProfile.profileImageUrl : null}`} /> */}
                 </Col>
-                <Col sm={8}>
-                    <Row>
+                <Col sm={6}>
+                    <Row className="biography-card-row">
                         <Col>
-                            <h2 className="biography-card-handle">{userProfile.id ? userProfile.handle : null}</h2>
+                            <h1 className="biography-card-handle">{userProfile.id ? userProfile.handle : null}</h1>
                         </Col>
                         <Col>
                         {profileButton()}
                         </Col>
                     </Row>
-                    <Row>
-                        <Col>
-                            <p className="biography-card-total-posts">{userPostCount} posts</p>
+                    <Row className="biography-card-row">
+                        <Col sm={2}>
+                            <p className="biography-card-total-posts"><b>{userPostCount}</b> posts</p>
                         </Col>
-                        <Col>
-                            <p className="biography-card-total-followers">{userFollowerCount} followers</p>
+                        <Col sm={2}>
+                            <p className="biography-card-total-followers"><b>{userFollowerCount}</b> followers</p>
                         </Col>
-                        <Col>
-                            <p className="biography-card-total-following">{userFollowingCount} following</p>
+                        <Col sm={2}>
+                            <p className="biography-card-total-following"><b>{userFollowingCount}</b> following</p>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col>
-                            <p className="biography-card-name">{userProfile.id ? userProfile.firstName : null} {userProfile.id ? userProfile.lastName : null}</p>
+                    <Row className="biography-card-row">
+                        <Col sm={3}>
+                            <p className="biography-card-name"><b>{userProfile.id ? userProfile.firstName : null} {userProfile.id ? userProfile.lastName : null}</b></p>
                         </Col>
                         <Col>
                             <p className="biography-card-pronouns">{userPronoun ? userPronoun.pronouns : ""}</p>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className="biography-card-row">
                         <Col>
                             <p className="biography-card-biography">{userProfile.id ? userProfile.biography : null}</p>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className="biography-card-row">
                         <Col>
-                            <p className="biography-card-biography-url">{userProfile.id ? userProfile.biographyUrl : null}</p>
+                            <p className="biography-card-biography-url"><b><a href={userProfile.biographyUrl} target="_blank">{userProfile.id ? userProfile.biographyUrl : null}</a></b></p>
                         </Col>
                     </Row>
+                </Col>
+                <Col>
+                    <img src={bookshelf} />
                 </Col>
             </Row>
         </div>
