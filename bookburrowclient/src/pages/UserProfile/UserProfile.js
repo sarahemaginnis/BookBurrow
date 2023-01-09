@@ -19,6 +19,8 @@ export default function UserProfile({
   const [userBooks, setUserBooks] = useState([]); //initial state variable for array of current userProfile userBooks
   const { userProfileId } = useParams(); //variable storing the route parameter
   const [posts, setPosts] = useState([]); //State variable for array of posts
+  const [userFollower, setUserFollower] = useState(false);
+  const [userFollowerObject, setUserFollowerObject] = useState({});
 
   const GetUserPosts = () => {
     fetch(
@@ -86,6 +88,31 @@ export default function UserProfile({
         })
     }, []);
 
+    //verify userFollower status and set at page load
+    useEffect(() => {
+      fetch(`https://localhost:7210/api/UserFollower/VerifyFollower?userId=${currentUser.id}&profileId=${userProfileId}`, {
+        method: "GET",
+        headers: {
+          "Access-Control-Allow-Origin": "https://localhost:7210",
+          "Content-Type": "application/json",
+          },
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          setUserFollowerObject(data)
+        })
+        .then((data) => {
+          if(data.status === 404){
+            return setUserFollower(false)
+          } else {
+            return setUserFollower(true)
+          }
+        })
+    }, [userProfileId, userFollower]);
+
+    console.log(userFollower);
+    console.log(userFollowerObject);
+
   //Get all userPosts
   // useEffect(() => {
   //     console.log("if(profileSet)");
@@ -118,6 +145,11 @@ export default function UserProfile({
           user={userObject}
           currentUser={currentUser}
           userPronoun={userPronounObject}
+          userFollower={userFollower}
+          setUserFollower={setUserFollower}
+          userProfileId={userProfileId}
+          userFollowerObject={userFollowerObject}
+          setUserFollowerObject={setUserFollowerObject}
         />
         <Row>
           <Col>

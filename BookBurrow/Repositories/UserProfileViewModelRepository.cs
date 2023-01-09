@@ -151,8 +151,8 @@ namespace BookBurrow.Repositories
                                     Id = id,
                                     FirebaseUID = DbUtils.GetString(reader, "firebaseUID"),
                                     Email = DbUtils.GetString(reader, "email"),
-                                    CreatedAt = DbUtils.GetDateTime(reader, "userCreatedAt"),
-                                    UpdatedAt = DbUtils.GetDateTime(reader, "userUpdatedAt"),
+                                    CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
+                                    UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
                                 }
                             });
                         }
@@ -191,8 +191,8 @@ namespace BookBurrow.Repositories
                                     Id = id,
                                     FirebaseUID = DbUtils.GetString(reader, "firebaseUID"),
                                     Email = DbUtils.GetString(reader, "email"),
-                                    CreatedAt = DbUtils.GetDateTime(reader, "userCreatedAt"),
-                                    UpdatedAt = DbUtils.GetDateTime(reader, "userUpdatedAt"),
+                                    CreatedAt = DbUtils.GetDateTime(reader, "createdAt"),
+                                    UpdatedAt = DbUtils.GetDateTime(reader, "updatedAt"),
                                 }
                             });
                         }

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import "./Biography.css";
 
-const BiographyCard = ({userProfile, user, currentUser, userPronoun}) => {
+const BiographyCard = ({userProfile, user, currentUser, userPronoun, userFollower, setUserFollower, userProfileId, userFollowerObject, setUserFollowerObject}) => {
     const [userPostCount, setUserPostCount] = useState(0); //initial state variable for current userPostCount object
     const [userFollowerCount, setUserFollowerCount] = useState(0); //initial state variable for current userFollowerCount object
     const [userFollowingCount, setUserFollowingCount] = useState(0); //initial state variable for current userFollowingCount object
@@ -13,6 +13,10 @@ const BiographyCard = ({userProfile, user, currentUser, userPronoun}) => {
   
     const navigateToEditProfile = () => {
       navigation(`/user/settings/${userProfile.id}`)
+    }
+
+    const navigateToProfile = () => {
+        navigation(`/user/${userProfileId}`)
     }
 
     //Get userPostCount information from API and update state when the value of userPostCount changes
@@ -45,7 +49,7 @@ const BiographyCard = ({userProfile, user, currentUser, userPronoun}) => {
                 .then((data) => {
                     setUserFollowerCount(data);
                 });
-        }, [userFollowerCount, userProfile]);
+        }, [userFollowerCount, userProfile, userFollower]);
     
             //Get userFollowingCount information from API and update state when the value of userFollowingCount changes
             useEffect(() => {
@@ -61,14 +65,53 @@ const BiographyCard = ({userProfile, user, currentUser, userPronoun}) => {
                     .then((data) => {
                         setUserFollowingCount(data);
                     });
-            }, [userFollowingCount, userProfile]);
+            }, [userFollowingCount, userProfile, userFollowerObject]);
 
+//Follow User (POST)
+const CreateNewUserFollower = () => {
+    const newUserFollowerObject = {
+        userId: userProfileId,
+        followerId: currentUser.id
+    }
+    const fetchOptions = {
+        method: 'POST',
+        headers: {
+            "Access-Control-Allow-Origin": "https://localhost:7210",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUserFollowerObject)
+    }
+    return fetch('https://localhost:7210/api/UserFollower', fetchOptions)
+    .then(res => res.json())
+    .then((data) => {
+        setUserFollowerObject(data)
+    })
+    .then(setUserFollower(true))
+    .then(navigateToProfile)
+}
+
+console.log(userFollowerObject);
+
+//Stop Following User (DELETE)
+const DeleteFollow = (id) => {
+    fetch(`https://localhost:7210/api/UserFollower/${id}`, {
+            method: "DELETE"
+        })
+        .then(setUserFollower(false))
+        .then(navigateToProfile)
+}
+
+console.log(userFollower);
 
     const profileButton = () => {
         if (currentUser.id === userProfile.userId){
             return <Button className="btn-primary" onClick={navigateToEditProfile}>Edit profile</Button>
-        } return <Button className="btn-primary">Follow/Following</Button>
+        } else if (userFollower === false){
+            return <Button className="btn-primary" onClick={() => CreateNewUserFollower()}>Follow</Button>
+    } else {
+        return <Button className="btn-primary" onClick={() => DeleteFollow(userFollowerObject.id)}>Following</Button>
     }
+}
     
     return (
         <div className="biography-card">
