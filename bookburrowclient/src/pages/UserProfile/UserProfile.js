@@ -89,25 +89,25 @@ export default function UserProfile({
 
     //verify userFollower status and set at page load
     useEffect(() => {
-      fetch(`https://localhost:7210/api/UserFollower/VerifyFollower?userId=${currentUser.id}&profileId=${userProfileId}`, {
-        method: "GET",
-        headers: {
-          "Access-Control-Allow-Origin": "https://localhost:7210",
-          "Content-Type": "application/json",
-          },
-        })
-        .then((res) => res.json())
-        .then((data) => {
-          setUserFollowerObject(data)
-        })
-        .then((data) => {
-          if(data.status === 404){
-            return setUserFollower(false)
-          } else {
-            return setUserFollower(true)
-          }
-        })
-    }, [userProfileId, userFollower]);
+      if(currentUser.hasOwnProperty("id")){
+        fetch(`https://localhost:7210/api/UserFollower/VerifyFollower?userId=${currentUser.id}&profileId=${userProfileId}`, {
+          method: "GET",
+          headers: {
+            "Access-Control-Allow-Origin": "https://localhost:7210",
+            "Content-Type": "application/json",
+            },
+          })
+          .then((res) => res.json())
+          .then((data) => {
+            setUserFollowerObject(data)
+            if(data.status === 404){
+              return setUserFollower(false)
+            } else {
+              return setUserFollower(true)
+            }
+          })
+      }
+    }, [userProfileId, userFollower, currentUser]);
 
     console.log(userFollower);
     console.log(userFollowerObject);

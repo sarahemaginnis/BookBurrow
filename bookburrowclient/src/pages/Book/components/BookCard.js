@@ -240,9 +240,10 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
             method: "DELETE"
         })
         .then(handleClose)
-        .then(setModalView(1))
         .then(() => {
+            setModalView(1)
             getUserBook()
+            window.location.reload(true);
         })
     }
 
@@ -345,7 +346,9 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
                     setShow(false); 
                     setModalView(1)
                     }}>Cancel</Button>
-                <Button className="btn__btn-primary" onClick={() => DeleteBookFromShelf(userBook.userBook.id)}>Delete</Button>
+                <Button className="btn__btn-primary" onClick={() => {
+                    DeleteBookFromShelf(userBook.userBook.id)}}
+                    >Delete</Button>
             </Modal.Footer>
             </Modal>
         </div>
