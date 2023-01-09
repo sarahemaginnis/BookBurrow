@@ -1,7 +1,7 @@
 // index for router
 import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
-import Authenticated from "../pages/Authenticated";
+import Authenticated from "../pages/Dashboard/Authenticated";
 import BookPage from "../pages/Book/Book";
 import PostPage from "../pages/Post/Post";
 import RegisterUser from "../pages/Register/Register";

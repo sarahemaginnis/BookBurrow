@@ -3,17 +3,36 @@ import { Container, Row, Col } from "react-bootstrap";
 import { IoHeartSharp, IoPricetagsOutline } from "react-icons/io5";
 import { GiMagicLamp } from "react-icons/gi";
 import "./Authenticated.css";
-import CurrentlyReadingGrid from "../components/currentlyReading/CurrentlyReading";
+import CurrentlyReadingGrid from "../../components/currentlyReading/CurrentlyReading";
+import NewsFeedCard from "./components/NewsFeed";
 
 export default function Authenticated({ user, currentUser, bookAuthors }) {
   const [books, syncBooks] = useState([]);
   const [userProfileObject, setUserProfileObject] = useState({});
   const [userBookObject, setUserBookObject] = useState({});
   const [userBooks, setUserBooks] = useState([]);
+  const [newsFeedPosts, setNewsFeedPosts] = useState([]);
 
   console.log(currentUser);
 
-  //Fetch all post types
+  //Fetch all posts
+  useEffect(() => {
+    if (currentUser) {
+      fetch(`https://localhost:7210/api/UserPost/dashboard?id=${currentUser.id}`, {
+        method: "GET",
+        headers: {
+          "Access-Control-Allow-Origin": "https://localhost:7210",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setNewsFeedPosts(data);
+        });
+    }
+  }, [currentUser]);
+
+  console.log(newsFeedPosts);
 
   //Fetch all books
   useEffect(() => {
@@ -32,18 +51,20 @@ export default function Authenticated({ user, currentUser, bookAuthors }) {
 
 //get userBooks by userId
 useEffect(() => {
-  fetch(`https://localhost:7210/api/UserBook/${currentUser.id}`, {
-    method: "GET",
-    headers: {
-      "Access-Control-Allow-Origin": "https://localhost:7210",
-      "Content-Type": "application/json",
-      },
-    })
-    .then((res) => res.json())
-    .then((data) => {
-      setUserBooks(data);
-    })
-  }, []);
+  if (currentUser) {
+    fetch(`https://localhost:7210/api/UserBook/${currentUser.id}`, {
+      method: "GET",
+      headers: {
+        "Access-Control-Allow-Origin": "https://localhost:7210",
+        "Content-Type": "application/json",
+        },
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        setUserBooks(data);
+      })
+  }
+  }, [currentUser]);
 
   //Get userProfile information from API
   const GetUserProfile = () => {
@@ -96,6 +117,7 @@ useEffect(() => {
             </Row>
             <Row>
               <h2>Post Cards Go Here!</h2>
+              <NewsFeedCard posts={newsFeedPosts} />
             </Row>
           </Col>
           <Col sm={3}>
