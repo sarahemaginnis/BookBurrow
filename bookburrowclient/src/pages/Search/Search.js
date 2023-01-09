@@ -89,7 +89,6 @@ export default function Search({
                                   {book.bookId ? book.book.description : null}
                                 </Card.Text>
                               </Card.Body>
-                              <Card.Footer></Card.Footer>
                             </Card>
                           </Col>
                         );
@@ -134,7 +133,6 @@ export default function Search({
                                   {post.id ? post.caption : null}
                                 </Card.Text>
                               </Card.Body>
-                              <Card.Footer></Card.Footer>
                             </Card>
                           </Col>
                         );
@@ -180,7 +178,6 @@ export default function Search({
                                   {userProfile.id ? userProfile.biography : null}
                                 </Card.Text>
                               </Card.Body>
-                              <Card.Footer></Card.Footer>
                             </Card>
                           </Col>
                         );

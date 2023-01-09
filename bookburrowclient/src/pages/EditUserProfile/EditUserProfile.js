@@ -120,8 +120,8 @@ export default function EditUserProfile ({user, currentUser}) {
     <>
     <Container>
         <Row>
-            <Col>
-                <Button type="button" onClick={cancelEdits}>Cancel</Button>
+            <Col sm={1}>
+                <Button className="btn__btn-secondary" type="button" onClick={cancelEdits}>Cancel</Button>
             </Col>
             <Col>
                 <Button type="submit" onClick={UpdateUserProfile}>Save</Button>
@@ -134,7 +134,7 @@ export default function EditUserProfile ({user, currentUser}) {
         </Row>
         <Row>
             <Col>
-                <img src={`${userProfileObject.id ? userProfileImage : null}`} />
+                <img src={`${userProfileObject.id ? userProfileImage : null}`} className="profile_image"/>
             </Col>
         </Row>
         <Row>
