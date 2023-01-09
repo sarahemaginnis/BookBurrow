@@ -43,6 +43,18 @@ namespace BookBurrow.Controllers
             return Ok(userPost);
         }
 
+        //Get api/<UserPostController>/5
+        [HttpGet("dashboard")]
+        public IActionResult GetAll(int id)
+        {
+            var userPost = _userPostRepository.GetAllPostsForFeedByUserId(id);
+            if (userPost == null)
+            {
+                return NotFound();
+            }
+            return Ok(userPost);
+        }
+
         // POST api/<UserPostController>
         [HttpPost]
         public IActionResult Post(UserPost userPost)
