@@ -67,8 +67,12 @@ export default function EditUserProfile ({user, currentUser}) {
                 method: "DELETE"
             })
         })
-        .then(handleClose)
-        .then(signOutOfFirebase())
+        .then(() => {
+            handleClose()
+            signOutOfFirebase()
+            loginPage()
+            // window.location.reload(true)
+        })
     }
 
     const navigate = useNavigate();
@@ -79,6 +83,10 @@ export default function EditUserProfile ({user, currentUser}) {
 
     const submitEdits = () => {
         navigate(`/user/${userProfileObject.userId}`)
+    }
+
+    const loginPage = () => {
+        navigate(`/`)
     }
 
     const UpdateUserProfile = (evt) => {

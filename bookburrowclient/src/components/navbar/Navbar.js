@@ -12,7 +12,6 @@ import {AiOutlineCamera} from "react-icons/ai";
 import {HiChatBubbleLeftRight} from "react-icons/hi2";
 import {FaHeadphonesAlt} from "react-icons/fa";
 import {ImSearch} from "react-icons/im";
-import CreatePost from "../newPost/NewPost";
 import UploadWidget from "../UploadWidget";
 import { Avatar, AvatarGroup } from "@mui/material";
 
@@ -40,20 +39,20 @@ export const NavBar = ({ user }) => {
 
   useEffect(() => {
     GetUser(user);
-  }, []);
+  }, [user]);
 
   const GetUser = () => {
-    fetch (`https://localhost:7210/api/LoginViewModel/VerifyUser/${user.uid}`, {
-      method: "GET",
-      headers: {
-        "Access-Control-Allow-Origin": "https://localhost:7210",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => (res.status === 200 ? res.json() : ""))
-      .then((r) => {
-        setCurrentUser(r);
-      });
+      fetch (`https://localhost:7210/api/LoginViewModel/VerifyUser/${user.uid}`, {
+        method: "GET",
+        headers: {
+          "Access-Control-Allow-Origin": "https://localhost:7210",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => (res.status === 200 ? res.json() : ""))
+        .then((r) => {
+          setCurrentUser(r);
+        });
   };
 
   //Get userProfile information from API
@@ -74,7 +73,7 @@ export const NavBar = ({ user }) => {
 
   useEffect(() => {
     if(currentUser.hasOwnProperty("id")){GetUserProfile() ; console.log("getting userProfile")}
-  }, [currentUser]);
+  }, [currentUser, user]);
 
   //Fetch all books
   useEffect(() => {

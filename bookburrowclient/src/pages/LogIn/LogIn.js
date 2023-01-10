@@ -10,9 +10,13 @@ export default function LogIn() {
       <Container>
           <Row>
             <Col>
+            <Row>
               <h1>Book Burrow</h1>
+            </Row>
+            <Row>
               <h2>Find your fandom</h2>
               <h2>find your friends.</h2>
+            </Row>
               <Button
                 type="button"
                 className="btn__btn-primary"

@@ -3,7 +3,6 @@ import { Button, Col, Row, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./BurrowCard.css";
 
-
 const BurrowCard = ({bookId, book, user, currentUser, userProfile, bookStatusOptions}) => {
     const [posts, setPosts] = useState([]); //State variable for array of posts
 

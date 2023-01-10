@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Button, InputGroup } from "react-bootstrap";
-import logo from "./BookBurrowLogo.png";
-import RegisterModal from "./components/RegisterModal";
+import { Form, Button, InputGroup, Container, Row, Col } from "react-bootstrap";
+import UploadWidget from "../../components/UploadWidget";
 
 export default function RegisterUser({ user, setCurrentUser }) {
   const [userProfileImage, setUserProfileImage] = useState(user.photoURL);
@@ -13,6 +12,7 @@ export default function RegisterUser({ user, setCurrentUser }) {
   const [userPronouns, setUserPronouns] = useState("");
   const [userBiography, setUserBiography] = useState("");
   const [userBiographyUrl, setUserBiographyUrl] = useState("");
+  const [postCloudinaryUrl, setPostCloudinaryUrl] = useState("");
   const [date, setDate] = useState(new Date()); //user birthday
   
   const [pronouns, syncPronouns] = useState([]); //state variable for array of pronouns
@@ -72,12 +72,19 @@ export default function RegisterUser({ user, setCurrentUser }) {
     .then(res => res.json())
     .then((res) => {
       console.log(res)
-       setCurrentUser(res)
-    })
-    .then((res) => {
+      setCurrentUser(res)
       setUserProfile(res)
+      navigateToDashboard()
     })
-    .then(() => {navigateToDashboard()})
+  }
+
+    //Function that gets passed down to UploadWidget
+    const pullData = (data) => {
+      console.log(data);
+      setPostCloudinaryUrl(data);
+      setUserProfileImage(data);
+      console.log(postCloudinaryUrl);
+      console.log(userProfileImage);
   }
 
   //need to check userHandle to see if it's available
@@ -85,16 +92,20 @@ export default function RegisterUser({ user, setCurrentUser }) {
   return (
     user ?
     <>
-    {/*<RegisterModal />*/}
-      <img
-        className="image__login"
-        src={logo}
-        alt="Book Burrow Logo"
-      />
+    <Container>
       <Form>
         <Form.Group className="mb-3" controlId="formBasicPhotoUrl">
+          <Row>
+            <Col>
           <Form.Label>Profile Image</Form.Label>
-          <Form.Control type="text" placeholder="Photo url" defaultValue={user.photoURL} onChange={(event) => setUserProfileImage(event.target.value)}/>
+          <UploadWidget func={pullData} />
+            </Col>
+          </Row>
+          <Row>
+            <Col sm={3}>
+            <img src={`${userProfileImage ? userProfileImage : null}`} />
+            </Col>
+          </Row>
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicFirstName">
           <Form.Label>First Name</Form.Label>
@@ -116,13 +127,13 @@ export default function RegisterUser({ user, setCurrentUser }) {
             (event) => {
               setUserPronounId(parseInt(event.target.value))
               setUserPronouns(event.target.options[event.target.selectedIndex].innerHTML)
-              }
+            }
           }
-            value={userPronounId}>
+          value={userPronounId}>
             {pronouns.map((e) => (
-                <option key={`pronoun--${e.id}`}
-                value={e.id}
-                >
+              <option key={`pronoun--${e.id}`}
+              value={e.id}
+              >
                     {e.pronouns}
                 </option>
             ))}
@@ -142,6 +153,7 @@ export default function RegisterUser({ user, setCurrentUser }) {
         </Form.Group>
       </Form>
       <Button type="submit" onClick={() => {RegisterUser()}}>Register</Button>
+      </Container>
     </> : null
   );
 }

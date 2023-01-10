@@ -9,7 +9,6 @@ const BiographyCard = ({userProfile, user, currentUser, userPronoun, userFollowe
     const [userPostCount, setUserPostCount] = useState(0); //initial state variable for current userPostCount object
     const [userFollowerCount, setUserFollowerCount] = useState(0); //initial state variable for current userFollowerCount object
     const [userFollowingCount, setUserFollowingCount] = useState(0); //initial state variable for current userFollowingCount object
-    //const [profileSet, setProfile] = useState(false);
 
     const navigation = useNavigate();
   
