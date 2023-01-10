@@ -30,23 +30,11 @@ const BurrowCard = ({bookId, book, user, currentUser, userProfile, bookStatusOpt
 
     return (
         <div className="burrow-card">
-            <Row>
-                <Col sm={4}>
-                </Col>
-                <Col sm={8}>
-                    <Row>
-                        <h1>Burrow</h1>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <h3>Latest</h3>
-                        </Col>
-                        <Col>
-                            <h3>Top</h3>
-                        </Col>
-                    </Row>
-                    <div>
-                    <Row xs={1} md={3} className="g-3">
+        <Row>
+            <h2 className="text-transform">Burrow</h2>
+        </Row>
+        <div>
+        <Row xs={1} md={3} className="g-3">
       {posts.length > 0 ? (posts.map((post) => {
         const navigateToPost = () => {
           navigate(`/post/${post.id}`)
@@ -66,9 +54,6 @@ const BurrowCard = ({bookId, book, user, currentUser, userProfile, bookStatusOpt
       ) : (<div></div>)}
     </Row>
                     </div>
-                    {/*<BurrowPostGrid user={user} post={post} /> */}
-                </Col>
-            </Row>
         </div>
     );
 };
