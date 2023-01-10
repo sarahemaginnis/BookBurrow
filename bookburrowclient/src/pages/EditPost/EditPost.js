@@ -4,6 +4,7 @@ import { Button, Container, Row, Col, Form, InputGroup, Modal } from "react-boot
 import UploadWidget from "../../components/UploadWidget";
 import { signOutOfFirebase } from "../../utils/auth";
 import './EditPost.css';
+import { Avatar } from "@mui/material";
 
 export default function EditPostPage ({user, currentUser}) {
     const {postId} = useParams(); //variable storing the route parameter
@@ -127,11 +128,17 @@ export default function EditPostPage ({user, currentUser}) {
         currentUser.id === userPostObject.userId ? <> 
         <Container>
               <Row>
-                <Col>
-                    <img src={userPostObject.userProfile.profileImageUrl} alt={userPostObject.userProfile.handle} />
+                <Col sm={2}>
+                    <Avatar 
+                        src={userPostObject.userProfile.profileImageUrl}
+                        alt={userPostObject.userProfile.handle}
+                        sx={{width: 64, height: 64}}
+                        variant="rounded"
+                    />
+                    {/* <img src={userPostObject.userProfile.profileImageUrl} alt={userPostObject.userProfile.handle} /> */}
                 </Col>
                 <Col>
-                    <p>{userPostObject.userProfile.handle}</p>
+                    <p><b>{userPostObject.userProfile.handle}</b></p>
                 </Col>
               </Row>
             <Form>
@@ -145,6 +152,11 @@ export default function EditPostPage ({user, currentUser}) {
                             copy.title = event.target.value 
                             setUserPostObject(copy)}}  />
                     </Form.Group>
+                </Col>
+              </Row>
+              <Row className="edit_post_image" >
+                <Col>
+                <img src={userPostObject.cloudinaryUrl} />
                 </Col>
               </Row>
               <Row>
@@ -191,8 +203,8 @@ export default function EditPostPage ({user, currentUser}) {
               </Row>
             </Form>
             <Row>
-            <Col>
-                <Button type="button" onClick={cancelEdits}>Cancel</Button>
+            <Col sm={1}>
+                <Button className="btn__btn-secondary" type="button" onClick={cancelEdits}>Cancel</Button>
             </Col>
             <Col>
                 <Button type="submit" onClick={updateUserPost}>Save</Button>
