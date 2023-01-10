@@ -1,18 +1,48 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { Container, Row, Card, Col, Modal, Button } from "react-bootstrap";
+import { Container, Row, Col, Modal, Button } from "react-bootstrap";
 import {RiShareForwardLine} from "react-icons/ri";
 import {FaRegComment, FaRegBookmark} from "react-icons/fa";
 import {BiRepost} from "react-icons/bi";
 import {BsSuitHeart, BsPencilFill, BsFillTrashFill} from "react-icons/bs";
 import './Post.css';
+import { styled } from '@mui/material/styles';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Collapse from '@mui/material/Collapse';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import {FaShare, FaComment} from "react-icons/fa";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
+const ExpandMore = styled((props) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+  })(({ theme, expand }) => ({
+    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  }));
 
 export default function PostPage ({user, currentUser}) {
     const [post, setPost] = useState({}); //initial state variable for current post object
     const {postId} = useParams(); //variable storing the route parameter
     const [show, setShow] = useState(false);
+    const [expanded, setExpanded] = React.useState(false);
 
     const handleClose = () => setShow(false);
+
+    const handleExpandClick = () => {
+        setExpanded(!expanded);
+      };
 
     const navigate = useNavigate();
 
@@ -23,6 +53,10 @@ export default function PostPage ({user, currentUser}) {
     const navigateToEditPost = () => {
         navigate(`/post/edit/${postId}`)
       }
+
+    const navigateToProfile = () => {
+        navigate(`/user/${post.userProfile.userId}`)
+    }
 
     //Get post detail information from API and update state when the value of postId changes
     useEffect(() => {
@@ -42,17 +76,15 @@ export default function PostPage ({user, currentUser}) {
 
     const editPostIconsShow = () => {
         return(<>
-        <Row>
-            <Col></Col>
-            <Col></Col>
-            <Col></Col>
-            <Col></Col>
-            <Col><BsFillTrashFill onClick={(e) => {
-                    e.stopPropagation();
-                    setShow(true)
-                    }}/></Col>
-            <Col><BsPencilFill onClick={navigateToEditPost} /></Col>
-        </Row>
+        <IconButton>
+        <BsFillTrashFill style={{cursor: "pointer"}} onClick={(e) => {
+            e.stopPropagation();
+            setShow(true)
+        }}/>
+        </IconButton>
+        <IconButton>
+        <BsPencilFill style={{cursor: "pointer"}} onClick={navigateToEditPost} />
+        </IconButton>
         </>)
     }
 
@@ -74,43 +106,65 @@ export default function PostPage ({user, currentUser}) {
     <Row>
     <Col>
     <Card>
-        <Card.Header>
+        <CardHeader />
             <Container>
                 <Row>
-                    <Col><img src={post.userProfile.profileImageUrl} /></Col>
-                    <Col><p>{post.userProfile.handle}</p></Col>
-                    <Col><p>Follow/Following</p></Col>
-                </Row>
-            </Container>
-        </Card.Header>
-        <Card.Img variant="top" src={post.cloudinaryUrl} />
-        <Card.Body>
-            <Card.Title>{post.title}</Card.Title>
-            <Card.Text>
-                <p>{post.caption}</p>
-                <p>{post.source}</p>
-            </Card.Text>
-        </Card.Body>
-        <Card.Footer>
-            <Container>
-                <div>{currentUser.id === post.userProfile.userId ? editPostIconsShow() : <Col></Col>} </div>
-            </Container>
-            <Container>
-                <Row>
-                    <Col>
-                        <p>total number of notes</p>
+                    <Col xs={1}>
+                    <Avatar 
+                        alt={post.userProfile.handle}
+                        src={post.userProfile.profileImageUrl}
+                        sx={{width: 56, height: 56}}
+                        onClick={navigateToProfile} 
+                        style={{cursor: "pointer"}} 
+                    />
                     </Col>
-                    <Col><RiShareForwardLine /></Col>
-                    <Col><FaRegComment /></Col>
-                    <Col><BiRepost /></Col>
-                    <Col><BsSuitHeart /></Col>
-                    <Col><FaRegBookmark /></Col>
-                </Row>
-                <Row>
-                    <p>Post comments go here!</p>
+                    <Col><p onClick={navigateToProfile} style={{cursor: "pointer"}} ><b>{post.userProfile.handle}</b></p></Col>
                 </Row>
             </Container>
-        </Card.Footer>
+        <CardMedia 
+            component="img"
+            image={post.cloudinaryUrl}
+            alt={post.title}
+        />
+        <CardContent>
+            <Typography paragraph>
+                {post.title}
+            </Typography>
+            <Typography paragraph variant="body2" color="text.secondary">
+                {post.caption}
+            </Typography>
+            <Typography paragraph variant="body2" color="text.secondary">
+                {post.source}
+            </Typography>
+        </CardContent>
+        <CardActions disableSpacing>
+                    <ExpandMore
+                    expand={expanded}
+                    onClick={handleExpandClick}
+                    aria-expanded={expanded}
+                    aria-label="show more"
+                    >
+                    <ExpandMoreIcon />
+                    </ExpandMore>
+                    <IconButton aria-label="share">
+                    <FaShare />
+                    </IconButton>
+                    <IconButton aria-label="comment">
+                        <FaComment />
+                    </IconButton>
+                    <IconButton aria-label="reblog">
+                        <BiRepost />
+                    </IconButton>
+                    <IconButton aria-label="add to favorites">
+                    <FavoriteIcon />
+                    </IconButton>
+                    {currentUser.id === post.userProfile.userId ? editPostIconsShow() : <Col></Col>}
+                </CardActions>
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    <CardContent>
+                    <Typography paragraph>Comments would go here, in the space below:</Typography>
+                    </CardContent>
+                </Collapse>
     </Card>
     </Col>
     </Row>
