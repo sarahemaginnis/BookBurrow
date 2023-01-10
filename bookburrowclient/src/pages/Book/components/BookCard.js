@@ -17,7 +17,6 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
     const [modalView, setModalView] = useState(1);
     const [show, setShow] = useState(false);
 
-
     console.log(userBook);
 
     const handleClose = () => setShow(false);

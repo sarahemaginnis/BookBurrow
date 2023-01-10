@@ -18,7 +18,7 @@ const UploadWidget = (props) => {
     }, [])
     return(
         <Button onClick={() => widgetRef.current.open()}>
-            Upload
+            Upload Image
         </Button>
     )
 }

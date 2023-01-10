@@ -6,10 +6,6 @@ import { useNavigate } from "react-router-dom";
 export default function  BurrowPostGrid({user, posts}) {
     const navigate = useNavigate();
 
-    // const navigateToPost = () => {
-    //     (posts.map((post) => (navigate(`/post/${post.userPost.id}`))))
-    // }
-
     return (
     <Row xs={1} md={3} className="g-3">
       {posts.length > 0 ? (posts.map((post) => {

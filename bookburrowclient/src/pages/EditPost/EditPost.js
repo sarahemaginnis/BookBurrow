@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Button, Container, Row, Col, Form, InputGroup, Modal } from "react-bootstrap";
-import UploadWidget from "../../components/UploadWidget";
-import { signOutOfFirebase } from "../../utils/auth";
 import './EditPost.css';
 import { Avatar } from "@mui/material";
 

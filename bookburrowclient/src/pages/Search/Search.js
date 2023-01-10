@@ -45,10 +45,6 @@ export default function Search({
       <Container>
         <h1>Search</h1>
         {setSearchBox()}
-        {/* <SearchBox
-          searchValue={searchBookValue}
-          setSearchValue={setSearchBookValue}
-        /> */}
         <Container>
           <Tabs
             activeKey={key}

@@ -112,30 +112,6 @@ export default function UserProfile({
     console.log(userFollower);
     console.log(userFollowerObject);
 
-  //Get all userPosts
-  // useEffect(() => {
-  //     console.log("if(profileSet)");
-  //     if(profileSet){
-  //         fetch(`https://localhost:7210/api/UserProfileViewModel/UserPosts/${userProfile.user.id}`, {
-  //             method: "GET",
-  //             headers: {
-  //                 "Access-Control-Allow-Origin": "https://localhost:7210",
-  //                 "Content-Type": "application/json",
-  //             },
-  //         })
-  //         .then((res) => res.json())
-  //         .then((data) => {
-  //             console.log("posts");
-  //             console.log(posts);
-  //             console.log("data");
-  //             console.log(data);
-  //             setPosts(data);
-  //             console.log("posts");
-  //             console.log(posts);
-  //         });
-  //     }
-  // }, [profileSet]);
-
   return userProfileObject.hasOwnProperty("id") ? (
     <>
       <Container>
