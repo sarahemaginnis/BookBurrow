@@ -150,12 +150,12 @@ export default function UserProfile({
           userFollowerObject={userFollowerObject}
           setUserFollowerObject={setUserFollowerObject}
         />
-        <Row>
+        {/* <Row>
           <Col>
             <h2 className="text-transform">Bookshelves</h2>
           </Col>
         </Row>
-        <BookshelfCard userProfile={userProfileObject} />
+        <BookshelfCard userProfile={userProfileObject} /> */}
         <Row>
           <h2 className="text-transform">
             currently reading

@@ -3,6 +3,7 @@ import { Button, Col, Container, Row, Modal } from "react-bootstrap";
 import { BsPencilFill, BsFillTrashFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import HoverRating from "../../../components/rating/Rating.tsx";
+import AuthorCard from "./AuthorCard";
 import "./BookCard.css";
 
 const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, bookStatusOptions, bookRatings}) => {
@@ -360,30 +361,26 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
             <Container>
             <Row>
                 <Col sm={4}>
+                    <Row>
                     <img src={`${book.bookAuthor.book.coverImageUrl}`} />
+                    </Row>
+                    <Row className="graphics" sm={4}>
                     {bookshelfButton()}
-                    <p className="book-card-user-rating-star">Star rating component displaying currentUser's rating of the book (or no rating)</p>
+                    </Row>
+                    <Row className="graphics">
                     <HoverRating func={setUserBookRatingValue} id={setUserBookRatingId} value={userBook.userBook ? userBook.userBook.ratingId : 0} />
+                    </Row>
                 </Col>
                 <Col sm={8}>
-                    <h2 className="book-card-series">Series Title & Number (e.g., The Atlas #1)</h2>
-                    <h1 className="book-card-title">{book.bookAuthor.book.title}</h1>
-                    <h2 className="book-card-author">{book.bookAuthor.author.firstName} {book.bookAuthor.author.middleName} {book.bookAuthor.author.lastName}</h2>
                     <Row>
-                        <Col>
-                            <p className="book-card-average-rating-star">Star rating component displaying average rating amongst all users</p>
-                        </Col>
-                        <Col>
-                            <p className="book-card-average-rating-numerical">Average numerical rating amonst all users</p>
-                        </Col>
-                        <Col>
-                            <p className="book-card-total-ratings">Total number of ratings</p>
-                        </Col>
-                        <Col>
-                            <p className="book-card-total-reviews">Total number of reviews</p>
-                        </Col>
+                    <h1 className="book-card-title">{book.bookAuthor.book.title}</h1>
                     </Row>
+                    <Row>
+                    <h2 className="book-card-author">{book.bookAuthor.author.firstName} {book.bookAuthor.author.middleName} {book.bookAuthor.author.lastName}</h2>
+                    </Row>
+                    <Row>
                     <p className="book-card-description">{book.bookAuthor.book.description}</p>
+                    </Row>
                 </Col>
             </Row>
             </Container>

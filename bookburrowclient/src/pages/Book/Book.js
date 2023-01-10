@@ -59,18 +59,18 @@ export default function BookPage ({user, currentUser}) {
   //Get userProfile
   const GetUserProfile = () => {
     console.log(currentUser.id)
-    fetch (`https://localhost:7210/api/UserProfile/UserProfileByUserId/${currentUser.id}`, {
-        method: "GET",
-        headers: {
-          "Access-Control-Allow-Origin": "https://localhost:7210",
-          "Content-Type": "application/json",
-      },
-    })
-    .then((res) => res.json())
-    .then((data) => {
-      setUserProfileObject(data)
-      console.log("setting user profile", userProfileObject)
-    })
+      fetch (`https://localhost:7210/api/UserProfile/UserProfileByUserId/${currentUser.id}`, {
+          method: "GET",
+          headers: {
+            "Access-Control-Allow-Origin": "https://localhost:7210",
+            "Content-Type": "application/json",
+        },
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        setUserProfileObject(data)
+        console.log("setting user profile", userProfileObject)
+      })
   }
 
   useEffect(() => {
@@ -90,8 +90,8 @@ export default function BookPage ({user, currentUser}) {
           userProfile={userProfileObject} 
           bookStatusOptions={bookStatuses}
           bookRatingOptions={bookRatings} />
-        <AuthorCard book={book} user={user} currentUser={currentUser} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
-        <ReviewCard book={book} user={user} currentUser={currentUser} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
+        {/* <AuthorCard book={book} user={user} currentUser={currentUser} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/> */}
+        {/* <ReviewCard book={book} user={user} currentUser={currentUser} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/> */}
         <BurrowCard bookId={bookId} book={book} user={user} currentUser={currentUser} userProfile={userProfileObject} bookStatusOptions={bookStatuses}/>
       </Container>
     </> : null
