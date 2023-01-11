@@ -281,7 +281,7 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
         if(modalView === 1 && userBook?.userBook?.hasOwnProperty("id")) {
             return <div>
             <Modal show={show} onHide={handleClose} size="lg" centered className="modal__delete">
-                <Modal.Header className="modal__header" closeButton>Choose a shelf for this book Switch 1</Modal.Header>
+                <Modal.Header className="modal__header" closeButton>Choose a shelf for this book</Modal.Header>
             <Modal.Body className="modal__body">
                 <Container>
                     {book.bookStatusOptions.map((b) => (
@@ -311,7 +311,7 @@ const BookCard = ({book, user, userBook, getUserBook, currentUser, userProfile, 
         } else if(modalView === 1) {
             return <div>
             <Modal show={show} onHide={handleClose} size="lg" centered className="modal__delete">
-                <Modal.Header className="modal__header" closeButton>Choose a shelf for this book Switch 2</Modal.Header>
+                <Modal.Header className="modal__header" closeButton>Choose a shelf for this book</Modal.Header>
             <Modal.Body className="modal__body">
                 <Container>
                     {book.bookStatusOptions.map((b) => (
